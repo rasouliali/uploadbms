@@ -1,7 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Identity
 @using ShppaingPart.Models
-@using Microsoft.Data.SqlClient
 @inject IHttpContextAccessor HttpContextAccessor
 @using System.Security.Claims
 
@@ -14,73 +13,48 @@
     var profilePic = "/new/img/user.png";
     if (!string.IsNullOrEmpty(uid))
     {
-
-        var db22 = new DataAccess();
-        var dt22 = db22.ProccessSelectQuery("[sp_getUserInfo]"
-        , new Microsoft.Data.SqlClient.SqlParameter[] {
-        new Microsoft.Data.SqlClient.SqlParameter("userid", uid),
-        new Microsoft.Data.SqlClient.SqlParameter("onlyUserid", uid),
-        }
-        , System.Data.CommandType.StoredProcedure);
-        if (dt22 != null && dt22.Rows.Count > 0)
-        {
-            try { model22.PhoneNumber = "0" + dt22.Rows[0]["Mobile"].ToString(); } catch { }
-            try { model22.Name = dt22.Rows[0]["Name"].ToString(); } catch { }
-            try { model22.LastName = dt22.Rows[0]["LastName"].ToString(); } catch { }
-            try { model22.IsMan = (bool)dt22.Rows[0]["IsMan"]; } catch { }
-            try { model22.NationalCode = dt22.Rows[0]["NationalCode"].ToString(); } catch { }
-            try
-            {
-                if (dt22 != null && dt22.Rows.Count > 0 && dt22.Rows[0].IsNull("ProfilePic") == false)
-                {
-                    profilePic = "/Info/DownloadFiles?fileName=Profile/" + dt22.Rows[0]["ProfilePic"].ToString();
-                }
-            }
-            catch { }
-            try
-            {
-                model22.BirthDateM = (DateTime)dt22.Rows[0]["BirthDate"];
-                model22.BirthDate = ShppaingPart.Controllers.SharedLogic.ToShamsi(model22.BirthDateM);
-            }
-            catch (Exception err) { }
-        }
+        model22 = ShppaingPart.Controllers.SharedLogic.GetUserModel(model22,uid);
+        if (!string.IsNullOrEmpty(model22.profilePic))
+            profilePic = model22.profilePic;
     }
 
-        var controller = ViewContext.RouteData.Values["Controller"].ToString().ToLower();
-        var action = ViewContext.RouteData.Values["action"].ToString().ToLower();
-        var onlyLogginPage = true;
-        var onlyLogin = HttpContextAccessor.HttpContext.Session.GetString("OnlyLoggin");
-        if (string.IsNullOrEmpty(onlyLogin) == false)
-            onlyLogginPage = onlyLogin == "OnlyLoggin";
-        else
-            onlyLogginPage = false;
-        if (onlyLogginPage && User.Identity.IsAuthenticated)
-            onlyLogginPage = false;
-        var db = new ShppaingPart.Models.DataAccess();
+    var controller = ViewContext.RouteData.Values["Controller"].ToString().ToLower();
+    var action = ViewContext.RouteData.Values["action"].ToString().ToLower();
+    var onlyLogginPage = true;
+    var onlyLogin = HttpContextAccessor.HttpContext.Session.GetString("OnlyLoggin");
+    if (string.IsNullOrEmpty(onlyLogin) == false)
+        onlyLogginPage = onlyLogin == "OnlyLoggin";
+    else
+        onlyLogginPage = false;
+    if (onlyLogginPage && User.Identity.IsAuthenticated)
+        onlyLogginPage = false;
 
-        var token = "";
-        var userid = "";
-        if (User.Identity.IsAuthenticated)
+    var token = "";
+    var userid = "";
+    if (User.Identity.IsAuthenticated)
+    {
+        userid = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        try { token = HttpContextAccessor.HttpContext.Session.GetString(userid + "-tokenFCM"); } catch { }
+    }
+    if (User.Identity.IsAuthenticated)
+    {
+        var thisuser =await UserManager.FindByNameAsync(User.Identity.Name);
+
+        ViewBag.Link = GetUri(false, false).ToString().Replace(":80", "") + "Account/Register?Introducer=" + thisuser.SimpleId;
+        var CurrentUserId = ShppaingPart.Controllers.SharedLogic.GetCurrentUserId();
+        var affLink = GetUri(false, false).ToString().Replace(":80", "") + "Account/Register?Introducer=" + thisuser.SimpleId;
+        var dt3 = ShppaingPart.Controllers.SharedLogic.GetAffiliateLink(CurrentUserId, affLink, thisuser.SimpleId);
+        //var dt3 = db.ProccessSelectQuery("sp_getAffiliateLink", new SqlParameter[] {
+        //        new SqlParameter("userid",ShppaingPart.Controllers.SharedLogic.GetCurrentUserId()),
+        //        new SqlParameter("AffiliateLink", ,
+        //        new SqlParameter("simpleId", thisuser.SimpleId)
+        //    }, System.Data.CommandType.StoredProcedure);
+        if (dt3.Rows[0].IsNull(0) == false)
         {
-            userid = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            try { token = HttpContextAccessor.HttpContext.Session.GetString(userid + "-tokenFCM"); } catch { }
+            ViewBag.AffiliateLinkSms = dt3.Rows[0]["AffiliateTextSms"].ToString();
+            ViewBag.AffiliateLink = dt3.Rows[0]["AffiliateText"].ToString();
+            ViewBag.CanAffiliateTextSendBySMS = (bool)dt3.Rows[0]["CanAffiliateTextSendBySMS"];
         }
-        if (User.Identity.IsAuthenticated)
-        {
-            var thisuser =await UserManager.FindByNameAsync(User.Identity.Name);
-
-            ViewBag.Link = GetUri(false, false).ToString().Replace(":80", "") + "Account/Register?Introducer=" + thisuser.SimpleId;
-            var dt3 = db.ProccessSelectQuery("sp_getAffiliateLink", new SqlParameter[] {
-                new SqlParameter("userid",ShppaingPart.Controllers.SharedLogic.GetCurrentUserId()),
-                new SqlParameter("AffiliateLink", GetUri(false,false).ToString().Replace(":80","") + "Account/Register?Introducer=" + thisuser.SimpleId),
-                new SqlParameter("simpleId", thisuser.SimpleId)
-            }, System.Data.CommandType.StoredProcedure);
-            if (dt3.Rows[0].IsNull(0) == false)
-            {
-                ViewBag.AffiliateLinkSms = dt3.Rows[0]["AffiliateTextSms"].ToString();
-                ViewBag.AffiliateLink = dt3.Rows[0]["AffiliateText"].ToString();
-                ViewBag.CanAffiliateTextSendBySMS = (bool)dt3.Rows[0]["CanAffiliateTextSendBySMS"];
-            }
         }
         else
         {
