@@ -1,0 +1,219 @@
+﻿
+@{
+    ViewData["Title"] = "Pivot";
+    //Layout = "~/Views/Shared/_AdminDashboard.cshtml";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+@*
+    @section header {
+
+    }
+*@
+<div class="box box-success">
+    <div class="box-header with-border">
+        <h3 class="box-title">Parameters</h3>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+        </div>
+    </div>
+    <div class="box-body no-padding" style="">
+        <div class="row">
+
+            <form method="get" action="PivotSKU">
+                <div>
+                    <label class="col-sm-4 col-md-3 col-lg-2" for="productStatus">product Status</label>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <select name="productStatus" id="productStatus" class="form-control">
+                            <option value="-1">همه</option>
+                            <option value="1">در حال بررسی</option>
+                            <option value="2">ناموفق</option>
+                            <option value="3">موفق</option>
+                            <option value="4">سایر</option>
+                            <option>نامشخص</option>
+                        </select>
+                    </div>
+                    <label class="col-sm-4 col-md-3 col-lg-2" for="paymentStatus">payment Status</label>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <select name="paymentStatus" id="paymentStatus" class="form-control">
+                            <option value="-1">همه</option>
+                            <option value="1">در حال بررسی</option>
+                            <option value="2">ناموفق</option>
+                            <option value="3">موفق</option>
+                            <option value="4">سایر</option>
+                            <option>نامشخص</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <input name="FromDateJalali" id="FromDateJalali" autocomplete="off" class="form-control persian-date" />
+                        @*<input type="date" name="fromDate" placeholder="from Date" class="form-control" />*@
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <input name="ToDateJalali" id="ToDateJalali" autocomplete="off" class="form-control persian-date" />
+                        @*<input type="date" name="todate" placeholder="to date" class="form-control" />*@
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.row -->
+    </div>
+    <hr />
+</div>
+
+<div id="output" class="pivotDiv"></div>
+@section Scripts {
+    <script type="text/javascript" src="/pivot/dist/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/pivot/dist/d3.min.js"></script>
+    <script type="text/javascript" src="/pivot/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="/pivot/dist/c3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/pivot/dist/c3.min.css">
+    <link rel="stylesheet" type="text/css" href="/pivot/dist/pivot.min.css">
+    <script type="text/javascript" src="/pivot/dist/pivot.min.js"></script>
+    <script type="text/javascript" src="/pivot/dist/c3_renderers.min.js"></script>
+    @*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.6.0/tips_data.min.js"></script>*@
+
+    <link id="datepickerTheme" href="~/persiandate/css/persian-datepicker.min.css" rel="stylesheet" />
+    <script src="~/persiandate/js/persian-date.min.js"></script>
+    <script src="~/persiandate/js/persian-datepicker.js"></script>
+    <style id="compiled-css" type="text/css">
+        body {
+            font-family: Verdana;
+        }
+
+        .c3-line, .c3-focused {
+            stroke-width: 3px !important;
+        }
+
+        .c3-bar {
+            stroke: white !important;
+            stroke-width: 1;
+        }
+
+        .c3 text {
+            font-size: 12px;
+            color: grey;
+        }
+
+        .tick line {
+            stroke: white;
+        }
+
+        .c3-axis path {
+            stroke: grey;
+        }
+
+        .c3-circle {
+            opacity: 1 !important;
+        }
+
+        .pivotDiv {
+            overflow-x: auto;
+        }
+    </style>
+
+
+    <!-- TODO: Missing CoffeeScript 2 -->
+
+    <script type="text/javascript">
+        //<![CDATA[
+        var jsDataTransactionProductTypeId = JSON.parse('@Html.Raw(ViewBag.TransactionProductTypeId)');
+        var jsDataTransactionTypeId = JSON.parse('@Html.Raw(ViewBag.TransactionTypeId)');
+        var jsDataTransactionBankAndTerminalId = JSON.parse('@Html.Raw(ViewBag.TransactionBankAndTerminalId)');
+        var jsDataPivot = JSON.parse('@Html.Raw(ViewBag.pivot)');
+        var pivotArr = [];
+        pivotArr.push(["TransactionType","ProductType","TransactionBankAndTerminal","sumAmount","company","sku","SKUTitle","cnt_all"])
+        for (var i = 0; i < jsDataPivot.length; i++) {
+            jsDataPivot[i].TransactionProductTypeIdTitle = GetProductTypeIdTitle(jsDataPivot[i].TransactionProductTypeId);
+            jsDataPivot[i].TransactionTypeIdTitle = GetTransactionTypeIdTitle(jsDataPivot[i].TransactionTypeId);
+            jsDataPivot[i].TransactionBankAndTerminalIdTitle = GetTransactionBankAndTerminalIdTitle(jsDataPivot[i].TransactionBankAndTerminalId);
+            jsDataPivot[i].Company = GetCompanyTitle(jsDataPivot[i].TransactionProductTypeId);
+            pivotArr.push([jsDataPivot[i].TransactionTypeIdTitle,jsDataPivot[i].TransactionProductTypeIdTitle,jsDataPivot[i].TransactionBankAndTerminalIdTitle,parseInt(jsDataPivot[i].sumAmount),jsDataPivot[i].Company,jsDataPivot[i].sku,jsDataPivot[i].SKUTitle,parseInt(jsDataPivot[i].cnt_all)])
+        }
+            $.pivotUtilities.tipsData = pivotArr;
+
+        function GetCompanyTitle(id) {
+            for (var i = 0; i < jsDataTransactionProductTypeId.length; i++) {
+                if (jsDataTransactionProductTypeId[i].id== id)
+                    return jsDataTransactionProductTypeId[i].company;
+            }
+            return "";
+        }
+        function GetProductTypeIdTitle(id) {
+            for (var i = 0; i < jsDataTransactionProductTypeId.length; i++) {
+                if (jsDataTransactionProductTypeId[i].id== id)
+                    return jsDataTransactionProductTypeId[i].value;
+            }
+            return "";
+        }
+        function GetTransactionTypeIdTitle(id) {
+            for (var i = 0; i < jsDataTransactionTypeId.length; i++) {
+                if (jsDataTransactionTypeId[i].id== id)
+                    return jsDataTransactionTypeId[i].value;
+            }
+            return "";
+        }
+        function GetTransactionBankAndTerminalIdTitle(id) {
+            for (var i = 0; i < jsDataTransactionBankAndTerminalId.length; i++) {
+                if (jsDataTransactionBankAndTerminalId[i].id == id)
+                    return jsDataTransactionBankAndTerminalId[i].value;
+            }
+            return "";
+        }
+        $(function () {
+
+            $("#output").pivotUI(
+                $.pivotUtilities.tipsData, {
+                rows: ["TransactionType","TransactionBankAndTerminal"],
+                cols: ["company","ProductType","sku","SKUTitle"],
+                vals: ["sumAmount","cnt_all"],
+                aggregatorName: "Sum",
+                rendererName: "Table",
+                renderers: $.extend(
+                    $.pivotUtilities.renderers,
+                    $.pivotUtilities.c3_renderers
+                )
+            });
+
+            //$('.pvtFilterBox').each(function (e, i, ii) {
+            //    $($('.pvtFilterBox')[i]).on('click', function () {
+            //        $(this).css('left', 'inherit');
+            //        $(this).css('top', 'inherit');
+            //    });
+            //});
+
+        });
+          //]]>
+         $(document).ready(function () {
+            // Debug mode
+            // --------------------------------------------
+            //        window.persianDatepickerDebug = true;
+
+            // Normal Sample
+            // --------------------------------------------
+            window.pd = $('.persian-date').each(function (index, elem) {
+                $(this).persianDatepicker({
+                    //altField: "#alt" + (index + 1).toString(),
+                    altFormat: 'LLLL',
+                    initialValue: false,
+                    observer: true,
+                    format: 'YYYY/MM/DD',
+                    //timePicker: {
+                    //    enabled: true
+                    //}
+                });
+            });
+        });
+    </script>
+    <style>
+        .pvtFilterBox {
+            left: inherit !important;
+            top: inherit !important;
+        }
+    </style>
+}

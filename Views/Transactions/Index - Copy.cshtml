@@ -1,0 +1,424 @@
+﻿@model IEnumerable<ShppaingPart.Models.BMS.Transaction>
+
+@{
+    ViewData["Title"] = "تراکنش ها";
+    //Layout = "~/Views/Shared/_AdminDashboard.cshtml";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+
+
+@section header {
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-toggle.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="~/datatables/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/datatables/DataTables-1.10.20/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/datatables/Buttons-1.6.0/css/buttons.dataTables.min.css">
+
+}
+<div class="box box-success">
+    <div class="box-header with-border">
+        <h3 class="box-title">اطلاعات قابل فیلتر</h3>
+
+        <div class="box-tools pull-right">
+            @*<button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>*@
+        </div>
+    </div>
+    <div class="box-body no-padding" style="">
+        <div class="row">
+
+            <form method="get" action="/Transactions/Index">
+                <div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <input type="text" name="transactionid" placeholder="کد تراکنش" class="form-control" />
+
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <input type="text" name="mobile" placeholder="موبایل" value="@ViewBag.mobile" class="form-control" />
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <input type="checkbox" name="OwnBuy" data-on="خرید برای خودم" data-off="همه" data-toggle="toggle" value="true" @(ViewBag.OwnBuy ? "checked" : "") class="form-control" />
+                    </div>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="col-sm-4 col-md-3 col-lg-2">
+                            <select type="text" name="userid" placeholder="کد کاربر" value="@ViewBag.userid" class="form-control" asp-items="ViewBag.Users"><option value="">لطفا انتخاب کنید</option></select>
+                        </div>
+                    }
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <input name="FromDateJalali" id="FromDateJalali" value="@ViewBag.FromDateJalali" placeholder="از تاریخ" autocomplete="off" class="form-control persian-date" />
+                        @*<input type="date" name="fromDate" placeholder="fromDate" class="form-control" />*@
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <input name="ToDateJalali" id="ToDateJalali" value="@ViewBag.ToDateJalali" placeholder="تا تاریخ" autocomplete="off" class="form-control persian-date" />
+                        @*<input type="date" name="todate" placeholder="todate" class="form-control" />*@
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <select name="typeOfTransaction" class="form-control">
+                            <option value="-1">همه</option>
+                            <option value="6">کیف اعتبار</option>
+                            <option value="-6">افزایش - MLM - درخت</option>
+                            <option value="-7">افزایش - MLM - خاص</option>
+                            <option value="-8">افزایش - MLM - زیرمجموعه اول</option>
+                            <option value="-999">همه MLM</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <select name="Count" class="form-control">
+                            <option value="5">پنج رکورد آخر</option>
+                            <option value="20">بیست رکورد آخر</option>
+                            <option value="1000">هزار رکورد آخر</option>
+                            <option value="5000">پنج هزار رکورد آخر</option>
+                            <option value="all">تمام رکوردها</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4 col-md-3 col-lg-2">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> جست و جو</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.row -->
+    </div>
+    <hr />
+</div>
+@*<p>
+        <a asp-action="Create">Create New</a>
+    </p>*@
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            @if (User.IsInRole("Admin"))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.UserName)
+                </th>
+            }
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BankAndTerminal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateAdded)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ResponseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TraceNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReferenceNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product_CartId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkFlowRunId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExtraAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExtraAmountTitle)
+            </th>
+            @*<th>
+            @Html.DisplayNameFor(model => model.FromPhoneNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ToPhoneNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OpratorId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SimTypeId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsNet)
+        </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.SimpleId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            @if (User.IsInRole("Admin"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BankAndTerminal)
+            </td>
+            <td>
+                @ShppaingPart.Controllers.SharedLogic.ToShamsi(item.DateAdded)
+            </td>
+            <td>
+                @ShppaingPart.Controllers.SharedLogic.ToShamsi(item.ResponseDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TraceNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReferenceNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product_CartId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkFlowRunId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExtraAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExtraAmountTitle)
+            </td>
+            @*<td>
+            @Html.DisplayFor(modelItem => item.FromPhoneNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ToPhoneNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OpratorId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SimTypeId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsNet)
+        </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.SimpleId)
+            </td>
+            <td>
+                <button type="button" data-toggle="modal" data-target="#Details" onclick="GetOtherData(@item.TransactionId)" class="btn btn-warning GetOtherData" data-id="">
+                    <i class="glyphicon glyphicon-info-sign"></i>
+                </button>
+                @*<a asp-action="Index" asp-controller="WorkFlowRunLogs" asp-route-id="@item.WorkFlowRunId">workflow</a>*@
+                @*<a asp-action="Edit" asp-route-id="@item.TransactionId">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.TransactionId">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.TransactionId">Delete</a>*@
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<div class="modal fade" id="Details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12" style="width:100%;max-height:200px;overflow:auto">
+                        <table>
+                            <tbody id="dataOfTransaction"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @*<script type="text/javascript" src="~/datatables/jQuery-3.3.1/jquery-3.3.1.min.js"></script>*@
+    <script src="~/lib/bootstrap/dist/js/bootstrap-toggle.min.js"></script>
+
+    <script type="text/javascript" src="~/datatables/dataTables.min.js"></script>
+    <script type="text/javascript" src="~/datatables/FixedHeader-3.1.6/js/dataTables.fixedHeader.min.js"></script>
+    <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="~/datatables/JSZip-2.5.0/jszip.min.js"></script>
+    <script type="text/javascript" src="~/datatables/pdfmake-0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="~/datatables/pdfmake-0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/buttons.print.min.js"></script>
+
+    <link id="datepickerTheme" href="~/persiandate/css/persian-datepicker.min.css" rel="stylesheet" />
+    <script src="~/persiandate/js/persian-date.min.js"></script>
+    <script src="~/persiandate/js/persian-datepicker.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Setup - add a text input to each footer cell
+            //debugger;
+            var strElem = "";
+            $('table thead tr th').each(function (index, elem) {
+                strElem += "<th>" + $($('table thead tr th')[index]).text() + "</th>";
+            });
+            $($('table')[0]).append("<tfoot><tr>" + strElem + "</tr></tfoot>");
+            $('table tfoot tr th').each(function (i) {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+
+                $('input', this).on('keyup change', function () {
+                    if (table.column(i).search() !== this.value) {
+                        table
+                            .column(i)
+                            .search(this.value)
+                            .draw();
+                    }
+                });
+            });
+
+            var table = $($('table')[0]).DataTable({
+                fixedHeader: true,
+                orderCellsTop: true,
+                responsive: true,
+                dom: 'Bfrtip', "order": [],
+                buttons: [
+                    {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [
+                            'copy',
+                            'excel',
+                            'csv',
+                            'pdf',
+                            'print'
+                        ]
+                    }
+                ],
+                "bAutoWidth": false,
+            });
+            $($('table')[0]).on("order.dt", function () {
+
+                if (table.settings().order().length === 1) {
+                    var order = table.settings().order()[0];
+                    var th = $("table th:eq(" + order[0] + ")");
+                    if (th.attr("data-sort-next") === "false") {
+                        table.order([]).draw();
+                        th.attr("data-sort-next", true);
+                    } else {
+                        if (order[1] === "desc") {
+                            th.attr("data-sort-next", false);
+                        } else {
+                            th.attr("data-sort-next", true);
+                        }
+                    }
+                }
+            });
+            //$('.GetOtherData').each(function (elem, index, item) {
+            //    $($('.GetOtherData')[index]).on('click', function () {
+            //        debugger;
+            //        var idV =$($('.GetOtherData')[index]).attr('data-id');
+            //        $.post("/Transactions/GetTransactionData", { id: parseInt(idV) }, function (data, status) {
+            //            var str = "";
+            //            for (var i = 0; i < data.length; i += 2) {
+            //                str += "<tr><td>" + data[i] + "</td><td>" + data[i + 1] + "</td></tr>";
+            //            }
+            //            $('#dataOfTransaction').html(str);
+            //            $('#modalshower').trigger('click');
+            //        });
+            //    });
+            //});
+        });
+        function GetOtherData(idV) {
+            $('#dataOfTransaction').html("");
+            $.post("/Transactions/GetTransactionData", { id: idV }, function (data, status) {
+                var str = "";
+                for (var i = 0; i < data.length; i += 2) {
+                    str += "<tr><td>" + data[i] + "</td><td>" + data[i + 1] + "</td></tr>";
+                }
+                $('#dataOfTransaction').html(str);
+                $('#modalshower').trigger('click');
+            });
+        }
+        $(document).ready(function () {
+            // Debug mode
+            // --------------------------------------------
+            //        window.persianDatepickerDebug = true;
+
+            // Normal Sample
+            // --------------------------------------------
+            window.pd = $('.persian-date').each(function (index, elem) {
+                $(this).persianDatepicker({
+                    //altField: "#alt" + (index + 1).toString(),
+                    altFormat: 'LLLL',
+                    initialValue: false,
+                    observer: true,
+                    format: 'YYYY/MM/DD',
+                    //timePicker: {
+                    //    enabled: true
+                    //}
+                });
+            });
+            if('@ViewBag.userid'!='')
+            $('[name=userid]').val("@ViewBag.userid");
+            if('@ViewBag.typeOfTransaction'!='')
+                $('[name=typeOfTransaction]').val("@ViewBag.typeOfTransaction");
+            if('@ViewBag.Count'!='')
+                $('[name=Count]').val("@ViewBag.Count");
+        });
+    </script>
+
+}

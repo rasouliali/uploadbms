@@ -1,0 +1,74 @@
+﻿@model ShppaingPart.Models.AccountViewModels.UserAddress
+
+@{
+    ViewData["Title"] = "آدرس";
+}
+
+<h1>آدرس</h1>
+<form method="post">
+    <div class="row" dir="rtl">
+		<div class="col-md-6">
+        <input type="hidden" asp-for="UserAddressId" />
+        <div class="form-group" id="lastItem">
+            <label asp-for="ProvinceId"></label>
+            <select asp-for="ProvinceId" class="form-control Province" asp-items="ViewBag.Provinces"><option value="">لطفا انتخاب کنید</option></select>
+            <span asp-validation-for="ProvinceId" class="text-danger"></span>
+        </div>
+        <div class="form-group" id="lastItem">
+            <label asp-for="CityId"></label>
+            <select asp-for="CityId" class="form-control">
+                @Html.Raw(ViewBag.Cities0)
+            </select>
+            <span asp-validation-for="CityId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AllAddress"></label>
+            <textarea asp-for="AllAddress" style="width:100%;" rows="4" data-val-maxlength-max="4000"
+                      data-val-maxlength="حداکثر 4000 کاراکتر است"
+                      data-val="true"></textarea>
+            <span asp-validation-for="AllAddress" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ZipCode"></label>
+            <input asp-for="ZipCode" class="form-control" type="tel" />
+            <span asp-validation-for="ZipCode" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-warning form-control">تایید</button>
+    </div>
+	<div class="col-md-6 text-center">
+		<img src="../new/img/profile.png" class="profimg" />
+	</div>
+</div>
+</form>
+@section Scripts{
+    <script type="text/javascript">
+        var defCityId = "@Model.CityId";
+        $('.Province').on('change', function () {
+
+            //debugger;
+            ////var optionSelected = $("option:selected", this);
+            var pid = this.value;
+
+            //var thisId = $("option:selected", this).attr('id');
+            //thisId = thisId.split('ProvinceId').join('CityId');
+            //$('#' + thisId).html('');
+            ////var pid = $(this).val();
+
+            //var thisId = $(this).attr('id');
+            //thisId = thisId.split('ProvinceId').join('CityId');
+            $('#CityId').html('');
+            var pid = $(this).val();
+
+            $.post('/Account/LoadCityByProvinceId', { pid: pid }, function (data, status) {
+                var strValue = '<option value="">لطفا انتخاب کنید</option>';
+                for (var i = 0; i < data.length; i++) {
+                    strValue += '<option value="' + data[i].cityId + '" ' + (data[i].cityId == defCityId ? "selected" : "") + '>' + data[i].name + '</option>';
+                }
+                $('#CityId').html(strValue);
+            })
+        });
+        debugger;
+        if (defCityId != "")
+            $('.Province').trigger('click');
+    </script>
+}

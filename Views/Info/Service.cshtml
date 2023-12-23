@@ -1,0 +1,865 @@
+﻿@{
+    ViewBag.Title = "شارژ و بسته";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+<script>
+    var mciChargeCoff = 1;
+    var mciPayCoff = 1;
+    var mtnChargeCoff = 1;
+    var mtnPayCoff = 1.09;
+    var rtlChargeCoff = 1;
+    var rtlPayCoff = 1;
+    var resetPerNumberChange = true;
+</script>
+
+<div class="row ">
+    <div class="page tab">
+        <button class="tablinks @((ViewBag.page??"charge")=="charge"?"active":"")" onclick="ChangePage(event, 'charge')">شارژ</button>
+        <button class="tablinks @(ViewBag.page=="net"?"active":"")" onclick="ChangePage(event, 'package')">بسته</button>
+        <button class="tablinks @(ViewBag.page=="report"?"active":"")" onclick="ChangePage(event, 'report')">گزارش</button>
+    </div>
+</div>
+<hr />
+
+<div class="row" id="step_tab">
+    <div class="tab">
+        <button class="circle tablinks2 only-charge" onclick="ChangeStep(event, '4')"> 4 </button>
+        <button class="circle tablinks2 " onclick="ChangeStep(event, '3')"> 3 </button>
+        <button class="circle tablinks2 " onclick="ChangeStep(event, '2')"> 2 </button>
+        <button class="circle tablinks2 active " onclick="ChangeStep(event, '1')"> 1 </button>
+    </div>
+</div>
+<div id="hr_step1Link">
+    <hr />
+</div>
+<div class="row" id="step1Link">
+    <label for="Mobile" class="col-sm-12">ورود شماره موبایل</label>
+    <div class="col-sm-12 mobileBox">
+        <div class="tab oprator">
+            <button class="tablinks3 " onclick="ChangeOprator(event, 'rtl')" style="float: inherit;"> <img id="rtl-img" src="~/Content/opt/rtl-u.png" width="20" height="20" /> </button>
+            <button class="tablinks3 " onclick="ChangeOprator(event, 'mtn')" style="float: inherit;"> <img id="mtn-img" src="~/Content/opt/mtn-u.png" width="20" height="20" /> </button>
+            <button class="tablinks3 active)" onclick="ChangeOprator(event, 'mci')" style="float: inherit;"> <img id="mci-img" src="~/Content/opt/mci.png" width="20" height="20" /> </button>
+        </div>
+        <div class="oprator"><input type="text" name="mobile" class="form-control oprator number" id="mobile" maxlength="11" /></div>
+        <div class="tab simType only-net">
+            <button class="tablinks7 " onclick="ChangeSimType(event, 'postpaid')" style="float: inherit;"> دائمی </button>
+            <button class="tablinks7 active" onclick="ChangeSimType(event, 'prepaid')" style="float: inherit;"> اعتباری </button>
+        </div>
+    </div>
+</div>
+<div id="hr_step2Link">
+    <hr />
+</div>
+
+<div class="row only-charge" id="step3Link">
+    <label for="Amount" class="col-sm-12">انتخاب شارژ</label>
+    <div class="tab">
+        <button class="tablinks4 " onclick="ChangeAmount(event, '100000')"> 100،000 ريالی </button>
+        <button class="tablinks4 " onclick="ChangeAmount(event, '50000')"> 50،000 ريالی </button>
+        <button class="tablinks4 " onclick="ChangeAmount(event, '20000')"> 20،000 ريالی </button>
+        <button class="tablinks4 " onclick="ChangeAmount(event, '10000')"> 10،000 ريالی </button>
+    </div>
+</div>
+<div class="row only-charge" id="step3Link_2">
+    <div class="tab">
+        <button class="tablinks4 " onclick="ChangeAmount(event, 'custom')"> دلخواه </button>
+        <button class="tablinks4 " onclick="ChangeAmount(event, '1000000')" style="font-size: x-small;"> 1،000،000 ريالی </button>
+        <button class="tablinks4 " onclick="ChangeAmount(event, '500000')"> 500،000 ريالی </button>
+        <button class="tablinks4 " onclick="ChangeAmount(event, '200000')"> 200،000 ريالی </button>
+    </div>
+</div>
+<div id="hr_step3Link" class="only-charge">
+    <hr />
+</div>
+<div id="step4Link" class="row only-charge">
+    <label for="Amount" class="col-sm-12">نوع شارژ</label>
+    <div class="tab">
+        <button class="tablinks5" onclick="ChangeChargeType(event, 'normal')"> شارژ معمولی </button>
+        <button class="tablinks5 only-noneMCI" onclick="ChangeChargeType(event, 'wow')"> شارژ فوق العاده </button>
+    </div>
+    <div id="PricePart" style="display:none">
+        <hr />
+        <div class="col-xs-12">
+            <div class="Package-list">
+                <div class="net-title">میزان شارژ</div>
+                <div class="net-price" id="ChargeAmount"></div>
+            </div>
+            <div class="Package-list">
+                <div class="net-title">میزان پرداختی شما</div>
+                <div class="net-price" id="PayAmount"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="step3Link_Net" class="row only-net">
+    <div class="tab">
+        <button class="underline tablinks6 active" onclick="ChangeNetPeriod(event, 'daily')">روزانه</button>
+        <button class="underline tablinks6" onclick="ChangeNetPeriod(event, 'weekly')">هفتگی</button>
+        <button class="underline tablinks6" onclick="ChangeNetPeriod(event, 'monthly')">ماهانه</button>
+        <button class="underline tablinks6" onclick="ChangeNetPeriod(event, 'yearly')">سالانه</button>
+    </div>
+</div>
+<div class="row only-net" id="Package-list">
+</div>
+<div class="row only-net">
+    <div id="Package-Details-mci" class="Package-list oprator-package-list">
+        <div class='net-title'>
+            <img src="~/Content/opt/mci.png" width="30" height="30" />
+        </div>
+        <div class='net-title'>
+            بسته اینترنت همراه اول
+        </div>
+    </div>
+    <div id="Package-Details-mtn" class="Package-list oprator-package-list">
+        <div class='net-title'>
+            <img src="~/Content/icons/mtn-color.png" width="30" height="30" />
+        </div>
+        <div class='net-title'>
+            بسته اینترنت ایرانسل
+        </div>
+    </div>
+    <div id="Package-Details-rtl" class="Package-list oprator-package-list">
+        <div class='net-title'>
+            <img src="~/Content/opt/rtl.png" width="30" height="30" />
+        </div>
+        <div class='net-title'>
+            بسته اینترنت رایتل
+        </div>
+    </div>
+</div>
+<div class="row only-net" id="Package-Details">
+</div>
+
+
+<div id="hr_step4Link" class="only-charge">
+    <hr />
+</div>
+
+<button class="form-control btn-paid only-net only-charge " id="step5Link"> پرداخت </button>
+<div class="only-rep">
+
+    <div class="tab">
+        <button class="tablinks8 underline active" onclick="ChangeReportPage(event, 'charge')">شارژ</button>
+        <button class="tablinks8 underline" onclick="ChangeReportPage(event, 'package')">بسته</button>
+    </div>
+    <div id="rep-data">
+
+    </div>
+</div>
+
+<form action="/Info/ShoppingData" method="post" id="FormData">
+    <input type="hidden" name="WorkFlowId" value="1007" />
+    <input type="hidden" name="ShoppingPageId" value="3" />
+    <input type="hidden" name="Method" />
+    <input type="hidden" name="IsNet" />
+    <input type="hidden" name="SimTypeId" />
+    <input type="hidden" name="OpratorId" />
+    <input type="hidden" name="phoneToCharge" />
+    <input type="hidden" name="TransactionProductTypeId" />
+    <input type="hidden" name="TransactionTypeId" />
+    <input type="hidden" name="Amount" />
+</form>
+
+<script>
+    var amount_value = null;
+    var ChangeChargeType_value = null;
+    var ChangePage_value = null;
+    var reportPageName_value = 'charge';
+    var ReportPageData_value = null;
+
+    function ChangeReportPage(evt, reportPageName) {
+        var i, tabcontent, tablinks;
+        tablinks = document.getElementsByClassName("tablinks8");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        evt.currentTarget.className += " active";
+        reportPageName_value = reportPageName;
+        //if (ReportPage == null) {
+        //}
+        loadReportPageData();
+        $('#rep-data').css("background-color", "white");
+
+    }
+    function ChangePage(evt, pageName) {
+        var i, tabcontent, tablinks;
+        var elem = (evt.currentTarget);
+        if (!elem)
+            elem = $('.tablinks.active')[0];
+
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        elem.className += " active";
+        ChangePage_value = pageName;
+        if (pageName == "charge") {
+            //$($('.tablinks2')[0]).show();
+            $('#hr_step1Link').show();
+            $('#step1Link').show();
+            $('#hr_step2Link').show();
+            $('#step_tab').show();
+            $('.only-net').each(function (index) { $(this).hide(); });
+            $('.only-rep').each(function (index) { $(this).hide(); });
+            $('.only-charge').each(function (index) { $(this).show(); });
+            if (first_load == false)
+                setTabStep();
+        }
+        if (pageName == 'package') {
+
+            $('#hr_step1Link').show();
+            $('#step1Link').show();
+            $('#hr_step2Link').show();
+            $('#step_tab').show();
+            $('.only-charge').each(function (index) { $(this).hide(); });
+            $('.only-rep').each(function (index) { $(this).hide(); });
+            $('.only-net').each(function (index) { $(this).show(); });
+            $($('.tablinks6')[0]).trigger('click');
+            if (first_load == false)
+                setTabStep();
+        }
+        if (pageName == 'report') {
+            $('#rep-data').css("background-color", "white");
+            $('#hr_step1Link').hide();
+            $('#step1Link').hide();
+            $('#hr_step2Link').hide();
+            $('#step_tab').hide();
+            $('.only-charge').each(function (index) { $(this).hide(); });
+            $('.only-net').each(function (index) { $(this).hide(); });
+            $('.only-rep').each(function (index) { $(this).show(); });
+            if (first_load == false)
+                setTabStep();
+            $.post('/Info/GetReportData', null,
+                function (data, status, xhr) {
+                    ReportPageData_value = data;
+                    loadReportPageData();
+                });
+
+        }
+    }
+    function loadReportPageData() {
+        var htmlReport = '';
+        var first = true;
+        for (var i = 0; i < ReportPageData_value.length; i++) {
+            if (reportPageName_value == 'charge') {
+                if (ReportPageData_value[i].IsChargeOrNet == true || ReportPageData_value[i].IsChargeOrNet == 1) {
+                    if (first || ReportPageData_value[i].RelativeRequestedDate != ReportPageData_value[i - 1].RelativeRequestedDate) {
+                        htmlReport += "<div class='row day-details'><div class='flt-right'>" + ReportPageData_value[i].RelativeRequestedDate + "</div>" +
+                            "<div class='flt-left'>" + ReportPageData_value[i].RequestedDateJalali + "</div></div>";
+                        first = false;
+                    }
+                    htmlReport += "<div class='row rpt-item' id='report" + ReportPageData_value[i].id + "'><div class='flt-right'>" +
+                        "<div class='flt-right repo-img'><img width='25' height='25' src='/Content/Icons/" + getImage(ReportPageData_value[i]) + "' /> </div>" +
+                        "<div class='flt-right repo-txt'><div class='top-div'>" + getOptName(ReportPageData_value[i]) + "</div><div class='bottom-div'>" + getStatusName(ReportPageData_value[i], true) + "</div></div>" +
+                        "</div>" +
+                        "<div class='flt-left repo-price'><div class='top-div'>&nbsp;</div><div class='bottom-div'>" + digitGroup(ReportPageData_value[i].Amount) + " ريال </div></div></div>";
+
+                }
+            } else {
+                if (ReportPageData_value[i].IsChargeOrNet == false || ReportPageData_value[i].IsChargeOrNet == 0) {
+                    if (first || ReportPageData_value[i].RelativeRequestedDate != ReportPageData_value[i - 1].RelativeRequestedDate) {
+                        htmlReport += "<div class='row day-details'><div class='flt-right'>" + ReportPageData_value[i].RelativeRequestedDate + "</div>" +
+                            "<div class='flt-left'>" + ReportPageData_value[i].RequestedDateJalali + "</div></div>";
+                        first = false;
+                    }
+                    htmlReport += "<div class='row rpt-item' id='report" + ReportPageData_value[i].id + "'><div class='flt-right'>" +
+                        "<div class='flt-right'><img width='25' height='25' src='/Content/Icons/" + getImage(ReportPageData_value[i]) + "' /> </div>" +
+                        "<div class='flt-right'><div class='top-div'>" + getOptName(ReportPageData_value[i]) + "</div><div class='bottom-div'>" + getStatusName(ReportPageData_value[i], true) + "</div></div>" +
+                        "</div>" +
+                        "<div class='flt-left'><div class='top-div'>&nbsp;</div><div class='bottom-div'>" + digitGroup(ReportPageData_value[i].Amount) + " ريال </div></div></div>";
+
+                }
+            }
+        }
+        $('#rep-data').html(htmlReport);
+        $('.rpt-item').each(function (index, elem) {
+            $(this).on('click', function () {
+                var repid = $(this).attr('id');
+                var htmlReport = '';
+                var i = getRepElemById(repid.replace("report", ""));
+                ReportPageData_value[i].RequestedDate = ((Date)(ReportPageData_value[i].RequestedDate.toString()));
+                var time = ReportPageData_value[i].RequestedTime;
+                htmlReport +=
+                    "<div class='rep-det'>" +
+                    "<div class='center' ><img width='40' height='40' src='/Content/Icons/" + getImage(ReportPageData_value[i]) + "' /></div>" +
+                    "<div class='center' ><div class='bold' >" + getStatusName(ReportPageData_value[i], false) + "</div>" +
+                    "<hr />" +
+                    "<div>" + getOptName(ReportPageData_value[i]) + "</div>" +
+                    "<div class='row'>" +
+                    "<div class='flt-right'>تاریخ و زمان</div>" +
+                    "<div class='flt-left'>" + time + " " + ReportPageData_value[i].RequestedDateJalali + "</div>" +
+                    "</div>" +
+                    "<div class='row'>" +
+                    "<div class='flt-right'>مبلغ</div>" +
+                    "<div class='flt-left'>" + ReportPageData_value[i].Amount + " ريال</div>" +
+                    "</div>" +
+                    "<div class='row'>" +
+                    "<div class='flt-right'>شارژ شونده</div>" +
+                    "<div class='flt-left'>0" + ReportPageData_value[i].PhoneNumber + "</div>" +
+                    "</div>" +
+                    "<div class='row'>" +
+                    "<div class='flt-right'>شارژ گیرنده</div>" +
+                    "<div class='flt-left'>0" + ReportPageData_value[i].PhoneNumber + "</div>" +
+                    "</div>" +
+                    "<div class='row'>" +
+                    "<div class='flt-right'>کد مرجع</div>" +
+                    "<div class='flt-left'>" + ReportPageData_value[i].RefNumber + "</div>" +
+                    "</div>" +
+                    "<hr id='hr_link_report' />" +
+                    "<div>" +
+                    "<button id='sendToOthers' >ارسال رسید</button>" +
+                    "</div>" +
+                    "<div class='row'>" +
+                    "<div class='center wwwSite'>www.xxxxxxx.ir</div>" +
+                    "</div>" +
+                    "<div class='row'>" +
+                    "<div class='center'>هر تراکنش یک شانس شرکت در قرعه کشی خودرو</div>" +
+                    "</div>" +
+                    "</div>";
+                $('#rep-data').css("background-color", "#F2F2F2");
+                $('#rep-data').html(htmlReport);
+                $('#sendToOthers').on('click', function () { });
+            });
+        });
+    }
+    function getRepElemById(id) {
+        for (var i = 0; i < ReportPageData_value.length; i++) {
+            if (ReportPageData_value[i].id.toString() == id)
+                return i;
+        }
+    }
+    function getImage(ReportData_value) {
+        if (ReportData_value.TransactionStatusId == 3) {
+            if (ReportData_value.Oprator == 1)
+                return "mci-gray.png";
+            if (ReportData_value.Oprator == 2)
+                return "mtn-gray.png";
+            if (ReportData_value.Oprator == 3)
+                return "rtl-gray.png";
+        } else {
+            if (ReportData_value.Oprator == 1)
+                return "mci-l-gray.png";
+            if (ReportData_value.Oprator == 2)
+                return "mtn-l-gray.png";
+            if (ReportData_value.Oprator == 3)
+                return "rtl-l-gray.png";
+        }
+    }
+    function getStatusName(ReportData_value, iscolored) {
+
+        if (ReportData_value.TransactionStatusId == 3) {
+            return "<span " + (iscolored ? "style='color:lightgreen'" : "") + ">پرداخت موفق</span>";
+        } else {
+            return "<span >پرداخت ناموفق</span>";
+        }
+    }
+    function getOptName(ReportData_value, ischarge) {
+        if (ReportData_value.IsChargeOrNet == true) {
+
+            if (ReportData_value.Oprator == 1)
+                return "شارژ همراه اول";
+            if (ReportData_value.Oprator == 2)
+                return "شارژ ایرانسل";
+            if (ReportData_value.Oprator == 3)
+                return "شارژ رایتل";
+        } else {
+
+            if (ReportData_value.Oprator == 1)
+                return "همراه اول - " + ReportData_value.PackageDataTitle;
+            if (ReportData_value.Oprator == 2)
+                return "ایرانسل - " + ReportData_value.PackageDataTitle;
+            if (ReportData_value.Oprator == 3)
+                return "رایتل - " + ReportData_value.PackageDataTitle;
+        }
+        return "نامشخص"
+    }
+    function ChangeAmount(evt, amount) {
+        var i, tabcontent, tablinks;
+        tablinks = document.getElementsByClassName("tablinks4");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        try {
+            evt.currentTarget.className += " active";
+            amount_value = amount;
+            clacChargePrice();
+            setTabStep();
+        } catch (e) {
+
+        }
+    }
+    function ChangeChargeType(evt, ChangeChargeType) {
+        if (opratorCompany == 'mci')
+            ChangeChargeType = "normal";
+        var i, tabcontent, tablinks;
+        tablinks = document.getElementsByClassName("tablinks5");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        try {
+            try {
+                evt.currentTarget.className += " active";
+            } catch (e) { tablinks[ChangeChargeType == "normal" ? 0 : 1].className += " active"; }
+            ChangeChargeType_value = ChangeChargeType;
+            if (ChangeChargeType == 'normal') {
+                clacChargePrice();
+                $('#PricePart').show();
+            }
+            else
+                $('#PricePart').hide();
+
+            setTabStep();
+
+        } catch (e) {
+            $('#PricePart').hide();
+
+        }
+    }
+    var ChangeSimType_value = 'prepaid';
+    function ChangeSimType(evt, ChangeSimType) {
+        var i, tabcontent, tablinks;
+        tablinks = document.getElementsByClassName("tablinks7");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        evt.currentTarget.className += " active";
+        ChangeSimType_value = ChangeSimType;
+        $($('.tablinks6.active')[0]).trigger('click');
+    }
+    var opratorCompany = 'mci';
+    function ChangeOprator(evt, optName) {
+        var i, tabcontent, tablinks;
+        tablinks = document.getElementsByClassName("tablinks3");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById('mci-img').src = "/Content/opt/mci-u.png";
+        document.getElementById('mtn-img').src = "/Content/opt/mtn-u.png";
+        document.getElementById('rtl-img').src = "/Content/opt/rtl-u.png";
+        document.getElementById(optName + '-img').src = "/Content/opt/" + optName + ".png";
+        opratorCompany = optName;
+        if (optName == 'mci') {
+            $('.only-noneMCI').hide();
+            ChangeChargeType(null, 'normal');
+        } else
+            $('.only-noneMCI').show();
+        try {
+            evt.currentTarget.className += " active";
+        } catch (e) {
+            $(evt).attr("class", "tablinks3 active");
+        }
+        $('#theme').attr('href', '/Content/Theme/' + optName + '.css');
+        if (first_load == false) {
+            setTabStep();
+            $($('.tablinks6')[0]).trigger('click');
+            clacChargePrice();
+        }
+    }
+    function ChangeStep(evt, stepNumber) {
+        if (ChangePage_value == 'package') {
+            if (stepNumber == '2') {
+                selectPackage_value = '';
+                setTabStep();
+            }
+        }
+        //we do not need to any work becuase this is highlited with another logic(not by click)
+    }
+    function clacChargePrice() {
+        try {
+            var chargePr = 0;
+            var chargePa = 0;
+            if (ChangePage_value == 'charge') {
+                if (opratorCompany == 'mci') {
+                    chargePr = amount_value * mciChargeCoff;
+                    chargePa = amount_value * mciPayCoff;
+                }
+                else if (opratorCompany == 'mtn') {
+                    chargePr = amount_value * mtnChargeCoff;
+                    chargePa = amount_value * mtnPayCoff;
+                }
+                else if (opratorCompany == 'rtl') {
+                    chargePr = amount_value * rtlChargeCoff;
+                    chargePa = amount_value * rtlPayCoff;
+                }
+                $('#ChargeAmount').html(digitGroup(chargePr) + ' ريال');
+                $('#PayAmount').html(digitGroup(chargePa) + ' ريال');
+            }
+        } catch (e) {
+
+        }
+    }
+    function ChangeNetPeriod(evt, period) {
+        var i, tabcontent, tablinks;
+        var elem = evt.currentTarget;
+        if (!elem)
+            elem = $('.tablinks6.active')[0];
+        tablinks = document.getElementsByClassName("tablinks6");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        elem.className += " active";
+        if (period == 'daily') {
+            //$($('.tablinks2')[0]).show();
+            $('.daily').each(function (index) { $(this).hide(); });
+            $('.weekly').each(function (index) { $(this).hide(); });
+            $('.monthly').each(function (index) { $(this).hide(); });
+            $('.yearly').each(function (index) { $(this).hide(); });
+
+            $('.daily.' + opratorCompany + '.' + ChangeSimType_value).each(function (index) { $(this).show(); });
+            setTabStep();
+        }
+        if (period == 'weekly') {
+
+            $('.daily').each(function (index) { $(this).hide(); });
+            $('.weekly').each(function (index) { $(this).hide(); });
+            $('.monthly').each(function (index) { $(this).hide(); });
+            $('.yearly').each(function (index) { $(this).hide(); });
+
+            $('.weekly.' + opratorCompany + '.' + ChangeSimType_value).each(function (index) { $(this).show(); });
+            setTabStep();
+        }
+        if (period == 'monthly') {
+
+            $('.daily').each(function (index) { $(this).hide(); });
+            $('.weekly').each(function (index) { $(this).hide(); });
+            $('.monthly').each(function (index) { $(this).hide(); });
+            $('.yearly').each(function (index) { $(this).hide(); });
+
+            $('.monthly.' + opratorCompany + '.' + ChangeSimType_value).each(function (index) { $(this).show(); });
+            setTabStep();
+        }
+        if (period == 'yearly') {
+            $('.daily').each(function (index) { $(this).hide(); });
+            $('.weekly').each(function (index) { $(this).hide(); });
+            $('.monthly').each(function (index) { $(this).hide(); });
+            $('.yearly').each(function (index) { $(this).hide(); });
+
+            $('.yearly.' + opratorCompany + '.' + ChangeSimType_value).each(function (index) { $(this).show(); });
+            setTabStep();
+        }
+    }
+</script>
+@*$.form('/Info/ShoppingData', { WorkFlowId: 1007, ShoppingPageId: 3, IsNet: isNet, SimTypeId: simType, OpratorId: opratorId, Method: methodId, phoneToCharge: $('#mobile').val(), TransactionProductTypeId:transactionProductTypeId, TransactionTypeId:transactionTypeId, Amount:amount_value }, function (data, status) { })*@
+@section scripts{
+    <script type="text/javascript">
+        var first_load = true;
+
+        var beforeMobile="1";
+        $('#mobile').on('change', function () {
+            if ('@ViewBag.op' == null || '@ViewBag.op' == '') {
+                if ($('#mobile').val().length > 10)
+                    opratorselector(true);
+            }
+            else
+                if ($('#mobile').val().length>10)
+                    opratorSelector(false);
+        });
+        $('#mobile').on('keyup', function () {
+            if (beforeMobile!="1" && beforeMobile.length+1 != $('#mobile').val().length)
+                setTabStep();
+            if ('@ViewBag.op' == null || '@ViewBag.op' == '') {
+                if ($('#mobile').val().length > 10)
+                    opratorSelector(true);
+            }
+            else
+                if ($('#mobile').val().length>10)
+                    opratorSelector(false);
+            beforeMobile = $('#mobile').val();
+        });
+        function opratorSelector(isOpratorChanger) {
+            var data = $('#mobile').val();
+            if (isNaN(data) == false) {
+                //if (data.startsWith('091') || data.startsWith('0991') || data.startsWith('0992'))
+                //    ChangeOprator($('#mci-img').parent(), 'mci');
+                if (isOpratorChanger) {
+                    if ((data.startsWith('093') && data.startsWith('0932') == false) || data.startsWith('0990') || data.startsWith('0941') || data.startsWith('0901') || data.startsWith('0902'))
+                        ChangeOprator($('#mtn-img').parent(), 'mtn');
+                    else if (data.startsWith('0921') || data.startsWith('0922') || data.startsWith('0999'))
+                        ChangeOprator($('#rtl-img').parent(), 'rtl');
+                    else
+                        ChangeOprator($('#mci-img').parent(), 'mci');
+                }
+                clacChargePrice();
+                setTabStep();
+            }
+        }
+        var step = 1;
+        function setTabStep() {
+            if (ChangePage_value == "report") {
+            }
+            else {
+
+                var data = $('#mobile').val();
+                if (data.length >= 11) {
+                    step = 2;
+                    $($('.tablinks2')[0]).attr('class', 'circle tablinks2 only-charge');
+                    $($('.tablinks2')[1]).attr('class', 'circle tablinks2');
+                    $($('.tablinks2')[2]).attr('class', 'circle tablinks2 active');
+                    $($('.tablinks2')[3]).attr('class', 'circle tablinks2 active');
+                    if (ChangePage_value == 'charge') {
+                        if (amount_value != null) {
+                            step = 3;
+                            $($('.tablinks2')[1]).attr('class', 'circle tablinks2 active');
+                            if (ChangeChargeType_value != null) {
+                                step = 4;
+                                $($('.tablinks2')[0]).attr('class', 'circle tablinks2 active only-charge');
+                            }
+                        }
+                    } else if (ChangePage_value == 'package') {
+                        if (selectPackage_value != '') {
+                            step = 3;
+                            $($('.tablinks2')[1]).attr('class', 'circle tablinks2 active');
+                        } else {
+                            $($('.tablinks2')[1]).attr('class', 'circle tablinks2');
+                        }
+                    }
+
+                } else {
+                    step = 1;
+                    $($('.tablinks2')[0]).attr('class', 'circle tablinks2 only-charge');
+                    $($('.tablinks2')[1]).attr('class', 'circle tablinks2');
+                    $($('.tablinks2')[2]).attr('class', 'circle tablinks2');
+                    $($('.tablinks2')[3]).attr('class', 'circle tablinks2 active');
+                    if (resetPerNumberChange) {
+                        amount_value = null;
+                        ChangeAmount(null, null);
+                        ChangeChargeType_value = null;
+                        ChangeChargeType(null, null);
+                        selectPackage_value = '';
+                    }
+                }
+                $("#step3Link").hide(); $("#step3Link_2").hide(); $("#hr_step3Link").hide();
+                $("#Package-Details-mci").hide(); $("#Package-Details-mtn").hide(); $("#Package-Details-rtl").hide();
+                $("#step3Link_Net").hide(); $("#Package-list").hide(); $("#step1Link").show(); $("#hr_step2Link").show();
+                if (ChangePage_value == 'charge') {
+                    if (step >= 2) { $("#step3Link").show(); $("#step3Link_2").show(); $("#hr_step3Link").show(); } else { $("#step3Link").hide(); $("#step3Link_2").hide(); $("#hr_step3Link").hide(); }
+                    if (step >= 3) { $("#step4Link").show(); $("#hr_step4Link").show(); } else { $("#step4Link").hide(); $("#hr_step4Link").hide(); }
+                    if (step >= 4) { $("#step5Link").show(); $("#hr_step5Link").show(); } else { $("#step5Link").hide(); $("#hr_step5Link").hide(); }
+                } else if (ChangePage_value == 'package') {
+                    if (step == 2) { $("#step3Link_Net").show(); $("#Package-list").show(); } else { $("#step3Link_Net").hide(); $("#Package-list").hide(); }
+                    if (step == 3) {
+                        selectPackage_value_Index = getIndexFromId(selectPackage_value.replace('netPack', ''));
+                        $("#hr_step2Link").hide(); $("#step1Link").hide(); $("#Package-Details").show();
+                        packageHtml = '';
+                        if (jsonNetData[selectPackage_value_Index].Oprator == 1)
+                            $("#Package-Details-mci").show();
+                        else if (jsonNetData[selectPackage_value_Index].Oprator == 2)
+                            $("#Package-Details-mtn").show();
+                        else if (jsonNetData[selectPackage_value_Index].Oprator == 3)
+                            $("#Package-Details-rtl").show();
+                        packageHtml += "<div class='Package-list " + getPeriodTypeClassName(jsonNetData[selectPackage_value_Index].PeriodType) + " " + (jsonNetData[selectPackage_value_Index].Oprator == 1 ? "mci" : jsonNetData[selectPackage_value_Index].Oprator == 2 ? "mtn" : jsonNetData[selectPackage_value_Index].Oprator == 3 ? "rtl" : "mci") + "' >" +
+                            " <div class='net-title'>جزئیات بسته</div> <div class='net-price'>" + jsonNetData[selectPackage_value_Index].Title + "</div></div> ";
+                        packageHtml += "<div class='Package-list " + getPeriodTypeClassName(jsonNetData[selectPackage_value_Index].PeriodType) + " " + (jsonNetData[selectPackage_value_Index].Oprator == 1 ? "mci" : jsonNetData[selectPackage_value_Index].Oprator == 2 ? "mtn" : jsonNetData[selectPackage_value_Index].Oprator == 3 ? "rtl" : "mci") + "' >" +
+                            " <div class='net-title'>شماره همراه</div> <div class='net-price'>" + $('#mobile').val() + "</div></div> ";
+                        packageHtml += "<div class='Package-list " + getPeriodTypeClassName(jsonNetData[selectPackage_value_Index].PeriodType) + " " + (jsonNetData[selectPackage_value_Index].Oprator == 1 ? "mci" : jsonNetData[selectPackage_value_Index].Oprator == 2 ? "mtn" : jsonNetData[selectPackage_value_Index].Oprator == 3 ? "rtl" : "mci") + "' >" +
+                            " <div class='net-title'>مبلغ</div> <div class='net-price'>" + digitGroup(jsonNetData[selectPackage_value_Index].CostWithVat) + " ريال</div></div> ";
+                        $("#Package-Details").html(packageHtml);
+                        $("#step5Link").show(); $("#hr_step5Link").show();
+                    } else { $("#Package-Details").hide(); $("#hr_step2Link").show(); $("#step1Link").show(); $("#step5Link").hide(); $("#hr_step5Link").hide(); }
+
+                }
+            }
+        }
+        function getIndexFromId(item) {
+            item = parseInt(item);
+            for (var i = 0; i < jsonNetData.length; i++) {
+                if (jsonNetData[i].PackageId == item)
+                    return i;
+            }
+        }
+        var jsonNetData = JSON.parse('@Html.Raw(ViewBag.netListJson)');
+        var packageHtml = "";
+        for (var i = 0; i < jsonNetData.length; i++) {
+            packageHtml += "<div class='Package-list " +
+                getPeriodTypeClassName(jsonNetData[i].PeriodType) + " " +
+                (jsonNetData[i].Oprator == 1 ? "mci" : jsonNetData[i].Oprator == 2 ? "mtn" : jsonNetData[i].Oprator == 3 ? "rtl" : "mci")+ " " +
+                (jsonNetData[i].SimType == 0 ? "postpaid prepaid" : jsonNetData[i].SimType == 1 ? "postpaid" : jsonNetData[i].SimType == 2 ? "prepaid" : "prepaid")
+                + "' id='netPack" + jsonNetData[i].PackageId + "'><div class='net-title'>" + jsonNetData[i].Title + "</div><div class='net-price'>" + digitGroup(jsonNetData[i].CostWithVat) + "ريال</div></div>";
+        }
+        if (packageHtml.length > 0) {
+            $('#Package-list').html(packageHtml);
+            $('.Package-list').each(function (index) { $($('.Package-list')[index]).on('click',function (e){ selectPackage(e, $(this).attr('id')) }) });
+        }
+        var selectPackage_value = '';
+        function selectPackage(e, item) {
+            selectPackage_value = item;
+            setTabStep();
+        }
+        function getPeriodTypeClassName(item){
+            if (item == '1Y')
+                return "yearly";
+            if (item == '1W')
+                return "weekly";
+            if (item == '1M' || item == '2M'|| item == '3M'|| item == '4M'|| item == '6M')
+                return "monthly";
+            if (item == '1D')
+                return "daily";
+        }
+        function digitGroup(num) {
+            return num.toLocaleString();
+        }
+        //$(document).ready(function () {
+        $('#mobile').trigger("change");
+        $(".tablinks.active").trigger("click");
+        //});
+        $($('.tablinks6.active')[0]).trigger('click');
+        ChangeOprator(null, '@(ViewBag.op??"mci")');
+        first_load = false;
+        //"PackageId": 14, "Title": "بسته یک ساله 3 گیگ روزانه 2گیگ شبانه", "AbstractTitle": "سالانه 2 گیگ", "PeriodType": "1Y", "Cost": 120000, "CostWithVat": 130800, "SimType": 0, "Oprator": 2, "ModemType": 1
+    </script>
+    <script type="text/javascript">
+        $('#step5Link').on('click', function () {
+            $("input[name=WorkFlowId]").val(getWorkFlowId());
+            $("input[name=OpratorId]").val(getOpratorId());
+            $('input[name=SimTypeId]').val(getSimType());
+            $('input[name=IsNet]').val(ChangePage_value == "charge" ? false : true);
+            $('input[name=Method]').val(getMethodId());
+            $('input[name=phoneToCharge]').val(parseInt($('#mobile').val()));
+            $('input[name=TransactionProductTypeId]').val(getTransactionProductTypeId());
+            $('input[name=TransactionTypeId]').val(getTransactionTypeId());
+            $('input[name=Amount]').val(parseInt(getAmountValue()));
+            $('#FormData').submit();
+            //$.form('/Info/ShoppingData', { WorkFlowId: 1007, ShoppingPageId: 3, IsNet: isNet, SimTypeId: simType, OpratorId: opratorId, Method: methodId, phoneToCharge: $('#mobile').val(), TransactionProductTypeId: transactionProductTypeId, TransactionTypeId: transactionTypeId, Amount: amount_value }, function (data, status) { })
+        });
+        function getAmountValue() {
+            if (ChangePage_value == 'charge') {
+                if (opratorCompany == 'mci') {
+                    return amount_value;
+                }
+                if (opratorCompany == 'mtn') {
+                    return amount_value * 1.09;
+                }
+                if (opratorCompany == 'rtl') {
+                    return amount_value;
+                }
+                //ChangeChargeType_value=normal,wow
+            }
+            if (ChangePage_value == 'package') {
+                //ChangeSimType_value=postpaid,prepaid
+                return jsonNetData[selectPackage_value_Index].CostWithVat;
+            }
+        }
+        function getWorkFlowId() {
+            if (ChangePage_value == 'charge') {
+                if (opratorCompany == 'mci') {
+                    return 1007;
+                }
+                if (opratorCompany == 'mtn') {
+                    return 1008;
+                }
+                if (opratorCompany == 'rtl') {
+                    return 1008;
+                }
+                //ChangeChargeType_value=normal,wow
+            }
+            if (ChangePage_value == 'package') {
+                //ChangeSimType_value=postpaid,prepaid
+
+                if (opratorCompany == 'mci') {
+                    return 1007;
+                }
+                if (opratorCompany == 'mtn') {
+                    return 1008;
+                }
+                if (opratorCompany == 'rtl') {
+                    return 1008;
+                }
+            }
+        }
+        function getTransactionTypeId() {
+            if (ChangePage_value == 'charge')
+                return 2;
+            if (ChangePage_value == 'package')
+                return 3;
+        }
+        function getTransactionProductTypeId() {
+            if (ChangePage_value == 'charge') {
+                if (opratorCompany == 'mci') {
+                    if (ChangeChargeType_value == "normal")
+                        return 1;
+                    if (ChangeChargeType_value == "wow")
+                        return 2;
+                }
+                if (opratorCompany == 'mtn') {
+                    if (ChangeChargeType_value == "normal")
+                        return 3;
+                    if (ChangeChargeType_value == "wow")
+                        return 4;
+                }
+                if (opratorCompany == 'rtl') {
+                    if (ChangeChargeType_value == "normal")
+                        return 5;
+                    if (ChangeChargeType_value == "wow")
+                        return 6;
+                }
+                //ChangeChargeType_value=normal,wow
+            }
+            if (ChangePage_value == 'package') {
+                //ChangeSimType_value=postpaid,prepaid
+
+                if (opratorCompany == 'mci') {
+                    return 7;
+                }
+                if (opratorCompany == 'mtn') {
+                    return 8;
+                }
+                if (opratorCompany == 'rtl') {
+                    return 9;
+                }
+            }
+        }
+        function getMethodId() {
+            if (ChangePage_value == 'charge') {
+                if (opratorCompany == 'mci') {
+                    if (ChangeChargeType_value == "normal")
+                        return 3;
+                    if (ChangeChargeType_value == "wow")
+                        return 5;
+                }
+                if (opratorCompany == 'mtn') {
+                    if (ChangeChargeType_value == "normal")
+                        return 21;
+                    if (ChangeChargeType_value == "wow")
+                        return 22;
+                }
+                if (opratorCompany == 'rtl') {
+                    if (ChangeChargeType_value == "normal")
+                        return 41;
+                    if (ChangeChargeType_value == "wow")
+                        return 42;
+                }
+                //ChangeChargeType_value=normal,wow
+            }
+            if (ChangePage_value == 'package') {
+                return jsonNetData[selectPackage_value_Index].PackageId;
+                //ChangeSimType_value=postpaid,prepaid
+            }
+        }
+        function getSimType() {
+            if (ChangePage_value == 'charge')
+                return 2;
+            if (ChangePage_value == 'package') {
+                if (ChangeSimType_value == "postpaid")
+                    return 1;
+                else if (ChangeSimType_value == "prepaid")
+                    return 2;
+                return 2;
+                //ChangeSimType_value=postpaid,prepaid
+            }
+            //charge,package,report
+        }
+        function getOpratorId() {
+            if (opratorCompany == 'mci')
+                return 1;
+            if (opratorCompany == 'mtn')
+                return 2;
+            if (opratorCompany == 'rtl')
+                return 3;
+            if (opratorCompany == 'other')
+                return 0;
+        }
+    </script>
+}

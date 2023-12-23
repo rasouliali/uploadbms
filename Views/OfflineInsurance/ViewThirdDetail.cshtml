@@ -1,0 +1,1334 @@
+﻿
+@using Microsoft.Data.SqlClient;
+@using System.Security.Claims
+
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+    var pageType = "1";
+    var allThirdData = Newtonsoft.Json.Linq.JArray.Parse(Html.Raw(ViewBag.OfflineInsurance).ToString());
+    if (allThirdData.Count > 0)
+        pageType = allThirdData[0].CarTipId == 115 || allThirdData[0].CarTipId == 116 || allThirdData[0].CarTipId == 117 ? "2" : "1";
+    var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var db = new DataAccess();
+    var usersDt = db.ProccessSelectQuery("sp_getCarTips", new SqlParameter[] {
+        new SqlParameter("userid",uid),
+        new SqlParameter("ThirdTypeId",pageType)
+    }, System.Data.CommandType.StoredProcedure);
+    var dtList = usersDt.Select().Select(r => new { code = r["CarTipId"], title = r["Title"] }).ToList();
+    var dtSelect = new SelectList(dtList, "code", "title");
+
+    var InsuranceCompanyDt = db.ProccessSelectQuery("[sp_getDatatable2JsonData]", new SqlParameter[] {
+        new SqlParameter("@typeData",100031)
+    }, System.Data.CommandType.StoredProcedure);
+    var InsuranceCompanyList = InsuranceCompanyDt.Select().Select(r => new { code = r["InsuranceCompanyId"], title = r["Title"] }).ToList();
+    var InsuranceCompanySelect = new SelectList(InsuranceCompanyList, "code", "title");
+
+    var OurInsuranceCompanyDt = db.ProccessSelectQuery("[sp_getDatatable2JsonData]", new SqlParameter[] {
+        new SqlParameter("@typeData",100032)
+    }, System.Data.CommandType.StoredProcedure);
+    var OurInsuranceCompanyList = OurInsuranceCompanyDt.Select().Select(r => new { code = r["ThirdPartyCompanyId"], title = r["Title"] }).ToList();
+    var OurInsuranceCompanySelect = new SelectList(OurInsuranceCompanyList, "code", "title");
+
+    var per = new System.Globalization.PersianCalendar();
+    var perYear = per.GetYear(DateTime.Now);
+    var MYear = DateTime.Parse(DateTime.Now.Year + "/04/01").Year;
+    ViewData["Title"] = pageType == "2" ? "بیمه موتور" : "بیمه شخص ثالث";
+    var isBeforeYearLeapYear = per.IsLeapYear(perYear - 1);
+    var persianToday = per.GetYear(DateTime.Now) + "/" + per.GetMonth(DateTime.Now) + "/" + per.GetDayOfMonth(DateTime.Now);
+    var persian30dayAgo = per.GetYear(DateTime.Now.AddDays(-30)) + "/" + per.GetMonth(DateTime.Now.AddDays(-30)) + "/" + per.GetDayOfMonth(DateTime.Now.AddDays(-30));
+
+}
+@if (ViewBag.OfflineInsurance != null)
+{
+    <script type="text/javascript">
+    var JsonDataOfThird = JSON.parse('@Html.Raw(ViewBag.OfflineInsurance)');
+        JsonDataOfThird = JsonDataOfThird[0];
+        var ThirdType = JsonDataOfThird.CarTipId == 115 || JsonDataOfThird.CarTipId == 116 || JsonDataOfThird.CarTipId == 117 ? 2 : 1;
+    </script>
+}
+<h1>
+    @ViewData["Title"]
+</h1>
+
+
+
+<style id="carOrMotorStyle">
+</style>
+<script type="text/javascript">
+
+    //var ThirdType = getParameterByNameFromQueryString('ThirdType'); // "lorem"
+    if (ThirdType && ThirdType == 2)
+        document.getElementById('carOrMotorStyle').innerHTML = ".only-car{display:none}";
+    else
+        document.getElementById('carOrMotorStyle').innerHTML = ".only-motor{display:none}";
+</script>
+<div class="row bordergreen">
+    <input id="allpage" type="checkbox">
+    <label for="allpage">
+        مشاهده همه صفحات؟
+    </label>
+</div>
+<form  enctype="multipart/form-data">
+    @Html.Hidden("WorkFlowId", 1033)
+    @Html.Hidden("ShoppingPageId", 1016)
+    <div class="row bordergreen">
+        <fieldset id="packageFieldset" class="allpart">
+            <legend>اطلاعات بیمه</legend>
+            <div class="form-group only-car">
+                <label for="UsageTypeId">نوع کاربری خودرو:</label>
+                <select disabled name="UsageTypeId" id="UsageTypeId" class="form-control sample price-calc" required>
+                    <option value="">لطفا انتخاب کنید</option>
+                    <option value="1">سواری</option>
+                    <option value="2">تاکسی اینترنتی</option>
+                    <option value="3">کرایه شهری</option>
+                </select>
+                <span validation-for="UsageTypeId" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                    <label for="PayCountInYear">نحوه پرداخت بیمه</label>
+                    <select disabled name="PayCountInYear" id="PayCountInYear" class="form-control sample" required>
+                        <option value="">ابتدا بیمه را انتخاب کنید</option>
+                        <option value="1">سالانه</option>
+                        <option value="2">شش ماه یکبار</option>
+                        <option value="3">سه ماه یکبار</option>
+                        <option value="12">ماهانه</option>
+                    </select>
+                    <span validation-for="PayCountInYear" class="text-danger"></span>
+                </div>*@
+            <div class="form-group d-none">
+                <label for="CarTypeId">نوع خودرو</label>
+                <select disabled name="CarTypeId" id="CarTypeId" class="form-control sample" required>
+                    <option value="1">سواری</option>
+                </select>
+                <span validation-for="CarTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="CarTipId">برند خودرو</label>
+                <select disabled name="CarTipId" id="CarTipId" asp-items="dtSelect" class="form-control" required>
+                    <option value="">لطفا انتخاب کنید</option>
+                </select>
+                <span validation-for="CarTipId" class="text-danger"></span>
+                @*<option value="9">سه چرخ</option><option value="10">برقی</option>*@
+
+                <script type="text/javascript">
+                    if (ThirdType && ThirdType == 2) {
+                        document.querySelector('[for=CarTipId]').innerHTML = "دسته بندی موتورسیکلت";
+                    }
+                </script>
+            </div>
+            <div class="form-group only-car">
+                <label for="CarId">مدل خودرو</label>
+                <select disabled name="CarId" id="CarId" class="form-control sample price-calc" required>
+                    <option value="">لطفا انتخاب کنید</option>
+                </select>
+                <span validation-for="CarId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="CylindersCount">تعداد سیلندر</label>
+                <select disabled name="CylindersCount" id="CylindersCount" class="form-control sample price-calc" required>
+                    <option value="">لطفا انتخاب کنید</option>
+                    <option value="3">کمتر از چهار</option>
+                    <option value="4">چهار</option>
+                    <option value="5">بیشتر از چهار</option>
+                </select>
+                <span validation-for="CylindersCount" class="text-danger"></span>
+                <script type="text/javascript">
+                    if (ThirdType && ThirdType == 2) {
+                        document.querySelector('[for=CylindersCount]').innerHTML = "گروه موتورسیکلت";
+                        document.querySelector('#CylindersCount').innerHTML = '<option value="">لطفا انتخاب کنید</option><option value="6">بدون سیلندر</option>' +
+                            '<option value="7">تک سیلندر</option><option value="8">دو سیلندر به بالا</option>';
+                    }
+                </script>
+            </div>
+            <div class="form-group">
+                <label for="MadeYear">سال ساخت خودرو</label>
+                <select disabled name="MadeYear" id="MadeYear" class="form-control sample" required>
+                    <option value="">لطفا انتخاب کنید</option>
+                    @for (var index = 0; index < 50; index++)
+                    {
+                        <option value="@(perYear-index)">@(MYear-index) - @(perYear-index)</option>
+                    }
+                </select>
+                <span validation-for="MadeYear" class="text-danger"></span>
+                <script type="text/javascript">
+                    if (ThirdType && ThirdType == 2) {
+                        document.querySelector('[for=MadeYear]').innerHTML = "سال ساخت موتورسیکلت";
+                    }
+                </script>
+            </div>
+            <div class="form-group">
+                <label for="InsuranceHistoryId">سابقه بیمه</label>
+                <select disabled name="InsuranceHistoryId" id="InsuranceHistoryId" class="form-control sample price-calc" required>
+                    <option value="">لطفا انتخاب کنید</option>
+                    <option value="1">بیمه نامه با پلاک فعلی</option>
+                    <option value="2">بیمه نامه با پلاک قبلی</option>
+                    <option value="3">صفر کیلومتر</option>
+                    <option value="4">فاقد بیمه نامه</option>
+                </select>
+                <span validation-for="InsuranceHistoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group d-none">
+                <label for="ReleaseDate">تاریخ ترخیص</label>
+                <input disabled name="ReleaseDate" id="ReleaseDate" required class="form-control persian-date price-calc" />
+                <span validation-for="ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group hasInsurance">
+                <label for="BeforeInsuranceCompanyId">شرکت بیمه قبلی</label>
+                <select disabled name="BeforeInsuranceCompanyId" id="BeforeInsuranceCompanyId" asp-items="InsuranceCompanySelect" class="form-control sample price-calc" required>
+                    <option value="">لطفا انتخاب کنید</option>
+                </select>
+                <span validation-for="BeforeInsuranceCompanyId" class="text-danger"></span>
+            </div>
+            <div class="form-group hasInsurance">
+                <label for="BeforeInsuranceTypeId">نوع بیمه نامه</label>
+                <select disabled name="BeforeInsuranceTypeId" id="BeforeInsuranceTypeId" class="form-control sample" required>
+                    <option value="">لطفا انتخاب کنید</option>
+                    <option value="12">بیمه یکساله</option>
+                    <option value="3">کوتاه مدت</option>
+                </select>
+                <span validation-for="BeforeInsuranceTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group hasInsurance">
+                <label for="BeforeInsuranceEndDate">تاریخ اتمام بیمه نامه فعلی</label>
+                <input disabled name="BeforeInsuranceEndDate" id="BeforeInsuranceEndDate" required class="price-calc form-control persian-date" />
+                <span validation-for="BeforeInsuranceEndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group hasInsurance">
+                <label for="BeforeThirdDiscountPrice">درصد تخفیف ثالث بیمه نامه فعلی</label>
+                <input disabled type="number" name="BeforeThirdDiscountPrice" id="BeforeThirdDiscountPrice" placeholder="عدد 30 را برای 30% تخفیف وارد کنید" step="5" required class="price-calc form-control" />
+                <span validation-for="BeforeThirdDiscountPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group hasInsurance">
+                <label for="BeforeDriverDiscountPrice">درصد تخفیف حوادث راننده بیمه نامه فعلی</label>
+                <input disabled type="number" name="BeforeDriverDiscountPrice" id="BeforeDriverDiscountPrice" step="5" placeholder="عدد 30 را برای 30% تخفیف وارد کنید" required class="price-calc form-control" />
+                <span validation-for="BeforeDriverDiscountPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group hasInsurance">
+                <label for="IsBeforeAccident">آیا سابقه خسارت بیمه فعلی دارید؟</label>
+                <select disabled name="IsBeforeAccident" id="IsBeforeAccident" class="price-calc form-control sample" required>
+                    <option value="">لطفا انتخاب کنید</option>
+                    <option value="0">ندارم</option>
+                    <option value="1">دارم</option>
+                </select>
+                <span validation-for="IsBeforeAccident" class="text-danger"></span>
+            </div>
+            <div class="form-group hasInsurance hasAccident">
+                <input disabled type="hidden" name="IsBeforeEconomicAccident" value="0"><input disabled class="price-calc" id="IsBeforeEconomicAccident" type="checkbox" onclick="this.previousSibling.value=1-this.previousSibling.value">
+                <label for="IsBeforeEconomicAccident">
+                    خسارات مالی بیمه نامه فعلی؟
+                </label>
+                <select disabled name="BeforeEconomicAccidentId" id="BeforeEconomicAccidentId" class="price-calc form-control sample d-none" required>
+                    <option value="">صفر بار</option>
+                    <option value="1">یک بار خسارت</option>
+                    <option value="2">دوبار خسارت</option>
+                    <option value="3">سه یا بیشتر خسارت</option>
+                </select>
+                <span validation-for="BeforeEconomicAccidentId" class="text-danger"></span>
+            </div>
+            <div class="form-group hasInsurance hasAccident">
+                <input disabled type="hidden" name="IsBeforeCasualtiesAccident" value="0"><input disabled id="IsBeforeCasualtiesAccident" class="price-calc" type="checkbox" onclick="this.previousSibling.value=1-this.previousSibling.value">
+                <label for="IsBeforeCasualtiesAccident">
+                    خسارات جانی بیمه نامه فعلی؟
+                </label>
+                <select disabled name="BeforeCasualtiesAccidentId" id="BeforeCasualtiesAccidentId" class="price-calc form-control sample d-none">
+                    <option value="">صفر بار</option>
+                    <option value="1">یک بار خسارت</option>
+                    <option value="2">دوبار خسارت</option>
+                    <option value="3">سه یا بیشتر خسارت</option>
+                </select>
+                <span validation-for="BeforeCasualtiesAccidentId" class="text-danger"></span>
+            </div>
+            <div class="form-group hasInsurance hasAccident">
+                <input disabled type="hidden" name="IsBeforeDriverAccident" value="0"><input disabled id="IsBeforeDriverAccident" type="checkbox" class="price-calc" onclick="this.previousSibling.value=1-this.previousSibling.value">
+                <label for="IsBeforeDriverAccident">
+                    خسارات حوادث راننده؟
+                </label>
+                <select disabled name="BeforeDriverAccidentId" id="BeforeDriverAccidentId" class="form-control sample d-none price-calc">
+                    <option value="">صفر بار</option>
+                    <option value="1">یک بار خسارت</option>
+                    <option value="2">دوبار خسارت</option>
+                    <option value="3">سه یا بیشتر خسارت</option>
+                </select>
+                <span validation-for="BeforeDriverAccidentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="InsuranceCompanyId">شرکت بیمه نامه جدید</label>
+                <select disabled name="InsuranceCompanyId" id="InsuranceCompanyId" asp-items="OurInsuranceCompanySelect" class="form-control sample price-calc">
+                    <option value="">لطفا انتخاب کنید</option>
+                </select>
+                <span validation-for="InsuranceCompanyId" class="text-danger"></span>
+            </div>
+            <div class="form-group only-car">
+                <input disabled type="hidden" name="ISCovered_SOS" value="0"><input disabled id="ISCovered_SOS" class="price-calc" type="checkbox" onclick="this.previousSibling.value=1-this.previousSibling.value">
+                <label for="ISCovered_SOS">
+                    پوشش SOS؟(مبلغ 50،000 تومان)
+                </label>
+                <span validation-for="ISCovered_SOS" class="text-danger"></span>
+                <div id="SOSDescription" class="d-none">
+                    تنها یکی از خدمات در طول مدت بیمه نامه یک بار قابل استفاده خواهد بود (هر کدام زود تر مصرف شود) و دفعات بعدی با 30 درصد تخفیف ارائه میگردد.
+                    <ul>
+                        <li>
+                            حمل خودرو تا 10 کیلومتر و یا نزدیکترین تعمیر گاه به صورت رایگان
+                        </li>
+                        <li>
+                            باطری به باطری
+                        </li>
+                        <li>
+                            تعویض لاستیک پنچر با زاپاس خودرو به صورت رایگان
+                        </li>
+                        <li>
+                            اجرت تعویض قطعات به صورت رایگان
+                        </li>
+                        <li>
+                            اعزام امدادگر به صورت رایگان
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center" id="spanPriceData"></div>
+        </fieldset>
+
+        <fieldset id="searchFieldset" class="allpart d-none">
+            <legend>جست و جوی صاحب خودرو</legend>
+            <div id="befDiv" class="form-group col-xs-12">
+                <div class="form-group col-sm-4">
+                    <label for="searchNationalCode">کد ملی</label>
+                    <input disabled id="searchNationalCode" type="text" required maxlength="10" class="form-control" />
+                    <span validation-for="searchNationalCode" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="" class="col-sm-12">&nbsp;</label>
+                    <button class="btn btn-default" id="SearchPerson" type="button">جست و جو</button>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset id="FirstFieldset" class="allpart d-none">
+            <legend>اطلاعات صاحب خودرو</legend>
+            <div class="form-group">
+                <label for="driver_national_code">کد ملی</label>
+                <input disabled name="driver_national_code" id="driver_national_code" type="text" readonly required maxlength="10" class="form-control" />
+                <span validation-for="driver_national_code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="driver_name">نام</label>
+                <input disabled name="driver_name" id="driver_name" class="form-control" type="text" required />
+                <span validation-for="driver_name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="driver_lastname">نام خانوادگی</label>
+                <input disabled name="driver_lastname" id="driver_lastname" class="form-control" type="text" required />
+                <span validation-for="driver_lastname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="driver_licenseNo">شماره گواهینامه</label>
+                <input disabled name="driver_licenseNo" id="driver_licenseNo" class="form-control" type="number" required />
+                <span validation-for="driver_licenseNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="driver_birth_year">تاریخ تولد</label>
+                <input disabled name="driver_birth_year" id="driver_birth_year" required class="form-control persian-date" />
+                <span validation-for="driver_birth_year" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="driver_mobile">شماره موبایل</label>
+                <input disabled name="driver_mobile" id="driver_mobile" class="form-control" type="number" required max="9999999999" min="9000000000" />
+                <span validation-for="driver_mobile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="driver_phone">شماره تلفن</label>
+                <input disabled name="driver_phone" id="driver_phone" class="form-control" type="text" required />
+                <span validation-for="driver_phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="ProvinceId">استان</label>
+                <select disabled name="driver_province_id" id="ProvinceId" required class="form-control Province"><option value="">لطفا انتخاب کنید</option></select>
+                <span validation-for="ProvinceId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="holder_city_id">شهر</label>
+                <select disabled name="driver_city_id" id="holder_city_id" required class="form-control"><option value="">ابتدا استان را انتخاب نمایید</option></select>
+                <span validation-for="holder_city_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="driver_address">آدرس</label>
+                <input disabled name="driver_address" id="driver_address" class="form-control" type="text" required />
+                <span validation-for="driver_address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="driver_postal_code">کد پستی</label>
+                <input disabled name="driver_postal_code" id="driver_postal_code" class="form-control" type="number" required />
+                <span validation-for="driver_postal_code" class="text-danger"></span>
+            </div>
+        </fieldset>
+
+        <fieldset id="IsOnPerson" class="allpart d-none">
+            <div class="form-group">
+                <label for="BeforeInsuranceUniqueNumber">ثبت کد یکتای بیمه نامه فعلی</label>
+                <input disabled type="text" id="BeforeInsuranceUniqueNumber" name="BeforeInsuranceUniqueNumber" class="form-control" />
+                <span validation-for="BeforeInsuranceUniqueNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="BeforeInsuranceNumber">ثبت شماره بیمه نامه فعلی</label>
+                <input disabled type="text" id="BeforeInsuranceNumber" name="BeforeInsuranceNumber" class="form-control" />
+                <span validation-for="BeforeInsuranceNumber" class="text-danger"></span>
+            </div>
+        </fieldset>
+        <fieldset id="searchFieldset2" class="allpart d-none">
+            <div class="form-group">
+                <label for="IDFirstPage">عکس از کارت ملی *</label>
+                <img id="IDFirstPage" width="250" />
+                <a id="IDFirstPageDownload" class="btn btn-primary" href="">دانلود</a>
+                <span validation-for="IDFirstPage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="CarCardFirstPage">عکس از صفحه روی کارت خودرو *</label>
+                <img id="CarCardFirstPage" width="250" />
+                <a id="CarCardFirstPageDownload" class="btn btn-primary" href="">دانلود</a>
+                <span validation-for="CarCardFirstPage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="CarCardSecondPage">عکس از صفحه پشت کارت خودرو *</label>
+                <img id="CarCardSecondPage" width="250" />
+                <a id="CarCardSecondPageDownload" class="btn btn-primary" href="">دانلود</a>
+                <span validation-for="CarCardSecondPage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="DriverLicensePic">عکس از گواهینامه *</label>
+                <img id="DriverLicensePic" width="250" />
+                <a id="DriverLicensePicDownload" class="btn btn-primary" href="">دانلود</a>
+                <span validation-for="DriverLicensePic" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="InsurancePic">عکس از بیمه نامه فعلی</label>
+                <img id="InsurancePic" width="250" />
+                <a id="InsurancePicDownload" class="btn btn-primary" href="">دانلود</a>
+                <span validation-for="InsurancePic" class="text-danger"></span>
+            </div>
+        </fieldset>
+        <button class="btn btn-primary d-none" type="button" id="btn-bef">صفحه قبل</button>
+        <button class="btn btn-success float-left d-none" type="button" id="btn-nex">صفحه بعد</button>
+    </div>
+</form>
+<script type="text/javascript">
+    var pageInd = 0;
+    var PenaltyOf = 0;
+    var SearchPersonclick = false;
+    var glob_CarId;
+    var glob_CityId;
+    var carJsonData;
+    var persian30dayAgo = '@persian30dayAgo';
+    persian30dayAgo = persian30dayAgo.split('/')[0] + "/" + (persian30dayAgo.split('/')[1].length == 1 ? "0" + persian30dayAgo.split('/')[1] : persian30dayAgo.split('/')[1]) + "/" +
+        (persian30dayAgo.split('/')[2].length == 1 ? "0" + persian30dayAgo.split('/')[2] : persian30dayAgo.split('/')[2]);
+    var isBeforeYearLeapYear = '@isBeforeYearLeapYear' == 'False'?false:true;
+    if (document.addEventListener) {
+        document.addEventListener("DOMContentLoaded", init, false);
+    }
+    else {
+        document.attachEvent("onDOMContentLoaded", init);
+    }
+    function init() {
+        $('#allpage').on('change', function () {
+            if ($(this).prop('checked'))
+                $('.allpart').show();
+            else
+                paging();
+        });
+        $('#allpage').trigger('change');
+        if (ThirdType && ThirdType == 2) {
+            $('.only-car select , .only-car input').removeAttr('required');
+        }
+        $('#SearchPerson').on('click', function () {
+            SearchPersonclick = true;
+            $('#btn-nex').trigger('click');
+            SearchPersonclick = false;
+            $('#FirstFieldset input').each(function () {
+                if (!$(this).attr('type') || $(this).attr('type') == "text" || $(this).attr('type') == "number")
+                    $(this).val('');
+                else if (!$(this).attr('type') || $(this).attr('type') == "checkbox") {
+                    $(this).prop('checked', false)
+                    $(this).trigger('change');
+                }
+            });
+            $('#FirstFieldset select').each(function () {
+                $(this).val('');
+                $(this).trigger('change');
+            });
+            $('#driver_national_code').val($('#searchNationalCode').val());
+            //$.get('/JsonData/GetData?typeData=100033&key10=' + $('#searchNationalCode').val(), function (data) {
+            //    var jsonData = JSON.parse(data);
+            //    showLoadedData(jsonData);
+            //    $('.jalaliDatePicker').remove();
+
+            //    $('.persian-date').each(function (index, elem) {
+            //        if ($(this).val())
+            //            ;
+            //        else
+            //            $(this).val('1360/06/15');
+            //        $(this).ShamsiDatePicker(false);
+            //    });
+            //});
+
+        });
+        $.get('/JsonData/GetData?typeData=100025', function (data) {
+            var jsonData = JSON.parse(data);
+            var strCombo = '<option value="">لطفا انتخاب کنید</option>';
+            for (var i = 0; i < jsonData.length; i++) {
+                strCombo += '<option value="' + jsonData[i].ProvinceID + '">' + jsonData[i].Name + '</option>';
+
+            }
+            $('#ProvinceId').html(strCombo);
+            $('#ProvinceId').on('change', function () {
+                $('#holder_city_id').html('<option value="">لطفا صبر کنید</option>');
+                $.get('/JsonData/GetData?typeData=100026&key1=' + $('#ProvinceId').val(), function (data) {
+                    var jsonData = JSON.parse(data);
+                    var strCombo = '<option value="">لطفا انتخاب کنید</option>';
+                    for (var i = 0; i < jsonData.length; i++) {
+                        strCombo += '<option value="' + jsonData[i].id.toString() + '">' + jsonData[i].CityName + '</option>';
+                    }
+                    $('#holder_city_id').html(strCombo);
+                    if (glob_CityId > 0) {
+                        $('#holder_city_id').val(glob_CityId);
+                        $('#holder_city_id').trigger('change');
+
+                    }
+                });
+            });
+            glob_CityId = JsonDataOfThird.driver_city_id;
+            $('#ProvinceId').val(JsonDataOfThird.driver_province_id);
+            $('#ProvinceId').trigger('change');
+
+        });
+        $('#btn-bef').on('click', function () {
+            if (pageInd == 4 && ($('#InsuranceHistoryId').val() == '3' || $('#InsuranceHistoryId').val() == '4'))
+                pageInd--;
+            pageInd--;
+            if (pageInd < 0)
+                pageInd = 0;
+            paging();
+        });
+        $('#IsBeforeAccident').on('change', function () {
+            if (!$('#IsBeforeAccident').val() || $('#IsBeforeAccident').val() == 1) {
+                $('.hasAccident').show();
+                //$('.hasAccident input').attr('required', '');
+                //$('.hasAccident select').attr('required', '');
+            }
+            else if ($('#IsBeforeAccident').val() == 0) {
+                $('.hasAccident').hide();
+                $('.hasAccident input').removeAttr('required');
+                $('.hasAccident select').removeAttr('required');
+            }
+        });
+        $('#IsBeforeEconomicAccident').on('change', function () {
+            if ($('#IsBeforeEconomicAccident').prop("checked")) {
+                $('#BeforeEconomicAccidentId').show();
+            } else {
+                $('#BeforeEconomicAccidentId').hide();
+            }
+        });
+        $('#IsBeforeCasualtiesAccident').on('change', function () {
+            if ($('#IsBeforeCasualtiesAccident').prop("checked")) {
+                $('#BeforeCasualtiesAccidentId').show();
+            } else {
+                $('#BeforeCasualtiesAccidentId').hide();
+            }
+        });
+        $('#IsBeforeDriverAccident').on('change', function () {
+            if ($('#IsBeforeDriverAccident').prop("checked")) {
+                $('#BeforeDriverAccidentId').show();
+            } else {
+                $('#BeforeDriverAccidentId').hide();
+            }
+        });
+        $('#btn-nex').on('click', function () {
+            //if (validationPaging() == false) {
+            //    return;
+            //}
+            if (pageInd == 1) {
+                if ($("#driver_national_code").val())
+                    ;
+                else {
+                    if (SearchPersonclick == false) {
+                        $("#SearchPerson").trigger("click");
+                        return;
+                    }
+                }
+            }
+            //if (pageInd == 4) {
+            //    if ($("#Insured_national_code").val())
+            //        ;
+            //    else {
+            //        if (SearchPersonclick == false) {
+            //            //$("#Insured_SearchPerson").trigger("click");
+            //            //return;
+            //        }
+            //    }
+            //}
+            if (pageInd == 2 &&( $('#InsuranceHistoryId').val() == '3' || $('#InsuranceHistoryId').val() == '4'))
+                pageInd++;
+            pageInd++;
+            if (pageInd > 4)
+                pageInd = 4;
+            paging();
+        });
+        $('#btn-pay').on('click', function () {
+            if (validationPaging())
+                $('form').submit();
+        });
+        $('#InsuranceHistoryId').on('change', function () {
+            if (!$('#InsuranceHistoryId').val() || $('#InsuranceHistoryId').val() == 4) {
+                $("#ReleaseDate").parent().addClass("d-none");
+                $("#ReleaseDate").removeAttr("required");
+                $(".hasInsurance").addClass("d-none");
+                $(".hasInsurance input").removeAttr("required");
+                $(".hasInsurance select").removeAttr("required");
+            }else if ($('#InsuranceHistoryId').val() == 3) {
+                $("#ReleaseDate").parent().removeClass("d-none");
+                $("#ReleaseDate").attr("required");
+
+                $(".hasInsurance").addClass("d-none");
+                $(".hasInsurance input").removeAttr("required");
+                $(".hasInsurance select").removeAttr("required");
+            } else {
+                $("#ReleaseDate").parent().addClass("d-none");
+                $("#ReleaseDate").removeAttr("required");
+
+                $(".hasInsurance").removeClass("d-none");
+                $(".hasInsurance input").attr("required");
+                $(".hasInsurance select").attr("required");
+                $("#InsuranceHistoryId")[0].scrollIntoView();
+            }
+        });
+        $('#InsuranceHistoryId').trigger('change');
+        $('#ISCovered_SOS').on('change', function () {
+            if ($('#ISCovered_SOS').prop("checked")) {
+                $('#SOSDescription').show();
+            } else {
+                $('#SOSDescription').hide();
+            }
+        });
+        $('#CarTipId').on('change', function () {
+            var carTipId = $('#CarTipId').val();
+            $.get('/JsonData/GetData?typeData=100030&key1=' + carTipId, function (data) {
+                carJsonData = JSON.parse(data);
+                var strCombo = '<option value="">لطفا انتخاب کنید</option>';
+                for (var i = 0; i < carJsonData.length; i++) {
+                    strCombo += '<option value="' + carJsonData[i].Car + '">' + carJsonData[i].Title + '</option>';
+                }
+                $('#CarId').html(strCombo);
+                $('#CarId').on('click', function () {
+                    var itemCar = carJsonData.filter(function (r) {
+                        return r.Car == $('#CarId').val();
+                    })[0];
+                    if(itemCar)
+                        $("#CylindersCount").val(itemCar.CylindersCount);
+                });
+                if (glob_CarId > 0) {
+                    $('#CarId').val(glob_CarId);
+                    $('#CarId').trigger('change');
+                }
+            });
+        });
+        try {
+
+            $('select:not(.sample)').select2({
+                minimumInputLength: 0 // only start searching when the user has input 3 or more characters
+            });
+        } catch (e) {
+
+        }
+        try {
+            $('.jalaliDatePicker').remove();
+            $('.persian-date').each(function (index, elem) {
+                if ($(this).val())
+                    ;
+                else
+                    $(this).val('@persianToday');
+                $(this).ShamsiDatePicker(false);
+            });
+        } catch (e) {
+
+        }
+        $('form').submit(function (e) {
+            //if ($('#Payer_Insurancer_Is_One').prop('checked')) {
+            //    Payer_Insurancer_Is_One_So_equal_fields();
+            //}
+            $('form input[type=number],form input[type=text]').each(function () {
+                if ($(this).val())
+                    $(this).val(getEngNumber($(this).val()));
+            });
+
+            $('.persian-date').each(function (index, elem) {
+                var isValid = $(this).ShamsiDatePickerValidate();
+                if (isValid == true) {
+
+                }
+                else {
+                    e.preventDefault();
+                    CheckValidity(this, true, isValid);
+                    $(this).focus();
+                }
+            });
+            if ($('#InsuranceHistoryId').val() == 3) {
+                var dayCount = GetDiffrenceOfToday($('#ReleaseDate').val());
+
+                if(dayCount ==1000) {
+                    e.preventDefault();
+                    CheckValidity($('#ReleaseDate')[0], true, "تاریخ ترخیص از تاریخ امروز نمی تواند بیشتر باشد");
+                    $('#ReleaseDate').focus();
+                }
+                if(dayCount ==999) {
+                    e.preventDefault();
+                    CheckValidity($('#ReleaseDate')[0], true, "خودرو صفر کیلومتر نباید تاریخ ترخیص آن از سی روز تجاوز کند در این صورت از تخفیف بیمه بهره مند نمی شود.");
+                    $('#ReleaseDate').focus();
+                }
+            }
+
+            var endDate = $('#BeforeInsuranceEndDate').val();
+            if (endDate) {
+                var endDateSp = endDate.split('/');
+                var endDateStr = endDateSp[0]
+                    + "/" + (endDateSp[1].length == 1 ? "0" + endDateSp[1] : endDateSp[1])
+                    + "/" + (endDateSp[2].length == 1 ? "0" + endDateSp[2] : endDateSp[2]);
+                $('#BeforeInsuranceEndDate').val(endDateStr);
+            }
+            var releaseDate = $('#ReleaseDate').val();
+            if (releaseDate) {
+                var releaseDateSp = releaseDate.split('/');
+                var releaseDateStr = releaseDateSp[0]
+                    + "/" + (releaseDateSp[1].length == 1 ? "0" + releaseDateSp[1] : releaseDateSp[1])
+                    + "/" + (releaseDateSp[2].length == 1 ? "0" + releaseDateSp[2] : releaseDateSp[2]);
+                $('#ReleaseDate').val(releaseDateStr);
+            }
+
+        });
+
+        $('.price-calc').on('change', function () {
+            calcAmount();
+        });
+
+        $('.jalaliDatePicker a , .jalaliDatePicker a i').on('click', function () {
+            calcAmount();
+        });
+        showLoadedData(JsonDataOfThird);
+    }
+
+    function showLoadedData(data) {
+        //if (data && data.length > 0)
+        //    data = data[0];
+        //else
+        //    data = {};
+        /*
+         driver_name],[][driver_lastname],[][driver_mobile],[][driver_phone]
+          ,[][driver_city_id],[][driver_address],[][driver_postal_code]
+          ,[][driver_national_code],[][driver_birth_year]
+          , driver_province_id
+         */
+        if (data.driver_name) {
+            $('#driver_name').val(data.driver_name);
+            $('#driver_name').attr('readonly', "");
+        } else {
+            $('#driver_name').removeAttr("readonly")
+        }
+        if (data.driver_lastname) {
+            $('#driver_lastname').val(data.driver_lastname);
+            $('#driver_lastname').attr('readonly', "");
+        } else {
+            $('#driver_lastname').removeAttr("readonly")
+        }
+        if (data.driver_national_code)
+            $('#driver_national_code').val(data.driver_national_code);
+
+        if (data.driver_city_id)
+            glob_CityId = data.driver_city_id;
+        if (data.driver_province_id) {
+            $('#ProvinceId').val(data.driver_province_id);
+            $('#ProvinceId').trigger('change');
+        }
+        if (data.driver_birth_year)
+            $('#driver_birth_year').val(data.driver_birth_year);
+        if (data.driver_mobile)
+            $('#driver_mobile').val(data.driver_mobile);
+        if (data.driver_address)
+            $('#driver_address').val(data.driver_address);
+        if (data.driver_postal_code)
+            $('#driver_postal_code').val(data.driver_postal_code.trim());
+
+        if (data.driver_phone)
+            $('#driver_phone').val(data.driver_phone);
+
+        if (data.driver_licenseNo)
+            $('#driver_licenseNo').val(data.driver_licenseNo);
+        if (data.UsageTypeId)
+            $('#UsageTypeId').val(data.UsageTypeId);
+        glob_CarId = data.CarId;
+        if (data.CarTipId)
+            $('#CarTipId').val(data.CarTipId);
+        if (data.MadeYear)
+            $('#MadeYear').val(data.MadeYear);
+        if (data.CylindersCount) {
+            $('#CylindersCount').val(data.CylindersCount);
+            $('#CylindersCount').trigger('change');
+        }
+        if (data.InsuranceHistoryId) {
+            $('#InsuranceHistoryId').val(data.InsuranceHistoryId);
+            $('#InsuranceHistoryId').trigger('change');
+        }
+        if (data.ReleaseDate) {
+            $('#InsuranceHistoryId').val(data.ReleaseDate);
+        }
+        if (data.BeforeInsuranceTypeId) {
+            $('#BeforeInsuranceTypeId').val(data.BeforeInsuranceTypeId);
+        }
+        if (data.BeforeInsuranceEndDate) {
+            $('#BeforeInsuranceEndDate').val(data.BeforeInsuranceEndDate);
+        }
+        if (data.BeforeThirdDiscountPrice) {
+            $('#BeforeThirdDiscountPrice').val(data.BeforeThirdDiscountPrice);
+        }
+        if (data.BeforeDriverDiscountPrice) {
+            $('#BeforeDriverDiscountPrice').val(data.BeforeDriverDiscountPrice);
+        }
+        if (data.IsBeforeAccident) {
+            $('#IsBeforeAccident').val(data.IsBeforeAccident);
+            $('#IsBeforeAccident').trigger('change');
+        }
+        if (data.IsBeforeEconomicAccident) {
+            $('#IsBeforeEconomicAccident').prop('checked', true);
+            $('#IsBeforeEconomicAccident').trigger('change');
+        }
+        if (data.BeforeEconomicAccidentId) {
+            $('#BeforeEconomicAccidentId').val(data.BeforeEconomicAccidentId);
+        }
+        if (data.IsBeforeCasualtiesAccident) {
+            $('#IsBeforeCasualtiesAccident').prop('checked', true);
+            $('#IsBeforeCasualtiesAccident').trigger('change');
+        }
+        if (data.BeforeCasualtiesAccidentId) {
+            $('#BeforeCasualtiesAccidentId').val(data.BeforeCasualtiesAccidentId);
+        }
+        if (data.IsBeforeDriverAccident) {
+            $('#IsBeforeDriverAccident').prop('checked', true);
+            $('#IsBeforeDriverAccident').trigger('change');
+        }
+        if (data.BeforeDriverAccidentId) {
+            $('#BeforeDriverAccidentId').val(data.BeforeDriverAccidentId);
+        }
+
+        if (data.ISCovered_SOS) {
+            $('#ISCovered_SOS').prop('checked', true);
+            $('#ISCovered_SOS').trigger('change');
+        }
+        if (data.InsuranceCompanyId) {
+            $('#InsuranceCompanyId').val(data.InsuranceCompanyId);
+        }
+        if (data.BeforeInsuranceUniqueNumber) {
+            $('#BeforeInsuranceUniqueNumber').val(data.BeforeInsuranceUniqueNumber);
+        }
+        if (data.BeforeInsuranceNumber) {
+            $('#BeforeInsuranceNumber').val(data.BeforeInsuranceNumber);
+        }
+        if (data.IDFirstPage) {
+            $('#IDFirstPage').attr('src', '/Info/DownloadFiles?fileName=thirdparty/' + GetCorrectFilename(data.IDFirstPage));
+            $('#IDFirstPageDownload').attr('href', '/Info/DownloadFiles?fileName=thirdparty/' + GetCorrectFilename(data.IDFirstPage));
+        }
+        if (data.CarCardFirstPage) {
+            $('#CarCardFirstPage').attr('src', '/Info/DownloadFiles?fileName=thirdparty/' + GetCorrectFilename(data.CarCardFirstPage));
+            $('#CarCardFirstPageDownload').attr('href', '/Info/DownloadFiles?fileName=thirdparty/' + GetCorrectFilename(data.CarCardFirstPage));
+        }
+        if (data.CarCardSecondPage) {
+            $('#CarCardSecondPage').attr('src', '/Info/DownloadFiles?fileName=thirdparty/' + GetCorrectFilename(data.CarCardSecondPage));
+            $('#CarCardSecondPageDownload').attr('href', '/Info/DownloadFiles?fileName=thirdparty/' + GetCorrectFilename(data.CarCardSecondPage));
+        }
+        if (data.DriverLicensePic) {
+            $('#DriverLicensePic').attr('src', '/Info/DownloadFiles?fileName=thirdparty/' + GetCorrectFilename(data.CarCardSecondPage));
+            $('#DriverLicensePicDownload').attr('href', '/Info/DownloadFiles?fileName=thirdparty/' + GetCorrectFilename(data.CarCardSecondPage));
+        }
+        if (data.InsurancePic) {
+            $('#InsurancePic').attr('src', '/Info/DownloadFiles?fileName=thirdparty/' + GetCorrectFilename(data.InsurancePic));
+            $('#InsurancePicDownload').attr('href', '/Info/DownloadFiles?fileName=thirdparty/' + GetCorrectFilename(data.InsurancePic));
+        }
+        if (data.InsuranceHistoryId) {
+            $('#InsuranceHistoryId').val(data.InsuranceHistoryId);
+            $('#InsuranceHistoryId').trigger('change');
+        }
+        if (data.InsuranceHistoryId) {
+            $('#InsuranceHistoryId').val(data.InsuranceHistoryId);
+            $('#InsuranceHistoryId').trigger('change');
+        }
+        if (data.BeforeInsuranceCompanyId) {
+            $('#BeforeInsuranceCompanyId').val(data.BeforeInsuranceCompanyId);
+        }
+        if (data.IsBeforeAccident || data.IsBeforeAccident == 0 || data.IsBeforeAccident == false) {
+            $('#IsBeforeAccident').val(data.IsBeforeAccident?"1":"0");
+            $('#IsBeforeAccident').trigger('change');
+        }
+    }
+    function GetCorrectFilename(filename) {
+        var fileNameSplit = filename.toString().split('_');
+        for (var i = 0; i < fileNameSplit.length; i++) {
+            if (i > 0 && i < fileNameSplit.length-1)
+                filename += "_" + fileNameSplit[i];
+            else if(i==0)
+                filename = fileNameSplit[i];
+            else 
+                filename += "." + fileNameSplit[i];
+        }
+        return filename;
+    }
+    function validateNationalCode(nc) {
+        var sumNaCode = 0;
+        for (var i = 0; i < nc.length - 1; i++) {
+            sumNaCode = sumNaCode + parseInt(nc[i]) * (10 - i);
+        }
+        console.log(sumNaCode);
+        console.log(sumNaCode % 11);
+        if (sumNaCode % 11 < 2) {
+            if ((sumNaCode % 11).toString() == nc[9])
+                return true;
+        } else {
+            if ((11 - (sumNaCode % 11)).toString() == nc[9])
+                return true;
+        }
+        return false;
+    }
+    function GetDiffrenceOfToday(shamsiDate) {
+        var perToday = '@persianToday';
+        var splitSelectDate = shamsiDate.split('/');
+        var selectedYear = parseInt(splitSelectDate[0]);
+        var selectedMonth = parseInt(splitSelectDate[1]);
+        var selectedDay = parseInt(splitSelectDate[2]);
+        var todaySplit = perToday.split('/');
+        var todayYear = parseInt(todaySplit[0]);
+        var todayMonth = parseInt(todaySplit[1]);
+        var todayDay = parseInt(todaySplit[2]);
+        if (todayYear > selectedYear || (todayYear == selectedYear && todayMonth > selectedMonth) || (todayYear == selectedYear && todayMonth == selectedMonth && todayDay >= selectedDay)) {
+            if (selectedYear == todayYear) {
+                if (selectedMonth == todayMonth) {
+                    return todayDay - selectedDay;
+                } else if (selectedMonth == todayMonth - 1) {
+                    var tmpDay = 0;
+                    if (selectedMonth < 7)
+                        tmpDay = 31 - selectedDay + todayDay;
+                    else
+                        tmpDay = 30 - selectedDay + todayDay;
+                    return tmpDay;
+                }
+            } else if (selectedYear == todayYear - 1) {
+                var tmpDay = 0;
+                if (selectedMonth == 12 && todayMonth == 1)
+                    return (isBeforeYearLeapYear ? 30 : 29) - selectedDay + todayDay;
+                if (selectedMonth == 11 && todayMonth == 1 && selectedDay == 30 && todayDay == 1 && isBeforeYearLeapYear == false)
+                    return 30;
+            }
+        }
+        else
+            return 1000;
+        return 999;
+    }
+    function CheckValidity(elem, isReport, errorTxt) {
+        elem.setCustomValidity('');
+        if (isReport && errorTxt) {
+            elem.setCustomValidity(errorTxt);
+            $('[validation-for=' + $(elem).attr('id') + ']').html(errorTxt)
+            elem.reportValidity();
+            return true;
+        }
+        if (elem.validity.valueMissing) {
+            if ($(elem).attr('type') && $(elem).attr('type') == "number") {
+                elem.setCustomValidity('این فیلد اجباری است، اعداد بصورت زبان انگلیسی باید وارد شوند.');
+                $('[validation-for=' + $(elem).attr('id') + ']').html('این فیلد اجباری است، اعداد بصورت زبان انگلیسی باید وارد شوند.')
+                if (isReport)
+                    elem.reportValidity();
+            }
+            else {
+                elem.setCustomValidity('این فیلد اجباری است، لطفا تکمیل نمایید.');
+                $('[validation-for=' + $(elem).attr('id') + ']').html('این فیلد اجباری است، لطفا تکمیل نمایید.')
+                if (isReport)
+                    elem.reportValidity();
+            }
+
+            return true;
+        }
+
+        if ($(elem).attr('id') == "driver_mobile") {
+            if (elem.validity.rangeOverflow || elem.validity.rangeUnderflow) {
+                $('[validation-for=' + $(elem).attr('id') + ']').html('لطفا شماره همراه صحیح وارد نمایید.')
+                elem.setCustomValidity('لطفا شماره همراه صحیح وارد نمایید');
+                if (isReport)
+                    elem.reportValidity();
+            }
+        }
+        return true;
+    }
+
+
+    function calcAmount() {
+        /*
+        declare @@CarId int=@@key1,@@AmountBase bigint,@@isFourTypeA bit,
+		@@CylindersCount int=@@key2,@@InsuranceCompanyId int=@@key3,
+		@@BeforeInsuranceEndDate nvarchar(10)=@@key10,@@IsBeforeAccident bit=@@key4,
+		@@IsBeforeCasualtiesAccident bit=@@key5,@@IsBeforeEconomicAccident bit=@@key6,
+		@@BeforeThirdDiscountPrice int=@@key7,@@IsBeforeDriverAccident int=@@key8,
+		@@BeforeDriverDiscountPrice bigint=@@key9;
+         */
+        $("#spanPriceData").html("");
+
+        if (!$("#InsuranceCompanyId").val() || !$("#CylindersCount").val() || (!$("#CarId").val() && (!ThirdType || ThirdType==1)))
+            return;
+        var endDate = $('#BeforeInsuranceEndDate').val();
+        var endDateStr = "";
+        if (endDate) {
+            var endDateSp = endDate.split('/');
+            endDateStr = endDateSp[0]
+                + "/" + (endDateSp[1].length == 1 ? "0" + endDateSp[1] : endDateSp[1])
+                + "/" + (endDateSp[2].length == 1 ? "0" + endDateSp[2] : endDateSp[2]);
+        }
+        var releaseDate = $('#ReleaseDate').val();
+        var releaseDateStr = "";
+        if (releaseDate) {
+            var releaseDateSp = releaseDate.split('/');
+            releaseDateStr = releaseDateSp[0]
+                + "/" + (releaseDateSp[1].length == 1 ? "0" + releaseDateSp[1] : releaseDateSp[1])
+                + "/" + (releaseDateSp[2].length == 1 ? "0" + releaseDateSp[2] : releaseDateSp[2]);
+        }
+        $.get('/JsonData/GetData?typeData=100034&key1=' + $("#CarId").val() + '&key2=' +
+            $("#CylindersCount").val() + '&key3=' + $("#InsuranceCompanyId").val() +
+            '&key4=' + $("#InsuranceHistoryId").val() +
+            '&key5=' + $("#BeforeCasualtiesAccidentId").val() +
+            '&key6=' + $("#BeforeEconomicAccidentId").val() + '&key7=' + $("#BeforeThirdDiscountPrice").val() +
+            '&key8=' + $("#BeforeDriverAccidentId").val() + '&key9=' + $("#BeforeDriverDiscountPrice").val() + "&key10=" + endDateStr +
+            "&key11=" + releaseDateStr + "&key12=" + $("#UsageTypeId").val()
+            , function (data) {
+                var jsonData = JSON.parse(data);
+                if (jsonData && jsonData.length > 0) {
+                    var strData = "حق بیمه پایه:" + digitGroup(jsonData[0].AmountBase) + " ريال<br />" +
+                        "حوادث و راننده:" + digitGroup(jsonData[0].Amount1) + " ريال<br />" +
+                        "بیمه پایه بعد از تخفیف:" + digitGroup(jsonData[0].AmountBase1Discount) + " ريال<br />" +
+                        "حوادث و راننده بعد از تخفیف:" + digitGroup(jsonData[0].Amount1Discount) + " ريال<br />" +
+                        (jsonData[0].AmountPenaltyAccident > 0 ? "جریمه خسارت ثالث:" + digitGroup(jsonData[0].AmountPenaltyAccident) + " ريال<br />" : "") +
+                        (jsonData[0].AmountPenaltyDriverAccident > 0 ? "جریمه حوادث راننده:" + digitGroup(jsonData[0].AmountPenaltyDriverAccident) + " ريال<br />" : "") +
+                        "مالیات:" + digitGroup(jsonData[0].AmountVat) + " ريال<br />" +
+                        "جریمه دیرکرد:" + digitGroup(jsonData[0].AmountPenalty) + " ريال<br />" +
+                        "تخفیف ثالث جدید:" + digitGroup(jsonData[0].newDiscount) + "<br />" +
+                        "تخفیف راننده جدید:" + jsonData[0].newDiscountDriver + "<br />" +
+                        "مجموع مبالغ:" + digitGroup(jsonData[0].TotalAmount - jsonData[0].UsageTypeAmount) + " ريال" + "<br />" +
+                        "مبلغ نوع کاربری خودرو :" + digitGroup(jsonData[0].UsageTypeAmount) + " ريال" +"<br />" +
+                        "<fieldset>مبلغ کل:" + digitGroup(jsonData[0].TotalAmount) + " ريال</fieldset>" +
+                        (ThirdType && ThirdType==1? "مبلغ SOS :" + ($("#ISCovered_SOS").prop('checked') ? " + 500,000 ريال" : " + 0 ريال"):"");
+                    $("#spanPriceData").html(strData);
+                }
+                /*AmountBase,  Amount1
+			, AmountBase1Discount, Amount1Discount,
+			 AmountVat, AmountPenalty*/
+        });
+
+    }
+    function digitGroup(num) {
+        if (num)
+            return num.toLocaleString();
+        return "0";
+    }
+    function validationPaging() {
+        $('span.text-danger').html('');
+        var isValid = true;
+        switch (pageInd) {
+            case 0: {
+                $('#packageFieldset input').each(function (index, elem) {
+                    var val = $(this).val();
+                    if (val)
+                        ;
+                    else {
+                        if ($(this).attr("required")) {
+                            CheckValidity(this, true);
+                            isValid = false;
+                            return isValid;
+                        }
+                    }
+
+                });
+                $('#packageFieldset select').each(function (index, elem) {
+                    var val = $(this).val();
+                    if (val)
+                        ;
+                    else {
+                        if ($(this).attr("required")) {
+                            CheckValidity(this, true);
+                            isValid = false;
+                            return isValid;
+                        }
+                    }
+
+                });
+
+                if ($('#InsuranceHistoryId').val() == 3) {
+                    var dayCount = GetDiffrenceOfToday($('#ReleaseDate').val());
+
+                    if (dayCount == 1000) {
+                        CheckValidity($('#ReleaseDate')[0], true, "تاریخ ترخیص از تاریخ امروز نمی تواند بیشتر باشد");
+                        $('#ReleaseDate').focus();
+                        isValid = false;
+                        return isValid;
+                    }
+                    if (dayCount >30) {
+                        CheckValidity($('#ReleaseDate')[0], true, "خودرو صفر کیلومتر نباید تاریخ ترخیص آن از سی روز تجاوز کند در این صورت از تخفیف بیمه بهره مند نمی شود.");
+                        $('#ReleaseDate').focus();
+                        isValid = false;
+                        return isValid;
+                    }
+                }
+                //packageFieldset
+                break;
+            }
+            case 1: {
+                $('#searchFieldset input').each(function (index, elem) {
+                    var val = $(this).val();
+                    if (val)
+                        ;
+                    else {
+                        if ($(this).attr("required")) {
+                            CheckValidity(this, true);
+                            isValid = false;
+                            return isValid;
+                        }
+                    }
+
+                });
+                $('#searchFieldset select').each(function (index, elem) {
+                    var val = $(this).val();
+                    if (val)
+                        ;
+                    else {
+                        if ($(this).attr("required")) {
+                            CheckValidity(this, true);
+                            isValid = false;
+                            return isValid;
+                        }
+                    }
+
+                });
+                if (validateNationalCode($('#searchFieldset input').val()) == false) {
+
+                    CheckValidity($('#searchFieldset input')[0], true, 'کد ملی صحیح نیست');
+                    isValid = false;
+                    return isValid;
+                }
+                //searchFieldset
+                break;
+            }
+            case 2: {
+                $('#FirstFieldset input').each(function (index, elem) {
+                    var val = $(this).val();
+                    if (val)
+                        ;
+                    else {
+                        if ($(this).attr("required")) {
+                            CheckValidity(this, true);
+                            isValid = false;
+                            return isValid;
+                        }
+                    }
+
+                });
+                $('#FirstFieldset select').each(function (index, elem) {
+                    var val = $(this).val();
+                    if (val)
+                        ;
+                    else {
+                        if ($(this).attr("required")) {
+                            CheckValidity(this, true);
+                            isValid = false;
+                            return isValid;
+                        }
+                    }
+
+                });
+                //=====================================================================================
+                $('#FirstFieldset .persian-date').each(function (index, elem) {
+                    var isValidDate = $(this).ShamsiDatePickerValidate();
+                    if (isValidDate == true) {
+
+                    } else {
+
+                        isValid = false;
+                        CheckValidity(this, true, isValidDate);
+                        return isValid;
+                    }
+                });
+                if ($('#driver_job_id').val() && ($('#driver_job_id').val().trim() == 'آزاد' || $('#driver_job_id').val().trim() == 'ازاد')) {
+
+                    isValid = false;
+                    CheckValidity($('#driver_job_id')[0], true, 'لطفا عنوان شغل آزاد خود را مطرح نمایید');
+                    return isValid;
+                }
+                if (validateNationalCode($('#driver_national_code').val()) == false) {
+
+                    CheckValidity($('#driver_national_code')[0], true, 'کد ملی صحیح نیست');
+                    isValid = false;
+                    return isValid;
+                }
+                var sickList = false;
+                var sickElem;
+                $('#FirstFieldset [name=sickesList]').each(function () {
+                    sickList = sickList || $(this).prop('checked');
+                    if ($(this).prop('checked'))
+                        sickElem = this;
+                });
+                if (sickList) {
+                    CheckValidity(sickElem, true, 'در صورت وجود هر یک از بیماری های گفته شده امکان خرید بیمه وجود ندارد');
+                    isValid = false;
+                    return isValid;
+                }
+                //FirstFieldset
+                break;
+            }
+            case 3: {
+                $('#IsOnPerson input').each(function (index, elem) {
+                    var val = $(this).val();
+                    if (val)
+                        ;
+                    else {
+                        if ($(this).attr("required")) {
+                            CheckValidity(this, true);
+                            isValid = false;
+                            return isValid;
+                        }
+                    }
+
+                });
+                $('#IsOnPerson select').each(function (index, elem) {
+                    var val = $(this).val();
+                    if (val)
+                        ;
+                    else {
+                        if ($(this).attr("required")) {
+                            CheckValidity(this, true);
+                            isValid = false;
+                            return isValid;
+                        }
+                    }
+
+                });
+                //IsOnPerson
+                break;
+            }
+            case 4: {
+                $('#searchFieldset2 input').each(function (index, elem) {
+                    var val = $(this).val();
+                    if (val)
+                        ;
+                    else {
+                        if ($(this).attr("required")) {
+                            CheckValidity(this, true);
+                            isValid = false;
+                            return isValid;
+                        }
+                    }
+
+                });
+                $('#searchFieldset2 select').each(function (index, elem) {
+                    var val = $(this).val();
+                    if (val)
+                        ;
+                    else {
+                        if ($(this).attr("required")) {
+                            CheckValidity(this, true);
+                            isValid = false;
+                            return isValid;
+                        }
+                    }
+
+                });
+
+                //if (validateNationalCode($('#searchFieldset2 input').val()) == false) {
+                //    CheckValidity($('#searchFieldset2 input')[0], true, 'کد ملی صحیح نیست');
+                //    isValid = false;
+                //    return isValid;
+                //}
+                //searchFieldset2
+                break;
+            }
+        }
+        return isValid;
+    }
+    function getEngNumber(num) {
+        return num.split('١').join('1')
+            .split('۱').join('1')
+            .split('٢').join('2')
+            .split('۲').join('2')
+            .split('٣').join('3')
+            .split('۳').join('3')
+            .split('٤').join('4')
+            .split('۴').join('4')
+            .split('٥').join('5')
+            .split('۵').join('5')
+            .split('٦').join('6')
+            .split('۶').join('6')
+            .split('٧').join('7')
+            .split('۷').join('7')
+            .split('٨').join('8')
+            .split('۸').join('8')
+            .split('٩').join('9')
+            .split('۹').join('9')
+            .split('٠').join('0')
+            .split('۰').join('0');
+    }
+    function paging() {
+        /*
+packageFieldset
+searchFieldset
+FirstFieldset
+IsOnPerson
+searchFieldset
+searchFieldset2
+SecondFieldset
+ThirdFieldset
+btn-bef
+btn-nex
+btn-pay
+*/
+        switch (pageInd) {
+            case 0: {
+                $('.allpart').hide();
+                $('#btn-bef').hide();
+                $('#btn-pay').hide();
+                $('#btn-nex').show();
+                $('#packageFieldset').show();
+                break;
+            }
+            case 1: {
+                $('.allpart').hide();
+                $('#btn-pay').hide();
+                $('#btn-bef').show();
+                $('#btn-nex').show();
+                $('#searchFieldset').show();
+                break;
+            }
+            case 2: {
+                $('#btn-bef').show();
+                $('#btn-pay').hide();
+                $('#btn-nex').show();
+                $('.allpart').hide();
+                $('#FirstFieldset').show();
+                break;
+            }
+            case 3: {
+                $('#btn-bef').show();
+                $('#btn-pay').hide();
+                $('#btn-nex').show();
+                $('.allpart').hide();
+                $('#IsOnPerson').show();
+                break;
+            }
+            case 4: {
+                $('.allpart').hide();
+                $('#btn-bef').show();
+                $('#btn-pay').show();
+                $('#btn-nex').hide();
+                $('#searchFieldset2').show();
+                break;
+            }
+        }
+    }
+</script>

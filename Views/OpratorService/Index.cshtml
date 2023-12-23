@@ -1,0 +1,409 @@
+﻿@{
+    ViewData["Title"] = ViewBag.serviceType == "net" ? "خرید بسته" : "خرید شارژ";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+<style>
+    .typeOfCharge {
+        display: none;
+    }
+</style>
+@if (ViewBag.serviceType == "net")
+{
+    <h1>خرید بسته</h1>
+    <form method="post" action="/Info/ShoppingData">
+        <input type="hidden" name="WorkFlowId" value="1023" />
+        <input type="hidden" name="ShoppingPageId" value="3" />
+        <input type="hidden" name="IsNet" value="true" />
+        <input type="hidden" name="SimTypeId" />
+        <input type="hidden" name="Method" />
+        <input type="hidden" name="OpratorId" />
+        <input type="hidden" name="TransactionProductTypeId" />
+        <input type="hidden" name="TransactionTypeId" />
+        <input type="hidden" name="Amount" />
+        <div class="row bordergreen" style="direction:rtl">
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-12 mb-3">
+                    <input type="checkbox" id="owner" />
+                    <label for="owner">
+                        خرید برای خودم
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+
+                <div class="col-sm-9 form-group">
+					<label for="phoneToCharge">شماره همراه *</label>
+                    <input type="tel" oninput="CheckValidity(this);" required min="9000000000" max="9999999999" oninvalid="CheckValidity(this);"
+                           name="phoneToCharge" id="phoneToCharge" class="form-control"
+                           placeholder="به عنوان مثال 09191112233" />
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+
+                <div class="col-sm-9  form-group">
+					<label for="SimType">نوع سیم کارت</label>
+                    <select class="form-control" id="SimType">
+                        <option value="">همه</option>
+                        <option value="prepaid">اعتباری</option>
+                        <option value="postpaid">دائمی</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+
+                <div class="col-sm-9  form-group">
+					<label for="Duration">مدت زمان بسته (روز)</label>
+                    <select class="form-control" id="Duration" asp-items="@ViewBag.Durations"><option value="">همه</option></select>
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+
+                <div class="col-sm-9  form-group">
+					<label for="packages">بسته</label>
+                    <select class="form-control js-example-responsive" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);" required id="packages" asp-items="@ViewBag.netList"><option value="">لطفا انتخاب نمایید</option></select>
+                </div>
+            </div>
+        
+		<div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-9 form-group mt-4">
+                <button type="submit" class="btn-warning form-control btn">خرید</button>
+            </div>
+	</div>
+    </form>
+}
+else
+{
+    <h1>خرید شارژ</h1>
+    <form method="post" action="/Info/ShoppingData">
+        <input type="hidden" name="WorkFlowId" value="1023" />
+        <input type="hidden" name="ShoppingPageId" value="3" />
+        <input type="hidden" name="IsNet" value="false" />
+        <input type="hidden" name="SimTypeId" value="2" />
+        <input type="hidden" name="Method" />
+        <input type="hidden" name="OpratorId" />
+        <input type="hidden" name="TransactionProductTypeId" />
+        <input type="hidden" name="TransactionTypeId" />
+        <div class="row bordergreen" style="direction:rtl">
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-12  mb-3">
+                    <input type="checkbox" id="owner" />
+                    <label for="owner">
+                        خرید برای خودم
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+
+                <div class="col-sm-9  form-group">
+					<label for="phoneToCharge">شماره همراه *</label>
+                    <input required type="tel"
+                           oninput="CheckValidity(this);" min="9000000000" max="9999999999"
+                           oninvalid="CheckValidity(this);"
+                           name="phoneToCharge" id="phoneToCharge"
+                           class="form-control" placeholder="به عنوان مثال 09191112233" />
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+
+                <div class="col-sm-9  form-group">
+					<label for="Amount">مبلغ شارژ *</label>
+                    <select required class="form-control" id="Amount" name="Amount" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);">
+                        <option value="">لطفا انتخاب کنید</option>
+                        <option value="10000">10،000 ريال</option>
+                        <option value="20000">20،000 ريال</option>
+                        <option value="50000">50،000 ريال</option>
+                        <option value="100000">100،000 ريال</option>
+                        <option value="200000">200،000 ريال</option>
+                        <option value="500000">500،000 ريال</option>
+                        <option value="1000000">1،000،000 ريال</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2 typeOfCharge">
+                <div class="col-sm-3">
+                    نوع شارژ *
+                </div>
+                <div class="col-sm-9  form-group">
+                    <label for="normal" id="lbl_normal">شارژ عادی</label>
+                    <input type="radio" id="normal" name="TypeOfCharge" checked value="normal" />
+                    <label for="wow" id="lbl_wow">شارژ شگفت انگیز</label>
+                    <input type="radio" id="wow" name="TypeOfCharge" value="wow" />
+                </div>
+            </div>
+            <div class="col-sm-10">
+
+                <div class="col-sm-9 mt-4  form-group">
+                    <button type="submit" class="btn-warning btn form-control">خرید</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+}
+@section Scripts{
+    <script type="text/javascript">
+        var ChangePage_value = '@ViewBag.serviceType';
+        ChangePage_value = ChangePage_value == "net" ? "package" : ChangePage_value;
+    if (!ChangePage_value)
+            ChangePage_value = 'charge';
+    var ChangeChargeType_value = 'normal';
+    $("input[name='TypeOfCharge']").on('change', function () {
+        ChangeChargeType_value = $("input[name='TypeOfCharge']:checked").val();
+        $('#Method').val(getMethodId());
+    });
+        var ChangeSimType_value = 2;
+        $('#SimType').on('change', function () {
+            ChangeSimType_value = $(this).val();
+            //$('input[name=SimTypeId]').val(getSimType());
+            LoadPackage();
+        });
+    var opratorCompany = '@ViewBag.op';
+    if (!opratorCompany)
+            opratorCompany = 'mci';
+
+        //if (ChangePage_value == 'charge'/* && (opratorCompany == "mci" || opratorCompany == "mtn")*/) {
+        if (ChangePage_value == 'charge' && opratorCompany != "mtn") {
+            var strAmount = "<option value=''>لطفا انتخاب کنید</option>" +
+                "<option value='54000'>شارژ 5،000 ت، خدمات امداد خودرو دو روز، مبلغ پرداختی 5،400ت</option>" +
+                "<option value='113000'>شارژ 10،000 ت، خدمات امداد خودرو هفت روز، مبلغ پرداختی 11،300ت</option>" +
+                "<option value='230000'>شارژ 20،000 ت، خدمات امداد خودرو پانزده روز، مبلغ پرداختی 23،000ت</option>" +
+                "<option value='550000'>شارژ 50،000 ت، خدمات امداد خودرو 23 روز، مبلغ پرداختی 55،000ت</option>" +
+                "<option value='1100000'>شارژ 100،000 ت، خدمات امداد خودرو 30 روز، مبلغ پرداختی 110،000ت</option>";
+            $("#Amount").html(strAmount);
+        } else if (ChangePage_value == 'charge' &&opratorCompany == "mtn") {
+            var strAmount = "<option value=''>لطفا انتخاب کنید</option>" +
+                "<option value='54000'>شارژ 5،000 ت، خدمات امداد خودرو دو روز، مبلغ پرداختی 5،400ت</option>" +
+                "<option value='113000'>شارژ 10،000 ت، خدمات امداد خودرو هفت روز، مبلغ پرداختی 11،300ت</option>" +
+                "<option value='230000'>شارژ 20،000 ت، خدمات امداد خودرو پانزده روز، مبلغ پرداختی 23،000ت</option>";
+            $("#Amount").html(strAmount);
+        }
+    if (opratorCompany == "mci") {
+        //$($("input[name='TypeOfCharge']")[1]).hide();
+        //$($("input[name='TypeOfCharge']")[0]).trigger('click');
+        //$("#lbl_wow").hide();
+        $('#lbl_normal').html('مستقیم');
+        $('#lbl_wow').html('فوق العاده');
+    } else if (opratorCompany == "mtn") {
+        $($("input[name='TypeOfCharge']")[0]).hide();
+        $($("input[name='TypeOfCharge']")[1]).trigger('click');
+        $("#lbl_normal").hide();
+        $('#lbl_normal').html('عادی');
+        $('#lbl_wow').html('شگفت انگیز');
+
+    }else if (opratorCompany == "rtl") {
+        $($("input[name='TypeOfCharge']")[0]).hide();
+        $($("input[name='TypeOfCharge']")[1]).trigger('click');
+        $("#lbl_normal").hide();
+        $('#lbl_normal').html('عادی');
+        $('#lbl_wow').html('شور انگیز');
+    }
+    function getWorkFlowId() {
+            if (ChangePage_value == 'charge') {
+                if (opratorCompany == 'mci') {
+                    return 1025;
+                }
+                if (opratorCompany == 'mtn') {
+                    return 1026;
+                }
+                if (opratorCompany == 'rtl') {
+                    return 1026;
+                }
+                //ChangeChargeType_value=normal,wow
+            }
+            if (ChangePage_value == 'package') {
+                //ChangeSimType_value=postpaid,prepaid
+
+                if (opratorCompany == 'mci') {
+                    return 1025;
+                }
+                if (opratorCompany == 'mtn') {
+                    return 1026;
+                }
+                if (opratorCompany == 'rtl') {
+                    return 1026;
+                }
+            }
+    }
+        function getAmountValue() {
+            if (ChangePage_value == 'charge') {
+                if (opratorCompany == 'mci') {
+                    return amount_value;
+                }
+                if (opratorCompany == 'mtn') {
+                    return amount_value*1.09;
+                }
+                if (opratorCompany == 'rtl') {
+                    return amount_value;
+                }
+                //ChangeChargeType_value=normal,wow
+            }
+            if (ChangePage_value == 'package') {
+                //ChangeSimType_value=postpaid,prepaid
+                return findPackageCost($('#packages').val());
+            }
+        }
+        function findPackageCost(packageId) { // Find array element which has a key value of val
+            for (var i = 0; i < netListJson.length; i++) {
+                if (netListJson[i].PackageId == parseInt( packageId))
+                    return netListJson[i].CostWithVat;
+            }
+            return null;
+        }
+        function findSimType(packageId) { // Find array element which has a key value of val
+            if (ChangePage_value == 'package') {
+                for (var i = 0; i < netListJson.length; i++) {
+                    if (netListJson[i].PackageId == parseInt( packageId))
+                        return netListJson[i].SimType;
+                }
+                return null;
+            } return 1;
+        }
+
+        function getTransactionTypeId() {
+            if (ChangePage_value == 'charge')
+                return 2;
+            if (ChangePage_value == 'package')
+                return 3;
+        }
+    function getTransactionProductTypeId() {
+            if (ChangePage_value == 'charge') {
+                if (opratorCompany == 'mci') {
+                    return 24;
+                    if (ChangeChargeType_value == "normal")
+                        return 1;
+                    if (ChangeChargeType_value == "wow")
+                        return 2;
+                }
+                if (opratorCompany == 'mtn') {
+                    return 25;
+                    if (ChangeChargeType_value == "normal")
+                        return 3;
+                    if (ChangeChargeType_value == "wow")
+                        return 4;
+                }
+                if (opratorCompany == 'rtl') {
+                    return 28;
+                    if (ChangeChargeType_value == "normal")
+                        return 5;
+                    if (ChangeChargeType_value == "wow")
+                        return 6;
+                }
+                //ChangeChargeType_value=normal,wow
+            }
+            if (ChangePage_value == 'package') {
+                //ChangeSimType_value=postpaid,prepaid
+
+                if (opratorCompany == 'mci') {
+                    return 7;
+                }
+                if (opratorCompany == 'mtn') {
+                    return 8;
+                }
+                if (opratorCompany == 'rtl') {
+                    return 9;
+                }
+            }
+        }
+        function getMethodId() {
+            if (ChangePage_value == 'charge') {
+                if (opratorCompany == 'mci') {
+                    if (ChangeChargeType_value == "normal")
+                        return 3;
+                    if (ChangeChargeType_value == "wow")
+                        return 5;
+                }
+                if (opratorCompany == 'mtn') {
+                    if (ChangeChargeType_value == "normal")
+                        return 21;
+                    if (ChangeChargeType_value == "wow")
+                        return 22;
+                }
+                if (opratorCompany == 'rtl') {
+                    if (ChangeChargeType_value == "normal")
+                        return 41;
+                    if (ChangeChargeType_value == "wow")
+                        return 42;
+                }
+                //ChangeChargeType_value=normal,wow
+            }
+            if (ChangePage_value == 'package') {
+                return $('#packages').val();//netListJson[$('#packages option:selected').index()-1].PackageId;
+                //ChangeSimType_value=postpaid,prepaid
+            }
+        }
+        function getSimType() {
+            if (ChangePage_value == 'charge')
+                return 1;
+            if (ChangePage_value == 'package') {
+                if (ChangeSimType_value == "postpaid")
+                    return 0;
+                else if (ChangeSimType_value == "prepaid")
+                    return 1;
+                return 2;
+                //ChangeSimType_value=postpaid,prepaid
+            }
+            //charge,package,report
+        }
+        function getOpratorId() {
+            if (opratorCompany == 'mci')
+                return 1;
+            if (opratorCompany == 'mtn')
+                return 2;
+            if (opratorCompany == 'rtl')
+                return 3;
+            if (opratorCompany == 'other')
+                return 0;
+        }
+    $("input[name=WorkFlowId]").val(getWorkFlowId());
+    $('h1').html($('h1').html() + ' ' + (opratorCompany == 'mci' ? 'همراه اول' : opratorCompany == 'mtn' ? 'ایرانسل' : opratorCompany == 'rtl' ? 'رایتل' : ''))
+    $("input[name=OpratorId]").val(getOpratorId());
+    $('input[name=TransactionProductTypeId]').val(getTransactionProductTypeId());
+        $('input[name=TransactionTypeId]').val(getTransactionTypeId());
+        var netListJson = [];
+    if(ChangePage_value != 'charge')
+        netListJson = JSON.parse('@Html.Raw(ViewBag.netListJson)');
+    $('#Duration').on('change', function () {
+        LoadPackage();
+    });
+    $('#packages').on('change', function () {
+        $('input[name=Method]').val(getMethodId());
+        $('input[name=Amount]').val(getAmountValue());
+        $('input[name=SimTypeId]').val(getSimType());
+        ChangeSimType_value = findSimType();
+    });
+        function LoadPackage() {
+            var duration = $('#Duration').val();
+            var strPack = '<option value="">همه</option>';
+            for (var i = 0; i < netListJson.length; i++) {
+                if ((!duration || netListJson[i].PeriodType == duration) && (!ChangeSimType_value || netListJson[i].SimType == (ChangeSimType_value == "prepaid" ? 1 : ChangeSimType_value == "postpaid" ? 2 : -1) || (netListJson[i].SimType = (ChangeSimType_value == "prepaid" ? 2 : -1) && opratorCompany=="mci")))
+                    strPack += '<option value="'+netListJson[i].PackageId+'">'+netListJson[i].FullTitle+'</option>';
+            }
+            $('#packages').html(strPack);
+        }
+        function CheckValidity(elem) {
+            elem.setCustomValidity('');
+            if (elem.validity.valueMissing) {
+                elem.setCustomValidity('این فیلد اجباری است');
+                return true;
+            }
+            if ($(elem).attr('id') == "phoneToCharge") {
+                if (elem.validity.rangeOverflow || elem.validity.rangeUnderflow)
+                    elem.setCustomValidity('لطفا شماره همراه صحیح وارد نمایید');
+            }
+            return true;
+        }
+        $('form').submit(function (e) {
+            $('input[name=Method]').val(getMethodId());
+            $('input[name=TransactionProductTypeId]').val(getTransactionProductTypeId());
+        });
+        $("#owner").on("change", function () {
+            var mobile = '@ViewBag.userMobile';
+            if ($(this).prop("checked")) {
+                $("#phoneToCharge").val(mobile);
+                $("#phoneToCharge").attr("readonly","");
+            } else {
+                $("#phoneToCharge").removeAttr("readonly");
+            }
+        });
+    </script>
+}

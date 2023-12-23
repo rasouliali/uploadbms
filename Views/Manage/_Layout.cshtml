@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "/Views/Shared/_LayoutPaycell.cshtml";
+}
+
+@section header {
+    @RenderSection("header", required: false)
+}
+
+<div>
+    <div class="row">
+        @*<div class="col-md-3">
+            @await Html.PartialAsync("_ManageNav")
+        </div>*@
+        <div class="col-md-12">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

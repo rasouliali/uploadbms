@@ -1,0 +1,284 @@
+﻿
+@using Microsoft.Data.SqlClient;
+@using System.Security.Claims;
+@{
+
+    var db = new DataAccess();
+    var usersDt = db.ProccessSelectQuery("sp_getHavadesMellat", new SqlParameter[] {
+                new SqlParameter("@UserId",User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                }, System.Data.CommandType.StoredProcedure);
+    var dtList = usersDt.Select().Select(r => new { code = r["code"], title = r["title"] }).ToList();
+    var dtSelect = new SelectList(dtList, "code", "title");
+    var per = new System.Globalization.PersianCalendar();
+    var perYear = per.GetYear(DateTime.Now);
+}
+<script type="text/javascript">
+
+</script>
+<form action="/Info/ShoppingData" method="post">
+    @Html.Hidden("WorkFlowId", 1031)
+    @Html.Hidden("ShoppingPageId", 1014)
+    <div class="row bordergreen">
+        <div>
+            <div class="form-group col-sm-6">
+                <input type="checkbox" id="forMySelf" />
+                <label for="forMySelf">خرید برای خودم</label>
+            </div>
+            <div class="form-group col-sm-6">
+                <input type="checkbox" id="beforeCustomer" />
+                <label for="beforeCustomer">خرید برای مشتریان قبلی</label>
+            </div>
+        </div>
+        <div id="befDiv" style="display:none" class="form-group">
+            <label for="beforeSelect">مشتریان قبلی</label>
+            <select id="beforeSelect" class="form-control sample"></select>
+        </div>
+        <fieldset>
+            <legend>خرید برای فرد جدید</legend>
+
+            <div class="form-group col-sm-4">
+                <label for="NationalCode_new">کد ملی</label>
+                <input id="NationalCode_new" type="text" maxlength="10" class="form-control" />
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="birthdate_new">تاریخ تولد</label>
+                <input id="birthdate_new" class="form-control persian-date" />
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="" class="col-sm-12">&nbsp;</label>
+                <button class="btn btn-default" id="SearchPerson" type="button">جست و جو</button>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <label for="NationalCode">کد ملی</label>
+            <input name="NationalCode" id="NationalCode" type="text" required readonly maxlength="10" class="form-control" />
+            <span validation-for="NationalCode" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="fname">نام</label>
+            <input name="fname" id="fullname" type="text" disabled class="form-control" />
+            <span validation-for="fullname" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="birthdate">تاریخ تولد</label>
+            <input name="birthdate" id="birthdate" type="text" readonly class="form-control" />
+            <span validation-for="birthdate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="tel">شماره موبایل</label>
+            <input name="Mobile" id="tel" class="form-control" type="number" required max="9999999999" min="9000000000" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);" />
+            <span validation-for="tel" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Method">نوع بیمه</label>
+            <select class="form-control" id="Method" required name="Method" asp-items="@dtSelect" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);"><option value="">لطفا انتخاب کنید</option></select>
+        </div>
+        <div class="form-group">
+            <label for="Method">مشخصات بیمه انتخاب شده</label>
+            @for (int i = 0; i < usersDt.Rows.Count; i++)
+            {
+                <div id="div@(usersDt.Rows[i]["code"])" class="insurance details row">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">مبلغ :</label>
+                        <label class="cl-left">@(((long)usersDt.Rows[i]["Amount"]).ToString("N0")) ريال</label>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">نوع بیمه :</label>
+                        <label class="cl-left">@((usersDt.Rows[i]["InsuranceDesc"]).ToString())</label>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">پوشش فوت در اثر حادثه :</label>
+                        <label class="cl-left">@(((long)usersDt.Rows[i]["f1"]).ToString("N0")) ريال</label>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">پوشش نقص عضو (جزئی و کلی) و از کارافتادگی دائم در اثر حادثه :</label>
+                        <label class="cl-left">@(((long)usersDt.Rows[i]["f2"]).ToString("N0")) ريال</label>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">غرامت روزانه بستری شدن در مراکز درمانی مجاز در اثر حادثه :</label>
+                        <label class="cl-left">@(((long)usersDt.Rows[i]["f3"]).ToString("N0")) ريال</label>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">پوشش پزشکی پزشکی در اثر حادثه :</label>
+                        <label class="cl-left">@(((long)usersDt.Rows[i]["f4"]).ToString("N0")) ريال</label>
+                    </div>
+                </div>
+            }
+        </div>
+        <div></div>
+        <button class="btn btn-warning form-control" type="submit">خرید</button>
+    </div>
+</form>
+
+
+<script type="text/javascript">
+
+    function CheckValidity(elem) {
+        elem.setCustomValidity('');
+        if (elem.validity.valueMissing) {
+            elem.setCustomValidity('این فیلد اجباری است');
+            return true;
+        }
+        //if ($(elem).attr('id') == "NationalCode") {
+        //    //if (validateNationalCode($(elem).val()))
+        //    elem.setCustomValidity($(elem).val());//'کد ملی صحیح نیست');
+        //}
+        if ($(elem).attr('id') == "tel") {
+            if (elem.validity.rangeOverflow || elem.validity.rangeUnderflow)
+                elem.setCustomValidity('لطفا شماره همراه صحیح وارد نمایید');
+        }
+        return true;
+    }
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+        $('#sick').on('change', function () {
+            if ($(this).prop('checked'))
+                $('#sickesList').show();
+            else
+                $('#sickesList').hide();
+        })
+        $('#NationalCode').on('change', function () {
+            if (validateNationalCode($('#NationalCode').val()) == false)
+                alert('کد ملی صحیح نیست');
+            //$('#NationalCode').setCustomValidity("کد ملی صحیح نیست");
+
+            //alert('کد ملی صحیح نیست');
+        });
+
+        $('form').submit(function (e) {
+            if (validateNationalCode($('#NationalCode').val()) == false) {
+                alert('کد ملی صحیح نیست');
+                $('#NationalCode').focus();
+                e.preventDefault();
+            }
+            if (parseInt('@perYear') - $('#Year').val() > 55) {
+
+                alert('بیمه فقط برای افراد کمتر از 56 سال صادر می شود');
+                e.preventDefault();
+            }
+            var sickList = false;
+            $('[name=sickesList]').each(function () {
+                sickList = sickList || $(this).prop('checked');
+            });
+            if (sickList) {
+                alert('در صورت وجود هر یک از بیماری های گفته شده امکان خرید بیمه وجود ندارد');
+                e.preventDefault();
+            }
+        });
+        $('#Method').on('change', function () {
+            var id = this.value;
+            $('.insurance.details').removeClass('show');
+            $('#div' + id).addClass('show');
+        });
+    });
+    function validateNationalCode(nc) {
+        var sumNaCode = 0;
+        for (var i = 0; i < nc.length - 1; i++) {
+            sumNaCode = sumNaCode + parseInt(nc[i]) * (10 - i);
+        }
+        console.log(sumNaCode);
+        console.log(sumNaCode % 11);
+        if (sumNaCode % 11 < 2) {
+            if ((sumNaCode % 11).toString() == nc[9])
+                return true;
+        } else {
+            if ((11 - (sumNaCode % 11)).toString() == nc[9])
+                return true;
+        }
+        return false;
+    }
+    function digitGroup(num) {
+        return num.toLocaleString();
+    }
+
+    var reportName = "havades-mellat";
+    document.addEventListener("DOMContentLoaded", function (event) {
+        var loaddata = false;
+        $('#beforeCustomer').on('change', function () {
+            if ($('#beforeCustomer').prop('checked')) {
+                $('#forMySelf').prop('checked', false);
+                $('#befDiv').show();
+                if (loaddata == false) {
+                    $.get('/JsonData/GetBeforeData?forProduct=' + reportName, function (data) {
+                        var jsonData = JSON.parse(data);
+                        var strCombo = '<option value="">لطفا انتخاب کنید</option>';
+                        if (jsonData.length == 0)
+                            strCombo = '<option value="">خرید قبلی ندارید</option>';
+                        for (var i = 0; i < jsonData.length; i++) {
+                            strCombo += '<option value="' + i.toString() + '">' + jsonData[i].NationalCode + "-" +(jsonData[i].birthdate != undefined ? jsonData[i].birthdate : "") + "-" + (jsonData[i].Mobile != undefined ? jsonData[i].Mobile : "") + '</option>';
+
+                        }
+                        $('#beforeSelect').html(strCombo);
+                        $('#beforeSelect').on('change', function () {
+                            var index = $('#beforeSelect').val();
+                            if (index) {
+                                $('#NationalCode').val(jsonData[index].NationalCode);
+                                showLoadedData(jsonData[index])
+                            }
+                        });
+                    });
+                }
+            } else {
+                $('#befDiv').hide();
+            }
+        });
+
+        $('#forMySelf').on('change', function () {
+            if ($('#forMySelf').prop('checked')) {
+                $('#beforeCustomer').prop('checked', false);
+                $.post('/Sale/MyselfData', { forProduct: reportName }, function (data) {
+                    if (data) {
+                        var jsonData = JSON.parse(data.data);
+                        //var jsonData = new JSON.parse(data.toString().substring(1, data.length - 2));
+
+                        //var jsonData = JSON.parse(data);
+                        if (jsonData.length > 0) {
+                            showLoadedData(jsonData[0])
+                        }
+                    }
+                });
+            }
+        });
+
+
+        window.pd = $('.persian-date').each(function (index, elem) {
+            $(this).persianDatepicker({
+                //altField: "#alt" + (index + 1).toString(),
+                altFormat: 'LLLL',
+                initialValue: false,
+                observer: true,
+                format: 'YYYY/MM/DD',
+                //timePicker: {
+                //    enabled: true
+                //}
+            });
+        });
+        $('#SearchPerson').on('click', function () {
+            var NationalCode_new = $('#NationalCode_new').val();
+            var birthdate_new = $('#birthdate_new').val();
+            $.post('/Sale/GetCivilRegistryOfficeData', { nc: NationalCode_new, bt: birthdate_new }, function (data) {
+                $('#NationalCode').val(data.nationalCode);
+                $('#fullname').val(data.first_name +' ' + data.last_name);
+                $('#birthdate').val(data.birthdate);
+                //if (data.birthdate)
+                //    if (data.birthdate.toString().indexOf('/'))
+                //        $('#Year').val(data.birthdate.split('/')[0]);
+                //    else
+                //        $('#Year').val(data.birthdate.split('-')[0]);
+            });
+        });
+    });
+    function showLoadedData(data) {
+        //NationalCode, Year, Method, phoneToCharge
+        $('#NationalCode').val(data.NationalCode);
+        $('#birthdate').val(data.birthdate);
+        try { $('#tel').val(data.phoneToCharge);} catch (e) {}
+        try { $('#tel').val(data.Mobile);} catch (e) {}
+        $('#fullname').val(data.InsuredName);
+        $('#Method').val(data.Method);
+        $('#Method').trigger('change');
+    }
+
+
+
+</script>

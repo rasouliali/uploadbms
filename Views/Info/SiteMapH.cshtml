@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewData["Title"] = "SiteMapH";
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>hampisheh.com</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <link rel="stylesheet" href="/SiteMap.css" />
+</head>
+
+<body>
+    <div id="top">
+        <nav>hampisheh.com HTML Site Map</nav>
+        <h3>
+            <span>
+                Last updated: @(DateTime.Now)<br />
+            </span>
+            <a href="http://hampisheh.com">hampisheh.com Homepage</a>
+        </h3>
+    </div>
+    <div id="cont">
+        <ul class="level-0">
+
+            <li>
+                <ul class="level-1">
+
+                    <li>
+                        <ul class="level-2">
+                            @foreach (var item in ViewBag.Data)
+                            {
+                                <li class="lhead">@item.Url</li>
+                                <li class="lpage last-page"><a href="@item.Url" title="@item.Title">@item.Title</a></li>
+                            }
+
+
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <!--
+        Please note:
+        You are not allowed to remove the copyright notice below.
+        Thank you!
+        www.xml-sitemaps.com
+        -->
+    </div>
+    <div id="footer">
+    </div>
+</body>
+
+</html>

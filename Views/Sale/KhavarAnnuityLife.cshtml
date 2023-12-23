@@ -1,0 +1,421 @@
+﻿
+@using Microsoft.Data.SqlClient;
+@{
+
+    var db = new DataAccess();
+    var usersDt = db.ProccessSelectQuery("sp_GetKhavarJobs", new SqlParameter[] {
+                new SqlParameter("@username",User.Identity.Name),
+                }, System.Data.CommandType.StoredProcedure);
+    var dtList = usersDt.Select().Select(r => new { code = r["id"], title = r["Name"] }).ToList();
+    var dtSelect = new SelectList(dtList, "code", "title");
+
+    var per = new System.Globalization.PersianCalendar();
+    var perYear = per.GetYear(DateTime.Now);
+}
+<script type="text/javascript">
+
+</script>
+<form action="/Info/ShoppingData" method="post">
+    @Html.Hidden("WorkFlowId", 1027)
+    @Html.Hidden("ShoppingPageId", 1012)
+    @Html.Hidden("permium", 73000000)
+    @Html.Hidden("insured_question", 0)
+    <div class="row bordergreen">
+        <div class="form-group col-sm-6">
+            <input type="checkbox" id="forMySelf" />
+            <label for="forMySelf">خرید برای خودم</label>
+        </div>
+        <div class="form-group col-sm-6">
+            <input type="checkbox" id="beforeCustomer" />
+            <label for="beforeCustomer">خرید برای مشتریان قبلی</label>
+        </div>
+        <div id="befDiv" style="display:none" class="form-group">
+            <label for="beforeSelect">مشتریان قبلی</label>
+            <select id="beforeSelect" class="form-control sample"></select>
+        </div>
+        <fieldset>
+            <legend>خرید برای فرد جدید</legend>
+
+            <div class="form-group col-sm-4">
+                <label for="NationalCode_new">کد ملی</label>
+                <input id="NationalCode_new" type="text" required maxlength="10" class="form-control" />
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="birthdate_new">تاریخ تولد</label>
+                <input id="birthdate_new" class="form-control persian-date" />
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="" class="col-sm-12">&nbsp;</label>
+                <button class="btn btn-default" id="SearchPerson" type="button">جست و جو</button>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <label for="holder_national_code">کد ملی</label>
+            <input name="holder_national_code" id="holder_national_code" type="text" readonly required maxlength="10" class="form-control" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);" />
+            <span validation-for="holder_national_code" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="name">نام و نام خانوادگی</label>
+            <input name="name" id="name" class="form-control" type="text" required readonly oninput="CheckValidity(this);" oninvalid="CheckValidity(this);" />
+            <span validation-for="name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="holder_birth_year">تاریخ تولد</label>
+            <input name="holder_birth_year" id="holder_birth_year" readonly class="form-control" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);" />
+            <span validation-for="holder_birth_year" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="package_id">مشخصات بیمه انتخاب شده</label>
+            <select name="package_id" id="package_id" class="form-control" required oninput="CheckValidity(this);" oninvalid="CheckValidity(this);">
+                <option value="">لطفا انتخاب کنید</option>
+                <option value="1"> حق بیمه سالانه 6 میلیون ریال - پوشش فوت 150 میلیون ريال</option>
+                <option value="2"> حق بیمه سالانه 15 میلیون ریال - پوشش فوت 375 میلیون ريال</option>
+                <option value="3"> حق بیمه سالانه 30 میلیون ریال - پوشش فوت 750 میلیون ريال</option>
+                <option value="4"> حق بیمه سالانه 10 میلیون ریال - پوشش فوت 250 میلیون ريال</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="Method">شغل</label>
+            <select class="form-control" id="holder_job_id" required name="holder_job_id" asp-items="@dtSelect" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);"><option value="">لطفا انتخاب کنید</option></select>
+        </div>
+        <div class="form-group">
+            <label for="holder_mobile">شماره موبایل</label>
+            <input name="holder_mobile" id="holder_mobile" class="form-control" type="number" required max="9999999999" min="9000000000" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);" />
+            <span validation-for="holder_mobile" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="holder_phone">شماره تلفن</label>
+            <input name="holder_phone" id="holder_phone" class="form-control" type="number" oninput="CheckValidity(this);" required oninvalid="CheckValidity(this);" />
+            <span validation-for="holder_phone" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="ProvinceId">استان</label>
+            <select name="ProvinceId" id="ProvinceId" class="form-control Province"><option value="0">لطفا انتخاب کنید</option></select>
+            <span validation-for="ProvinceId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="holder_city_id">شهر</label>
+            <select name=" holder_city_id" id="holder_city_id" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);" required class="form-control"><option value="">ابتدا استان را انتخاب نمایید</option></select>
+            <span validation-for="holder_city_id" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="holder_address">آدرس</label>
+            <input name="holder_address" id="holder_address" class="form-control" type="text" oninput="CheckValidity(this);" required oninvalid="CheckValidity(this);" />
+            <span validation-for="holder_address" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="holder_postal_code">کد پستی</label>
+            <input name="holder_postal_code" id="holder_postal_code" class="form-control" type="number" oninput="CheckValidity(this);" required oninvalid="CheckValidity(this);" />
+            <span validation-for="holder_postal_code" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="holder_weight">وزن</label>
+            <input name="holder_weight" id="holder_weight" class="form-control" type="number" oninput="CheckValidity(this);" required oninvalid="CheckValidity(this);" />
+            <span validation-for="holder_weight" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="holder_height">قد</label>
+            <input name="holder_height" id="holder_height" class="form-control" type="number" oninput="CheckValidity(this);" required oninvalid="CheckValidity(this);" />
+            <span validation-for="holder_height" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="checkbox" name="sick" id="sick" value="true" />
+            <label for="sick">آیا بیماری خاصی دارید؟</label>
+        </div>
+        <div class="form-group" id="sickesList" style="display:none">
+            <fieldset>
+                <legend>لیست بیماری ها:</legend>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList1" value="heartSick" />
+                    <label for="sickesList1">
+                        آیا معافیت پزشکی خدمت وظیفه دارید؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList2" value="SelfSafe" />
+                    <label for="sickesList2">
+                        آیا دچار نقص عضو یا از کار افتادگی میباشید؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList3" value="systemic" />
+                    <label for="sickesList3">
+                        آیا تا به حال عمل جراحی انجام دادهاید؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList4" value="Cancer" />
+                    <label for="sickesList4">
+                        آیا دارای سابقه بیماریهای قلبی، دستگاه گردش خون (مانند سکته قلبی یا مغزی)، اعصاب و روان (مانند صرع یا افسردگی)، دستگاه تنفس، دستگاه گوارش،
+                        دستگاه ادراری – تناسلی، مفاصل و استخوانها، غدد داخلی (مانند دیابت)، انواع سرطان و بیماریهای خود ایمنی و یا هر نوع بیماری مزمن دیگر میباشید؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList5" value="HeadTrauma" />
+                    <label for="sickesList5">
+                        آیا در بین افراد درجه یک خانواده شما فردی به بیماری خاصی مبتال است؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList6" value="Vascular" />
+                    <label for="sickesList6">
+                        آیا در حال حاضر تحت نظر یا درمان پزشک می باشید ؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList7" value="Liver" />
+                    <label for="sickesList7">
+                        آیا سیگاری هستید ؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList8" value="Paralysis" />
+                    <label for="sickesList8">
+                        آیا از موتور سیکلت به طور مداوم استفاده می نمایید ؟
+                    </label>
+                </div>
+            </fieldset>
+        </div>
+        <div></div>
+        <button class="btn btn-warning form-control" type="submit">خرید</button>
+    </div>
+</form>
+
+
+<script type="text/javascript">
+    var glob_CityId = 0;
+    function CheckValidity(elem) {
+        elem.setCustomValidity('');
+        if (elem.validity.valueMissing) {
+            elem.setCustomValidity('این فیلد اجباری است، اعداد بصورت زبان انگلیسی باید وارد شوند');
+            return true;
+        }
+        //if ($(elem).attr('id') == "NationalCode") {
+        //    //if (validateNationalCode($(elem).val()))
+        //    elem.setCustomValidity($(elem).val());//'کد ملی صحیح نیست');
+        //}
+        if ($(elem).attr('id') == "holder_mobile") {
+            if (elem.validity.rangeOverflow || elem.validity.rangeUnderflow)
+                elem.setCustomValidity('لطفا شماره همراه صحیح وارد نمایید');
+        }
+        return true;
+    }
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+        window.pd = $('.persian-date').each(function (index, elem) {
+            $(this).persianDatepicker({
+                //altField: "#alt" + (index + 1).toString(),
+                altFormat: 'LLLL',
+                initialValue: false,
+                observer: true,
+                format: 'YYYY/MM/DD',
+                //timePicker: {
+                //    enabled: true
+                //}
+            });
+        });
+        $('#sick').on('change', function () {
+            if ($(this).prop('checked'))
+                $('#sickesList').show();
+            else
+                $('#sickesList').hide();
+        })
+        $('#holder_national_code').on('change', function () {
+            if (validateNationalCode($('#holder_national_code').val()) == false)
+                alert('کد ملی صحیح نیست');
+            //$('#NationalCode').setCustomValidity("کد ملی صحیح نیست");
+
+            //alert('کد ملی صحیح نیست');
+        });
+
+        $('form').submit(function (e) {
+            if (validateNationalCode($('#holder_national_code').val()) == false) {
+                alert('کد ملی صحیح نیست');
+                $('#holder_national_code').focus();
+                e.preventDefault();
+            }
+            if (getAge() > 55) {
+
+                alert('بیمه فقط برای افراد کمتر از 56 سال صادر می شود');
+                e.preventDefault();
+            }
+            $('#holder_birth_year').val(getEngNumber( $('#holder_birth_year').val()));
+            var sickList = false;
+            $('[name=sickesList]').each(function () {
+                sickList = sickList || $(this).prop('checked');
+            });
+            if (sickList) {
+                alert('در صورت وجود هر یک از بیماری های گفته شده امکان خرید بیمه وجود ندارد');
+                e.preventDefault();
+            }
+        });
+        $('#Method').on('change', function () {
+            var id = this.value;
+            $('.insurance.details').removeClass('show');
+            $('#div' + id).addClass('show');
+        });
+    });
+    function validateNationalCode(nc) {
+        var sumNaCode = 0;
+        for (var i = 0; i < nc.length - 1; i++) {
+            sumNaCode = sumNaCode + parseInt(nc[i]) * (10 - i);
+        }
+        console.log(sumNaCode);
+        console.log(sumNaCode % 11);
+        if (sumNaCode % 11 < 2) {
+            if ((sumNaCode % 11).toString() == nc[9])
+                return true;
+        } else {
+            if ((11 - (sumNaCode % 11)).toString() == nc[9])
+                return true;
+        }
+        return false;
+    }
+    function getAge() {
+        return parseInt('@perYear') - getYear($('#holder_birth_year').val());
+    }
+
+    function getYear(birth) {
+        return getEngNumber(birth.toString().split('/')[0]);
+    }
+    function getEngNumber(num) {
+        return num.split('١').join('1')
+            .split('۱').join('1')
+            .split('٢').join('2')
+            .split('۲').join('2')
+            .split('٣').join('3')
+            .split('۳').join('3')
+            .split('٤').join('4')
+            .split('۴').join('4')
+            .split('٥').join('5')
+            .split('۵').join('5')
+            .split('٦').join('6')
+            .split('۶').join('6')
+            .split('٧').join('7')
+            .split('۷').join('7')
+            .split('٨').join('8')
+            .split('۸').join('8')
+            .split('٩').join('9')
+            .split('۹').join('9')
+            .split('٠').join('0')
+            .split('۰').join('0');
+    }
+    function digitGroup(num) {
+        return num.toLocaleString();
+    }
+    document.addEventListener("DOMContentLoaded", function (event) {
+        $('select:not(.sample)').select2({
+            minimumInputLength: 0 // only start searching when the user has input 3 or more characters
+        });
+
+        $.get('/JsonData/GetData?typeData=100025', function (data) {
+            var jsonData = JSON.parse(data);
+            var strCombo = '<option value="">لطفا انتخاب کنید</option>';
+            for (var i = 0; i < jsonData.length; i++) {
+                strCombo += '<option value="' + jsonData[i].ProvinceID+ '">' + jsonData[i].Name + '</option>';
+
+            }
+            $('#ProvinceId').html(strCombo);
+            $('#ProvinceId').on('change', function () {
+                $('#holder_city_id').html('<option value="">لطفا صبر کنید</option>');
+                $.get('/JsonData/GetData?typeData=100026&key1=' + $('#ProvinceId').val(), function (data) {
+                    var jsonData = JSON.parse(data);
+                    var strCombo = '<option value="0">لطفا انتخاب کنید</option>';
+                    for (var i = 0; i < jsonData.length; i++) {
+                        strCombo += '<option value="' + jsonData[i].id.toString()  + '">' + jsonData[i].CityName + '</option>';
+                    }
+                    $('#holder_city_id').html(strCombo);
+                    if (glob_CityId > 0) {
+                        $('#holder_city_id').val(glob_CityId);
+                        $('#holder_city_id').trigger('change');
+
+                    }
+                });
+
+            });
+        });
+    });
+
+    var reportName = "mostamarri";
+    document.addEventListener("DOMContentLoaded", function (event) {
+        var loaddata = false;
+        $('#beforeCustomer').on('change', function () {
+            if ($('#beforeCustomer').prop('checked')) {
+                $('#forMySelf').prop('checked', false);
+                $('#befDiv').show();
+                if (loaddata == false) {
+                    $.get('/JsonData/GetBeforeData?forProduct=' + reportName, function (data) {
+                        var jsonData = JSON.parse(data);
+                        var strCombo = '<option value="">لطفا انتخاب کنید</option>';
+                        if (jsonData.length == 0)
+                            strCombo = '<option value="">خرید قبلی ندارید</option>';
+                        for (var i = 0; i < jsonData.length; i++) {
+                            strCombo += '<option value="' + i.toString() + '">' + jsonData[i].name + "-" + jsonData[i].holder_mobile + "-" + jsonData[i].holder_phone + '</option>';
+
+                        }
+                        $('#beforeSelect').html(strCombo);
+                        $('#beforeSelect').on('change', function () {
+                            var index = $('#beforeSelect').val();
+                            if (index) {
+                                $('#NationalCode').val(jsonData[index].NationalCode);
+                                showLoadedData(jsonData[index])
+                            }
+                        });
+                    });
+                }
+            } else {
+                $('#befDiv').hide();
+            }
+        });
+
+        $('#forMySelf').on('change', function () {
+            if ($('#forMySelf').prop('checked')) {
+                $('#beforeCustomer').prop('checked', false);
+                $.post('/Sale/MyselfData', { forProduct: reportName }, function (data) {
+                    if (data) {
+                        var jsonData = JSON.parse(data.data);
+                        //var jsonData = new JSON.parse(data.toString().substring(1, data.length - 2));
+
+                        //var jsonData = JSON.parse(data);
+                        if (jsonData.length > 0) {
+                            showLoadedData(jsonData[0])
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#SearchPerson').on('click', function () {
+            var NationalCode_new = $('#NationalCode_new').val();
+            var birthdate_new = $('#birthdate_new').val();
+            $.post('/Sale/GetCivilRegistryOfficeData', { nc: NationalCode_new, bt: birthdate_new }, function (data) {
+                $('#holder_national_code').val(data.nationalCode);
+                $('#name').val(data.first_name + ' ' + data.last_name);
+                $('#holder_birth_year').val(data.birthdate);
+            });
+        });
+    });
+    function showLoadedData(data) {
+
+        $('#package_id').val(data.KhavarInsuranceAnnuityLifeId);
+        $('#package_id').trigger('change');
+        $('#name').val(data.name);
+        $('#NationalCode').val(data.NationalCode);
+        $('#holder_mobile').val(data.holder_mobile);
+        $('#holder_phone').val(data.holder_phone);
+        glob_CityId = data.holder_city_id;
+        $('#ProvinceId').val(data.ProvinceID);
+        $('#ProvinceId').trigger('change');
+        $('#holder_job_id').val(data.holder_job_id);
+        $('#holder_job_id').trigger('change');
+        $('#holder_address').val(data.holder_address);
+        $('#holder_postal_code').val(data.holder_postal_code);
+        $('#holder_height').val(data.holder_height);
+        $('#holder_weight').val(data.holder_weight);
+        $('#holder_national_code').val(data.holder_national_code);
+        $('#holder_birth_year').val(data.holder_birth_year);
+        $('#premium').val(data.premium);
+    }
+</script>
+

@@ -1,0 +1,239 @@
+﻿
+@{
+    ViewData["Title"] = "مشاهده کارمزدها";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+
+    var per = new System.Globalization.PersianCalendar();
+    var persianToday = per.GetYear(DateTime.Now) + "/" + per.GetMonth(DateTime.Now) + "/" + per.GetDayOfMonth(DateTime.Now);
+}
+
+<h1>کارمزدها
+    <span class="backb"><a href="javascript:history.back()"><i class="icon-arrow-left"></i>
+            بازگشت</a></span>
+</h1>
+<form>
+    <div class="row" id="packageFieldset" dir="rtl">
+
+            <div class="col-sm-12">
+                <div class="row">
+
+                    <div class="col-sm-4 form-group">
+                        <label for="state">وضعیت کارمزد</label>
+                        <select name="state" id="state" class="form-control sample" required>
+                            <option value="1">فقط نامشخص ها</option>
+                            <option value="4">همه موارد</option>
+                            <option value="2">فقط تایید شده ها</option>
+                            <option value="3">فقط رد شده ها</option>
+                        </select>
+                        <span validation-for="state" class="text-danger"></span>
+                        @if (ViewBag.state != null)
+                        {
+                            <script type="text/javascript">
+                    document.querySelector('#state option[value="@ViewBag.state"]').setAttribute("selected", '');
+                            </script>
+                        }
+                    </div>
+                    <div class="col-sm-4 form-group">
+                        <label for="fromDate">از تاریخ کارمزد</label>
+                        <input name="fromDate" id="fromDate" required class="form-control" data-jdp data-jdp-max-date="today" value="@ViewBag.fromDate" />
+                        <span validation-for="fromDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-4 form-group">
+                        <label for="toDate">تا تاریخ کارمزد</label>
+                        <input name="toDate" id="toDate" required class="form-control" data-jdp data-jdp-max-date="today" value="@ViewBag.toDate" />
+                        <span validation-for="toDate" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-4 form-group">
+                        
+                        <button class="btn btn-primary btn-block" name="btn_select" type="submit">نمایش</button>
+                    </div>
+                    @if (User.IsInRole("Admin"))
+                    {
+                <fieldset id="packageFieldset">
+                    <legend>فقط ادمین</legend>
+                    <div class="col-sm-6">
+                        <label for="newState">وضعیت جدید کارمزد</label>
+                        <select name="newState" id="newState" class="form-control sample">
+                            <option value="">لطفا انتخاب نمایید</option>
+                            <option value="1">تایید کن</option>
+                            <option value="0">رد کن</option>
+                        </select>
+                        <span validation-for="newState" class="text-danger"></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <label >&nbsp;</label>
+                        <button class="btn btn-warning btn-sm-block" name="btn_select" type="submit" value="confirm">اعمال</button>
+                    </div>
+                </fieldset>
+                            }
+                    </div>
+            </div>
+
+    </div>
+</form>
+
+<div class="datat mt-4" dir="rtl">
+
+    @if (ViewBag.datatable != null && ViewBag.datatable.Rows.Count > 0) {
+
+<table class="table">
+    <thead style="display: none;">
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewBag.datatable != null && ViewBag.datatable.Rows.Count > 0)
+        {
+            foreach (System.Data.DataRow item in ViewBag.datatable.Rows)
+            {
+        <tr>
+            <td style="border: 0px;">
+                <div class="row border dradius prolist" onclick="expand(this)" dir="rtl" style="margin-bottom: 0px;">
+                    <div class="col-6 pb-2">همراه گیرنده  کارمزد :</div><div class="col-6 text-right pb-2">@item["wageUserPhone"]</div>
+                    <div class="col-6 pb-2">همراه خریدار :</div><div class="col-6 text-right pb-2">@item["PhoneNumber"]</div>
+                    <div class="col-6 pb-2">مبلغ کارمزد :</div><div class="col-6 text-right pb-2">@(((long)item["wageAmount"]).ToString("N0"))</div>
+                    <div class="col-6 pb-2">وضعیت کارمزد :</div><div class="col-6 text-right pb-2">
+                        @if (item.IsNull("IsConfirm") == false)
+                        {
+                            @((bool)item["IsConfirm"] ? "(تایید)" : "(رد شده)") }
+                        else
+                        {
+                            @("نامشخص")
+
+                        }
+                    </div>
+                    <div class="col-6 pb-2">تاریخ کارمزد :</div><div class="col-6 text-right pb-2">@ShppaingPart.Controllers.SharedLogic.ToShamsi(((DateTime)item["ResponseDate"]))</div>
+                    <div class="col-6 pb-2">کد تراکنش اصلی :</div><div class="col-6 text-right pb-2">@(item["TransactionId"].ToString())</div>
+                    <div class="col-6 pb-2">مبلغ تراکنش :</div><div class="col-6 text-right pb-2">@(((long)item["Amount"]).ToString("N0"))</div>
+                    <div class="col-6 pb-2">تاریخ تراکنش :</div><div class="col-6 text-right pb-2">@ShppaingPart.Controllers.SharedLogic.ToShamsi(((DateTime)item["origResponseDate"]))</div>
+                    <div class="col-6 pb-2">گروه محصول :</div><div class="col-6 text-right pb-2">@(item["typeTitle"].ToString())</div>
+                    <div class="col-6 pb-2">زیرگروه محصول :</div><div class="col-6 text-right pb-2">@(item["productTypeTitle"].ToString())</div>
+                    <div class="col-6 pb-2">کد فرآیند :</div><div class="col-6 text-right pb-2">@(item["WorkFlowRunId"].ToString())</div>
+                </div>
+            </td>
+        </tr>
+            }
+
+        }
+
+    </tbody>
+</table>
+
+}
+
+</div>
+
+    
+
+@section Scripts{
+    <style>
+        table.dataTable thead tr {
+            background-color: transparent;
+        }
+
+        table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > td.sorting_asc, table.dataTable thead > tr > td.sorting_desc, table.dataTable thead > tr > td.sorting {
+            background-color: transparent;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="~/datatables/datatables.min.css" />
+    <script type="text/javascript" src="~/datatables/dataTables.min.js?v=1"></script>
+
+
+    <link href="/shamsidatepicker/jalalidatepicker.css" rel="stylesheet">
+    <script src="/shamsidatepicker/jalalidatepicker.js"></script>
+
+    <script type="text/javascript">
+        if (document.addEventListener) {
+            document.addEventListener("DOMContentLoaded", init, false);
+        }
+        else {
+            document.attachEvent("onDOMContentLoaded", init);
+        }
+        function init() {
+            $('table').each(function (t_index, elem) {
+                var strElem = "";
+                $('table').eq(t_index).find('thead tr th').each(function (index, elem) {
+                    strElem += "<th>" + $('table').eq(t_index).find('thead tr th').eq(index).text() + "</th>";
+                });
+                
+
+                var table = $('table').eq(t_index).DataTable({
+                    fixedHeader: true,
+                    orderCellsTop: true,
+                    responsive: true,
+                    dom: 'Bfrtip', "order": [],
+                    buttons: [
+                        {
+                            extend: 'collection',
+                            text: '<img src="../new/img/download.png" width="32px" />',
+                            buttons: [
+                                'copy',
+                                'excel',
+                                'csv',
+                                'pdf',
+                                'print'
+                            ]
+                        }
+                    ],
+                    "oLanguage": {
+                        "sSearch": ""
+                    },
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "جستجو"
+                    },
+                    "bAutoWidth": false,
+                });
+                $('table').eq(t_index).on("order.dt", function () {
+                    if (table.settings().order().length === 1) {
+                        var order = table.settings().order()[0];
+                        var th = $("table th:eq(" + order[0] + ")");
+                        if (th.attr("data-sort-next") === "false") {
+                            table.order([]).draw();
+                            th.attr("data-sort-next", true);
+                        } else {
+                            if (order[1] === "desc") {
+                                th.attr("data-sort-next", false);
+                            } else {
+                                th.attr("data-sort-next", true);
+                            }
+                        }
+                    }
+                });
+            });
+            try {
+                $('.jalaliDatePicker').remove();
+                $('.persian-date').each(function (index, elem) {
+                    if ($(this).val())
+                        ;
+                    else
+                        $(this).val('@persianToday');
+                    $(this).ShamsiDatePicker(false);
+                });
+            } catch (e) {
+            }
+
+        }
+
+        function expand(card) {
+            card.classList.toggle('profile--expanded');
+            if (!card.classList.contains('profile--expanded')) card.classList.toggle('profile--unexpanded');
+            else if (card.classList.contains('profile--expanded') && card.classList.contains('profile--unexpanded')) card.classList.toggle('profile--unexpanded');
+        }
+    </script>
+}
+
+
+<link rel="stylesheet" href="/new/css/jalaliDatepicker.min.css">
+        <script src="/new/js/jalaliDatepicker.min.js"></script>
+        <script>
+            jalaliDatepicker.startWatch({
+                minDate: "attr",
+                maxDate: "attr"
+            });
+        </script>

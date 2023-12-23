@@ -1,0 +1,164 @@
+﻿
+@using System.Security.Claims
+@using Microsoft.Data.SqlClient;
+@{
+
+    ViewData["Title"] = "پرداخت اقساط بیمه های ثبت شده";
+    Layout = null;// "~/Views/Shared/_LayoutPaycell.cshtml";
+
+
+    var userid = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var db = new DataAccess();
+    var installMentData = db.ProccessSelectQuery("sp_getInstallmentInsurance", new SqlParameter[] {
+                new SqlParameter("@userid",userid),
+                new SqlParameter("@Insurancetype",1),
+                }, System.Data.CommandType.StoredProcedure);
+}
+
+<div class="datat" dir="rtl">
+
+<table class="table">
+    <thead style="display: none;">
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (installMentData != null && installMentData.Rows.Count > 0)
+        {
+            foreach (System.Data.DataRow item in installMentData.Rows)
+            {
+                var status = false;
+                if(item["TransactionPaymentStatusId"]!=null &&
+                   item["TransactionProductStatusId"]!=null )
+                {
+                    if (item["TransactionPaymentStatusId"].ToString() == "3" &&
+                        item["TransactionProductStatusId"].ToString() == "3")
+                        status = true;
+                }
+        <tr>
+            <td style="border: 0px;">
+                
+                <div class="row border dradius prolist2" onclick="expand(this)" dir="rtl" style="margin-bottom: 0px;">
+                    <div class="col-12 pb-2">@item["Title"]</div>
+                    <div class="col-5 pb-2">شماره قسط :</div><div class="col-7 text-right pb-2">@item["IndexNo"]</div>
+                    <div class="col-5 pb-2">کد بیمه :</div><div class="col-7 text-right pb-2">@item["LifeVoucherId"]</div>
+                    <div class="col-5 pb-2">تاریخ سررسید :</div><div class="col-7 text-right pb-2">@ShppaingPart.Controllers.SharedLogic.ToShamsi(((DateTime?)item["DueDate"]).Value.Date)</div>
+                    <div class="col-5 pb-2">وضعیت :</div><div class="col-7 text-right pb-2">@(status ? "پرداخت شده":"")</div>
+                    <div class="col-5 pb-2">تاریخ پرداخت :</div><div class="col-7 text-right pb-2">@(status? ShppaingPart.Controllers.SharedLogic.ToShamsi((DateTime?)item["ResponseDate"]) :"")</div>
+                    <div class="col-5 pb-2">عملیات :</div><div class="col-7 text-right pb-2">
+                        @if (status == false)
+                        {
+                            <a href="#" data-id="@item["LifeVoucherInstallmentId"]" class="pay-installment">پرداخت</a>
+                        }
+                        else
+                        {
+                            <a href="/Info/ResultOfSale?WorkFlowRunLogId=@item["WorkFlowId"]">مشاهده فاکتور</a>
+                        }
+                    </div>
+                </div>    
+            </td>
+        </tr>
+            }
+
+        }
+
+    </tbody>
+</table>
+</div>
+
+<script type="text/javascript">
+
+    if (document.addEventListener) {
+        document.addEventListener("DOMContentLoaded", init, false);
+    }
+    else {
+        document.attachEvent("onDOMContentLoaded", init);
+    }
+    function init() {
+
+        
+
+        var table = $('table').eq(0)
+            .on('init.dt', function () {
+                loadbtnjavascript();
+            }).DataTable({
+                fixedHeader: true,
+                    orderCellsTop: true,
+                    responsive: true,
+                    dom: 'Bfrtip', "order": [],
+                buttons: [
+                    {
+                        extend: 'collection',
+                        text: '<img src="../new/img/download.png" width="32px" />',
+                        buttons: [
+                            'copy',
+                            'excel',
+                            'csv',
+                            'pdf',
+                            'print'
+                        ],
+                        
+                    }
+                ],
+                "oLanguage": {
+                        "sSearch": ""
+                    },
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "جستجو"
+                    },
+                    
+                "bAutoWidth": false,
+                //"initComplete": function (settings, json) {
+                //    loadbtnjavascript();
+                //}
+            });
+        $('table').eq(t_index).on("order.dt", function () {
+                    if (table.settings().order().length === 1) {
+                        var order = table.settings().order()[0];
+                        var th = $("table th:eq(" + order[0] + ")");
+                        if (th.attr("data-sort-next") === "false") {
+                            table.order([]).draw();
+                            th.attr("data-sort-next", true);
+                        } else {
+                            if (order[1] === "desc") {
+                                th.attr("data-sort-next", false);
+                            } else {
+                                th.attr("data-sort-next", true);
+                            }
+                        }
+                    }
+                });
+        function loadbtnjavascript() {
+            setInterval(function () {
+                $('.pay-installment').on('click', function () {
+                    var lifeVoucherId = $(this).data('id');
+
+                    $.get('/JsonData/GetData?typeData=100029&key1=' + lifeVoucherId, function (data) {
+                        var jsonData = JSON.parse(data);
+                        if (jsonData.length > 0) {
+                            jsonData = jsonData[0];
+                            if (jsonData.ispaid) {
+                                window.location.href = "/Info/ResultOfSale?WorkFlowRunLogId=" + jsonData.WorkFlowRunLogId;
+                            }
+                            else {
+                                window.location.href = "/Info/PrepareForBank?Amount=" + jsonData.Amount + "&WorkFlowRunLogId=" + jsonData.WorkFlowRunLogId +
+                                    "&WorkFlowDetailsId=" + jsonData.WorkFlowDetailsId + "&WorkFlowId=" + jsonData.WorkFlowId;
+                            }
+                        } else {
+                            alert("مشکلی به وجود آمده است.");
+                        }
+                    });
+                });
+            }, 1000);
+        }
+
+    }
+
+    function expand(card) {
+            card.classList.toggle('profile--expanded2');
+            if (!card.classList.contains('profile--expanded2')) card.classList.toggle('profile--unexpanded2');
+            else if (card.classList.contains('profile--expanded2') && card.classList.contains('profile--unexpanded2')) card.classList.toggle('profile--unexpanded2');
+        }
+</script>

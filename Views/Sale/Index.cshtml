@@ -1,0 +1,152 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var pageType = "1";
+    try
+    {
+        if (HttpContextAccessor.HttpContext.Request.Query.ContainsKey("lifeType"))
+            pageType = HttpContextAccessor.HttpContext.Request.Query["lifeType"];
+        if (HttpContextAccessor.HttpContext.Request.Query.ContainsKey("ThirdType"))
+            pageType = HttpContextAccessor.HttpContext.Request.Query["ThirdType"];
+    }
+    catch { }
+    ViewData["Title"] = ViewBag.WorkFlowId == 1014 ? "بیمه عمر خاورمیانه"
+: ViewBag.WorkFlowId == 99 ? "اقساط بیمه ها"
+: ViewBag.WorkFlowId == 1017 ? "فروش محصول جدید"
+: ViewBag.WorkFlowId == 1021 ? "اشتراک فیلیمو"
+: ViewBag.WorkFlowId == 1018 ? "خودرو پلاس"
+: ViewBag.WorkFlowId == 1027 ? "بیمه مستمری"
+: ViewBag.WorkFlowId == 1029 ? "بیمه کرونا"
+: ViewBag.WorkFlowId == 1032 && pageType == "1" ? "بیمه عمر زندگی"
+: ViewBag.WorkFlowId == 1032 && pageType == "2" ? "بیمه زنان خانه دار"
+: ViewBag.WorkFlowId == 1032 && pageType == "3" ? "بیمه آتیه فرزندان"
+: ViewBag.WorkFlowId == 1032 && pageType == "4" ? "بیمه کسبه"
+: ViewBag.WorkFlowId == 1032 && pageType == "5" ? "بیمه عمر پلاس"
+: ViewBag.WorkFlowId == 1033 && pageType == "1" ? "بیمه شخص ثالث"
+: ViewBag.WorkFlowId == 1033 && pageType == "2" ? "بیمه موتورسیکلت"
+: ViewBag.WorkFlowId == 1034 ? "بیمه حوادث"
+: ViewBag.WorkFlowId == 1035 ? "بیمه درمان" : "";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+
+<h1>
+    @(ViewBag.WorkFlowId == 1014 ? "بیمه عمر خاورمیانه"
+        : ViewBag.WorkFlowId == 99 ? "اقساط بیمه"
+        : ViewBag.WorkFlowId == 1017 ? "فروش محصول جدید"
+        : ViewBag.WorkFlowId == 1021 ? "اشتراک فیلیمو"
+        : ViewBag.WorkFlowId == 1018 ? "خودرو پلاس"
+        : ViewBag.WorkFlowId == 1027 ? "بیمه مستمری"
+        : ViewBag.WorkFlowId == 1029 ? "بیمه کرونا"
+: ViewBag.WorkFlowId == 1032 && pageType == "1" ? "بیمه عمر زندگی"
+: ViewBag.WorkFlowId == 1032 && pageType == "2" ? "بیمه زنان خانه دار"
+: ViewBag.WorkFlowId == 1032 && pageType == "3" ? "بیمه آتیه فرزندان"
+: ViewBag.WorkFlowId == 1032 && pageType == "4" ? "بیمه کسبه"
+: ViewBag.WorkFlowId == 1032 && pageType == "5" ? "بیمه عمر پلاس"
+: ViewBag.WorkFlowId == 1033 && pageType=="1" ? "بیمه شخص ثالث"
+: ViewBag.WorkFlowId == 1033 && pageType == "2" ? "بیمه موتورسیکلت"
+: ViewBag.WorkFlowId == 100 ? "بیمه تست"
+: ViewBag.WorkFlowId == 1034 ? "بیمه حوادث"
+: ViewBag.WorkFlowId == 1035 ? "بیمه درمان"  : "")
+<span class="backb"><a href="javascript:history.back()"><i class="icon-arrow-left"></i> بازگشت</a></span>
+</h1>
+
+@if (ViewBag.WorkFlowId == 99)
+{
+    @await Html.PartialAsync("LifeInstallment")
+}
+@if (ViewBag.WorkFlowId == 1014)
+{
+    @await Html.PartialAsync("Khavar")
+}
+else if (ViewBag.WorkFlowId == 1017)
+{
+    @await Html.PartialAsync("NewProduct")
+}
+else if (ViewBag.WorkFlowId == 1018)
+{
+    @await Html.PartialAsync("PlusCar")
+}
+
+else if (ViewBag.WorkFlowId == 1021)
+{
+    @await Html.PartialAsync("Filimo")
+}
+
+else if (ViewBag.WorkFlowId == 1027)
+{
+    @await Html.PartialAsync("KhavarAnnuityLife")
+}
+else if (ViewBag.WorkFlowId == 1029)
+{
+    @await Html.PartialAsync("Corona")
+}
+else if (ViewBag.WorkFlowId == 1032)
+{
+    if (pageType != "5")
+    {
+        @await Html.PartialAsync("Life")
+    }
+    else
+    {
+        @await Html.PartialAsync("LifePlus")
+    }
+}
+else if (ViewBag.WorkFlowId == 1033)
+{
+    @await Html.PartialAsync("ThirdPartyInsurance")
+}
+else if (ViewBag.WorkFlowId == 1034)
+{
+    @await Html.PartialAsync("Accident")
+}
+else if (ViewBag.WorkFlowId == 1035)
+{
+    @await Html.PartialAsync("Treatment")
+}
+else if (ViewBag.WorkFlowId == 100)
+{
+    <h1></h1>
+    <form action="/Info/ShoppingData" method="post" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label for="BirthCertificatePage">عکس از شناسنامه *</label>
+            <input type="file" id="BirthCertificatePage" name="BirthCertificatePage" required accept="image/x-png,image/gif,image/jpeg,image/bmp" />
+            <span validation-for="BirthCertificatePage" class="text-danger"></span>
+        </div>
+        <button class="btn btn-warning form-control " type="button" id="btn-pay">خرید</button>
+    </form>
+}
+
+
+@section Scripts {
+    @if (ViewBag.WorkFlowId != 100)
+    {
+
+        <link rel="stylesheet" type="text/css" href="~/datatables/datatables.min.css" />
+        @*<link rel="stylesheet" type="text/css" href="~/datatables/DataTables-1.10.20/jquery.dataTables.min.css" />
+            <link rel="stylesheet" type="text/css" href="~/datatables/Buttons-1.6.0/css/buttons.dataTables.min.css">*@
+        <script type="text/javascript" src="~/datatables/dataTables.min.js?v=1"></script>
+        @*<script type="text/javascript" src="~/datatables/FixedHeader-3.1.6/js/dataTables.fixedHeader.min.js"></script>
+            <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/dataTables.buttons.min.js"></script>
+            <script type="text/javascript" src="~/datatables/JSZip-2.5.0/jszip.min.js"></script>
+            <script type="text/javascript" src="~/datatables/pdfmake-0.1.36/pdfmake.min.js"></script>
+            <script type="text/javascript" src="~/datatables/pdfmake-0.1.36/vfs_fonts.js"></script>
+            <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/buttons.html5.min.js"></script>
+            <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/buttons.print.min.js"></script>
+        <link id="datepickerTheme" href="~/persiandate/css/persian-datepicker.min.css" rel="stylesheet" />*@
+
+
+        @*<link href="/select2/select2.min.css" rel="stylesheet" />
+
+        <script src="/select2/select2.min.js"></script>*@
+        <link rel="stylesheet" href="/new/css/jalaliDatepicker.min.css">
+        <script src="/new/js/jalaliDatepicker.min.js"></script>
+        <script>
+            jalaliDatepicker.startWatch({
+                minDate: "attr",
+                maxDate: "attr"
+            });
+        </script>
+    }
+
+}

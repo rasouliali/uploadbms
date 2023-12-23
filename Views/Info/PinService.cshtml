@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "کارت شارژ یا بیمه";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+<form action="/Info/ShoppingData" method="post">
+
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <label class="col-xs-6" for="VoucherTypeId">نوع کارت</label>
+            @Html.DropDownList("VoucherTypeId", null, "لطفا انتخاب نمایید", new { @class = "form-control" })
+
+        </div>
+        <div class="col-sm-6 col-sm-offset-3">
+            <label class="col-xs-6" for="VoucherTypeId">انتخاب مبلغ</label>
+            <select name="Amount" id="Amount" class="form-control">
+            </select>
+        </div>
+    </div>
+    @Html.Hidden("WorkFlowId", 1006)
+    @Html.Hidden("ShoppingPageId", 1)
+    <hr />
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 ">
+            <button type="submit" class="btn btn-primary form-control">خرید</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script type="text/javascript">
+        $('#VoucherTypeId').on('change', function () {
+            debugger;
+            var dataJs = { "VoucherTypeId": $('#VoucherTypeId').val() };
+
+            $.post('/Info/PinServiceDetails', dataJs, function (data, status) {
+                var strData = "";
+                for (var i = 0; i < data.length; i++) {
+                    strData += "<option value='" + data[i] + "'>" + digitGroup(data[i]) + "</option>";
+                }
+                $('#Amount').html(strData);
+            }).fail(function (d, status) {
+                debugger;
+            });
+        });
+        function digitGroup(num) {
+            return num.toLocaleString();
+        }
+    </script>
+}

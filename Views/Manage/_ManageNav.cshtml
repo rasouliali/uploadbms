@@ -1,0 +1,16 @@
+﻿@using ShppaingPart.Views.Manage
+@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+
+    <ul class="nav nav-pills nav-stacked">
+        <li class="@ManageNavPages.IndexNavClass(ViewContext)"><a asp-action="Index">پروفایل</a></li>
+        @if (User.IsInRole("Admin"))
+        {
+            <li class="@ManageNavPages.UserAccessNavClass(ViewContext)"><a asp-action="UserAccess">دسترسی</a></li>
+        }
+        <li class="@ManageNavPages.IntroducerNavClass(ViewContext)"><a asp-action="Introducer">معرف</a></li>
+        <li class="@ManageNavPages.ChangePasswordNavClass(ViewContext)"><a asp-action="ChangePassword">رمزعبور</a></li>
+    </ul>
+

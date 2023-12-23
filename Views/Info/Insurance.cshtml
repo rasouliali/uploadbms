@@ -1,0 +1,212 @@
+﻿@using System.Security.Claims
+@using Microsoft.Data.SqlClient;
+@{
+    ViewData["Title"] = "بیمه شو";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+
+    var userid = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var db = new DataAccess();
+    var isExistInstallMentData = db.ProccessSelectQuery("sp_getExistsInstallmentInsurance", new SqlParameter[] {
+                new SqlParameter("@userid",userid),
+                new SqlParameter("@Insurancetype",99),
+                }, System.Data.CommandType.StoredProcedure);
+    bool IsExistInstallment = false;
+    if (isExistInstallMentData != null && isExistInstallMentData.Rows.Count > 0)
+        IsExistInstallment = (bool)isExistInstallMentData.Rows[0][0];
+}
+
+<h1>بیمه شو
+<span class="backb"><a href="javascript:history.back()"><i class="icon-arrow-left"></i> بازگشت</a></span>
+</h1>
+
+    
+    
+
+
+    <div class="row iconn" dir="rtl">
+
+        <div class="col-12 d-block d-lg-none">
+            <img src="../new/img/insu.png" class="img-fluid mb-4 pb-2" alt=" " />
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-4">
+                <a href="/Info/Life">
+                    <div id="News" class="ads-boxz">
+                        <img src="../new/img/life-insurance.png">
+                        <div>زندگی</div>
+                    </div>
+                </a>
+                </div>
+
+                <div class="col-4">
+                <a href="/sale/index?workflowid=1034">
+                    <div id="News" class="ads-boxz">
+                        <img src="../new/img/slip.png">
+                        <div>حوادث</div>
+                    </div>
+                </a>
+                </div>
+                
+
+                <div class="col-4">
+                <a href="/Sale/Index?WorkFlowId=1035">
+                    <div id="News" class="ads-boxz">
+                        <img src="../new/img/examination.png">
+                        <div>درمان</div>
+                    </div>
+                </a>
+                </div>
+
+                
+                <div class="col-4">
+                <a href="/Sale/Index?WorkFlowId=1033&ThirdType=1">
+                    <div id="News" class="ads-boxz">
+                        <img src="../new/img/protection.png">
+                        <div>ثالث</div>
+                    </div>
+                </a>
+                </div>
+
+        
+                <div class="col-4">
+                <a href="/Info/CommingSoon">
+                    <div id="News" class="ads-boxz">
+                        <img src="../new/img/accident.png">
+                        <div>بدنه</div>
+                    </div>
+                </a>
+                </div>
+
+            
+                <div class="col-4">
+                <a href="/Sale/Index?WorkFlowId=1033&ThirdType=2">
+                    <div id="News" class="ads-boxz">
+                        <img src="../new/img/motorbike.png">
+                        <div>موتور</div>
+                    </div>
+                </a>
+                </div>
+
+
+
+                <div class="col-4">
+                <a href="/Info/CommingSoon">
+                    <div id="News" class="ads-boxz">
+                        <img src="../new/img/doctor.png">
+                        <div>پزشکان</div>
+                    </div>
+                </a>
+                </div>
+
+
+                <div class="col-4">
+                <a href="/Info/CommingSoon">
+                    <div id="News" class="ads-boxz">
+                        <img src="../new/img/fire.png">
+                        <div>  آتش سوزی </div>
+                    </div>
+                </a>
+                </div>
+                    
+
+
+                <div class="col-4">
+                <a href="/Info/CommingSoon">
+                    <div id="News" class="ads-boxz">
+                        <img src="../new/img/tooth.png">
+                        <div>دندانپزشکی</div>
+                    </div>
+                </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-6 d-none d-lg-block">
+            <img src="../new/img/insu.png" class="img-fluid" alt=" " />
+        </div>
+
+    </div>
+
+    <div class="row mb-4" dir="rtl">
+
+    <div class="col-12 col-md-6 mb-2">
+        <a href="/OfflineInsurance" class="btn btn-block btn-outline-primary">
+            مشاهه بیمه های ثبت شده
+        </a>
+        
+    </div>
+
+    @if (IsExistInstallment)
+    {
+        <div class="col-12 col-md-6">
+            <a href="/Sale/Index?WorkFlowId=99" class="btn btn-block btn-outline-primary">
+                پرداخت اقساط بیمه های ثبت شده
+            </a>
+        </div>
+    }
+
+    
+    
+    </div>
+<!--<fieldset>
+    <legend>بیمه سامان</legend>
+    <div class="first-row row">
+        <div class="col-xs-6 col-lg-3">
+            <a href="/Info/Travis">
+                <div class="panel panel-default insurance">
+                    <div class="panel-body">
+                        <img class="life-ico" src="/Mobile/icons/umbrella.jpg" />
+                        <div>
+                            بیمه های زندگی
+                        </div>-->
+@*<img class="life-ico" src="/insurance/mosaferati.jpg" />*@
+<!--</div>
+        </div>
+    </a>
+</div>
+<div class="col-xs-6 col-lg-3">
+    <a href="/Sale/Index?workflowid=1029">
+        <div class="panel panel-default insurance">
+            <div class="panel-body">
+                <img class="life-ico" src="/Mobile/icons/accident.jpg" />
+                <div>
+                    حوادث
+                </div>-->
+@*<img class="life-ico" src="/insurance/mosaferati.jpg" />*@
+<!--</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</fieldset>-->
+@*<fieldset>
+        <legend>بیمه خاورمیانه</legend>
+        <div class="first-row row">
+            <div class="col-xs-6 col-md-3">
+                <a href="/Sale/Index?workflowid=1014">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+                            <br>
+                            بیمه عمر خاورمیانه
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <a href="/Sale/Index?workflowid=1027">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+
+                            <br>
+                            بیمه مستمری خاورمیانه
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </fieldset>*@

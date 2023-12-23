@@ -1,0 +1,142 @@
+﻿
+@{
+    ViewData["Title"] = "باشگاه مشتریان";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+
+<h1>باشگاه مشتریان</h1>
+<h4>@*در این قسمت اگر بتوانید چند نفر از مشتریان بالقوه ای را به شما پیشنهاد می دهیم به سیستم همپیشه دعوت کنید*@  </h4>
+@section header {
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-toggle.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="~/datatables/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/datatables/DataTables-1.10.20/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/datatables/Buttons-1.6.0/css/buttons.dataTables.min.css">
+
+}
+
+@if (ViewBag.Data != null)
+{
+
+    <div class="row">
+        <div class="col-12" style="max-width:100%">
+            <table class="table table-bordered table-responsive" id="t1">
+                <thead>
+                    <tr>
+                        @for (int j = 0; j < ViewBag.Data.Columns.Count; j++)
+                        {
+                            <th>@ViewBag.Data.Columns[j].ColumnName</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @for (int k = 0; k < ViewBag.Data.Rows.Count; k++)
+                    {
+                        <tr>
+                            @for (int j = 0; j < ViewBag.Data.Columns.Count; j++)
+                            {
+                                <th>@ViewBag.Data.Rows[k][j]</th>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @*<script type="text/javascript" src="~/datatables/jQuery-3.3.1/jquery-3.3.1.min.js"></script>*@
+    <script src="~/lib/bootstrap/dist/js/bootstrap-toggle.min.js"></script>
+
+    <script type="text/javascript" src="~/datatables/dataTables.min.js"></script>
+    <script type="text/javascript" src="~/datatables/FixedHeader-3.1.6/js/dataTables.fixedHeader.min.js"></script>
+    <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="~/datatables/JSZip-2.5.0/jszip.min.js"></script>
+    <script type="text/javascript" src="~/datatables/pdfmake-0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="~/datatables/pdfmake-0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/buttons.print.min.js"></script>
+
+    <link id="datepickerTheme" href="~/persiandate/css/persian-datepicker.min.css" rel="stylesheet" />
+    <script src="~/persiandate/js/persian-date.min.js"></script>
+    <script src="~/persiandate/js/persian-datepicker.js"></script>
+    @*<script src="~/Scripts/json2csv.js"></script>*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Setup - add a text input to each footer cell
+            //debugger;
+            var strElem = "";
+            $('table thead tr th').each(function (index, elem) {
+                strElem += "<th>" + $($('table thead tr th')[index]).text() + "</th>";
+            });
+            $($('table')[0]).append("<tfoot><tr>" + strElem + "</tr></tfoot>");
+            $('table tfoot tr th').each(function (i) {
+                var title = $(this).text();
+                $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+
+                $('input', this).on('keyup change', function () {
+                    if (table.column(i).search() !== this.value) {
+                        table
+                            .column(i)
+                            .search(this.value)
+                            .draw();
+                    }
+                });
+            });
+
+            var table = $($('table')[0]).DataTable({
+                fixedHeader: true,
+                orderCellsTop: true,
+                responsive: true,
+                dom: 'Bfrtip', "order": [],
+                buttons: [
+                    {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [
+                            'copy',
+                            'excel',
+                            'csv',
+                            'pdf',
+                            'print'
+                        ]
+                    }
+                ],
+                "bAutoWidth": false,
+            });
+            $($('table')[0]).on("order.dt", function () {
+
+                if (table.settings().order().length === 1) {
+                    var order = table.settings().order()[0];
+                    var th = $("table th:eq(" + order[0] + ")");
+                    if (th.attr("data-sort-next") === "false") {
+                        table.order([]).draw();
+                        th.attr("data-sort-next", true);
+                    } else {
+                        if (order[1] === "desc") {
+                            th.attr("data-sort-next", false);
+                        } else {
+                            th.attr("data-sort-next", true);
+                        }
+                    }
+                }
+            });
+            //$('.GetOtherData').each(function (elem, index, item) {
+            //    $($('.GetOtherData')[index]).on('click', function () {
+            //        debugger;
+            //        var idV =$($('.GetOtherData')[index]).attr('data-id');
+            //        $.post("/Transactions/GetTransactionData", { id: parseInt(idV) }, function (data, status) {
+            //            var str = "";
+            //            for (var i = 0; i < data.length; i += 2) {
+            //                str += "<tr><td>" + data[i] + "</td><td>" + data[i + 1] + "</td></tr>";
+            //            }
+            //            $('#dataOfTransaction').html(str);
+            //            $('#modalshower').trigger('click');
+            //        });
+            //    });
+            //});
+        });
+    </script>
+}

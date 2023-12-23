@@ -1,0 +1,395 @@
+﻿
+@using Microsoft.Data.SqlClient;
+@{
+
+    var db = new DataAccess();
+    var usersDt = db.ProccessSelectQuery("sp_GetKhavarProducts", new SqlParameter[] {
+                new SqlParameter("@username",User.Identity.Name),
+                }, System.Data.CommandType.StoredProcedure);
+    var dtList = usersDt.Select().Select(r => new { code = r["code"], title = r["title"] }).ToList();
+    var dtSelect = new SelectList(dtList, "code", "title");
+    var per = new System.Globalization.PersianCalendar();
+    var perYear = per.GetYear(DateTime.Now);
+}
+<script type="text/javascript">
+
+</script>
+<form action="/Info/ShoppingData" method="post">
+    @Html.Hidden("WorkFlowId", 1014)
+    @Html.Hidden("ShoppingPageId", 1011)
+    <div class="row bordergreen">
+        <div>
+            <div class="form-group col-sm-6">
+                <input type="checkbox" id="forMySelf" />
+                <label for="forMySelf">خرید برای خودم</label>
+            </div>
+            <div class="form-group col-sm-6">
+                <input type="checkbox" id="beforeCustomer" />
+                <label for="beforeCustomer">خرید برای مشتریان قبلی</label>
+            </div>
+        </div>
+        <div id="befDiv" style="display:none" class="form-group">
+            <label for="beforeSelect">مشتریان قبلی</label>
+            <select id="beforeSelect" class="form-control sample"></select>
+        </div>
+        <fieldset>
+            <legend>خرید برای فرد جدید</legend>
+
+            <div class="form-group col-sm-4">
+                <label for="NationalCode_new">کد ملی</label>
+                <input id="NationalCode_new" type="text" required maxlength="10" class="form-control" />
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="birthdate_new">تاریخ تولد</label>
+                <input id="birthdate_new" class="form-control persian-date" />
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="" class="col-sm-12" >&nbsp;</label>
+                <button class="btn btn-default" id="SearchPerson" type="button">جست و جو</button>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <label for="NationalCode">کد ملی</label>
+            <input name="NationalCode" id="NationalCode" type="text" required readonly maxlength="10" class="form-control" />
+            <span validation-for="NationalCode" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="fname">نام</label>
+            <input name="fname" id="fname" type="text" disabled  class="form-control" />
+            <span validation-for="NationalCode" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="lname">نام خانوادگی</label>
+            <input name="lname" id="lname" type="text" disabled class="form-control" />
+            <span validation-for="NationalCode" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="birthdate">تاریخ تولد</label>
+            <input name="birthdate" id="birthdate" type="text" disabled class="form-control" />
+            <span validation-for="NationalCode" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Year">سال تولد</label>
+            <select class="form-control" id="Year" required name="Year" readonly oninput="CheckValidity(this);" oninvalid="CheckValidity(this);">
+                <option value="">لطفا انتخاب کنید</option>
+                @for (int i = 1399; i >= 1310; i--)
+                {
+                    if (i == 1360)
+                    {
+                        <option value="@i" selected="selected">@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            </select>
+            <span validation-for="Year" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="tel">شماره موبایل</label>
+            <input name="Phone" id="tel" class="form-control" type="number" required max="9999999999" min="9000000000" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);" />
+            <span validation-for="tel" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="Method">نوع بیمه</label>
+            <select class="form-control" id="Method" required name="Method" asp-items="@dtSelect" oninput="CheckValidity(this);" oninvalid="CheckValidity(this);"><option value="">لطفا انتخاب کنید</option></select>
+        </div>
+        <div class="form-group">
+            <label for="Method">مشخصات بیمه انتخاب شده</label>
+            @for (int i = 0; i < usersDt.Rows.Count; i++)
+            {
+                <div id="div@(usersDt.Rows[i]["code"])" class="insurance details row">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">مبلغ :</label>
+                        <label class="cl-left">@(((long)usersDt.Rows[i]["Amount"]).ToString("N0")) ريال</label>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">مدت زمان :</label>
+                        <label class="cl-left">@(((int)usersDt.Rows[i]["DurationDays"]).ToString("N0")) روزه</label>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">سقف هزینه پزشکی :</label>
+                        <label class="cl-left">@(((long)usersDt.Rows[i]["MedicalCosts"]).ToString("N0")) ريال</label>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">سقف فوت بر اثر حادثه :</label>
+                        <label class="cl-left">@(((long)usersDt.Rows[i]["DiedAsAccident"]).ToString("N0")) ريال</label>
+                    </div>
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <label class="cl-right">سقف فوت :</label>
+                        <label class="cl-left">@(((long)usersDt.Rows[i]["Died"]).ToString("N0")) ريال</label>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            <input type="checkbox" name="sick" id="sick" value="true" />
+            <label for="sick">آیا بیماری خاصی دارید؟</label>
+        </div>
+        <div class="form-group" id="sickesList" style="display:none">
+            <fieldset>
+                <legend>لیست بیماری ها:</legend>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList1" value="heartSick" />
+                    <label for="sickesList1">
+                        انواع بیماریهای قلبی مانند: سکته قلبی، جراحی قلب باز، جراحی های داخل عروقی، کاردیو مایوپاتی؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList2" value="SelfSafe" />
+                    <label for="sickesList2">
+                        انواع بیماریهای خود ایمنی: هپاتیت و ایدز؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList3" value="systemic" />
+                    <label for="sickesList3">
+                        انواع بیماریهای سیستمیک مانند: آرتریت روماتوئید، کولیت اولسروز؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList4" value="Cancer" />
+                    <label for="sickesList4">
+                        انواع سرطان؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList5" value="HeadTrauma" />
+                    <label for="sickesList5">
+                        انواع ترومای سر مانند: ضربه های شدید مغزی؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList6" value="Vascular" />
+                    <label for="sickesList6">
+                        انواع بیماریهای عروقی مانند: سکته مغزی، DVT؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList7" value="Liver" />
+                    <label for="sickesList7">
+                        هرگونه نارسایی کبد و کلیه ها؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList8" value="Paralysis" />
+                    <label for="sickesList8">
+                        فلج اندام؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList9" value="LackOfBody" />
+                    <label for="sickesList9">
+                        فقدان دست یا پا و نابینایی کامل چشم ها؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList10" value="Diabetes" />
+                    <label for="sickesList10">
+                        دیابت کنترل نشده؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList11" value="Parkinson" />
+                    <label for="sickesList11">
+                        پارکینسون؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList12" value="MS" />
+                    <label for="sickesList12">
+                        MS؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList13" value="Coma" />
+                    <label for="sickesList13">
+                        کما؟
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="sickesList" id="sickesList14" value="BurnsUp" />
+                    <label for="sickesList14">
+                        سوختگی های درجه 3 به بالا؟
+                    </label>
+                </div>
+            </fieldset>
+        </div>
+        <div></div>
+        <button class="btn btn-warning form-control" type="submit">خرید</button>
+    </div>
+</form>
+
+
+<script type="text/javascript">
+
+    function CheckValidity(elem) {
+        elem.setCustomValidity('');
+        if (elem.validity.valueMissing) {
+            elem.setCustomValidity('این فیلد اجباری است');
+            return true;
+        }
+        //if ($(elem).attr('id') == "NationalCode") {
+        //    //if (validateNationalCode($(elem).val()))
+        //    elem.setCustomValidity($(elem).val());//'کد ملی صحیح نیست');
+        //}
+        if ($(elem).attr('id') == "tel") {
+            if (elem.validity.rangeOverflow || elem.validity.rangeUnderflow)
+                elem.setCustomValidity('لطفا شماره همراه صحیح وارد نمایید');
+        }
+        return true;
+    }
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+        $('#sick').on('change', function () {
+            if ($(this).prop('checked'))
+                $('#sickesList').show();
+            else
+                $('#sickesList').hide();
+        })
+        $('#NationalCode').on('change', function () {
+            if (validateNationalCode($('#NationalCode').val()) == false)
+                alert('کد ملی صحیح نیست');
+            //$('#NationalCode').setCustomValidity("کد ملی صحیح نیست");
+
+            //alert('کد ملی صحیح نیست');
+        });
+
+        $('form').submit(function (e) {
+            if (validateNationalCode($('#NationalCode').val()) == false) {
+                alert('کد ملی صحیح نیست');
+                $('#NationalCode').focus();
+                e.preventDefault();
+            }
+            if (parseInt('@perYear') - $('#Year').val() > 55) {
+
+                alert('بیمه فقط برای افراد کمتر از 56 سال صادر می شود');
+                e.preventDefault();
+            }
+            var sickList = false;
+            $('[name=sickesList]').each(function () {
+                sickList = sickList || $(this).prop('checked');
+            });
+            if (sickList) {
+                alert('در صورت وجود هر یک از بیماری های گفته شده امکان خرید بیمه وجود ندارد');
+                e.preventDefault();
+            }
+        });
+        $('#Method').on('change', function () {
+            var id = this.value;
+            $('.insurance.details').removeClass('show');
+            $('#div' + id).addClass('show');
+        });
+    });
+    function validateNationalCode(nc) {
+        var sumNaCode = 0;
+        for (var i = 0; i < nc.length - 1; i++) {
+            sumNaCode = sumNaCode + parseInt(nc[i]) * (10 - i);
+        }
+        console.log(sumNaCode);
+        console.log(sumNaCode % 11);
+        if (sumNaCode % 11 < 2) {
+            if ((sumNaCode % 11).toString() == nc[9])
+                return true;
+        } else {
+            if ((11 - (sumNaCode % 11)).toString() == nc[9])
+                return true;
+        }
+        return false;
+    }
+    function digitGroup(num) {
+        return num.toLocaleString();
+    }
+
+    var reportName = "omr-khavar";
+    document.addEventListener("DOMContentLoaded", function (event) {
+        var loaddata = false;
+        $('#beforeCustomer').on('change', function () {
+            if ($('#beforeCustomer').prop('checked')) {
+                $('#forMySelf').prop('checked', false);
+                $('#befDiv').show();
+                if (loaddata == false) {
+                    $.get('/JsonData/GetBeforeData?forProduct=' + reportName, function (data) {
+                        var jsonData = JSON.parse(data);
+                        var strCombo = '<option value="">لطفا انتخاب کنید</option>';
+                        if (jsonData.length == 0)
+                            strCombo = '<option value="">خرید قبلی ندارید</option>';
+                        for (var i = 0; i < jsonData.length; i++) {
+                            strCombo += '<option value="' + i.toString() + '">' + jsonData[i].NationalCode+ "-" + jsonData[i].Year + "-" + jsonData[i].phoneToCharge + '</option>';
+
+                        }
+                        $('#beforeSelect').html(strCombo);
+                        $('#beforeSelect').on('change', function () {
+                            var index = $('#beforeSelect').val();
+                            if (index) {
+                                $('#NationalCode').val(jsonData[index].NationalCode);
+                                showLoadedData(jsonData[index])
+                            }
+                        });
+                    });
+                }
+            } else {
+                $('#befDiv').hide();
+            }
+        });
+
+        $('#forMySelf').on('change', function () {
+            if ($('#forMySelf').prop('checked')) {
+                $('#beforeCustomer').prop('checked', false);
+                $.post('/Sale/MyselfData', { forProduct: reportName }, function (data) {
+                    if (data) {
+                        var jsonData = JSON.parse(data.data);
+                        //var jsonData = new JSON.parse(data.toString().substring(1, data.length - 2));
+
+                        //var jsonData = JSON.parse(data);
+                        if (jsonData.length > 0) {
+                            showLoadedData(jsonData[0])
+                        }
+                    }
+                });
+            }
+        });
+
+
+        window.pd = $('.persian-date').each(function (index, elem) {
+            $(this).persianDatepicker({
+                //altField: "#alt" + (index + 1).toString(),
+                altFormat: 'LLLL',
+                initialValue: false,
+                observer: true,
+                format: 'YYYY/MM/DD',
+                //timePicker: {
+                //    enabled: true
+                //}
+            });
+        });
+        $('#SearchPerson').on('click', function () {
+            var NationalCode_new = $('#NationalCode_new').val();
+            var birthdate_new = $('#birthdate_new').val();
+            $.post('/Sale/GetCivilRegistryOfficeData', { nc: NationalCode_new, bt: birthdate_new }, function (data) {
+                $('#NationalCode').val(data.nationalCode);
+                $('#fname').val(data.first_name);
+                $('#lname').val(data.last_name);
+                $('#birthdate').val(data.birthdate);
+                if (data.birthdate)
+                    if (data.birthdate.toString().indexOf('/'))
+                        $('#Year').val(data.birthdate.split('/')[0]);
+                    else
+                        $('#Year').val(data.birthdate.split('-')[0]);
+            });
+        });
+    });
+    function showLoadedData(data) {
+        //NationalCode, Year, Method, phoneToCharge
+        $('#Method').val(data.Method);
+        $('#Method').trigger('change');
+        $('#NationalCode').val(data.NationalCode);
+        $('#Year').val(data.Year);
+        $('#tel').val(data.phoneToCharge);
+
+    }
+
+
+
+</script>

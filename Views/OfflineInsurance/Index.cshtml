@@ -1,0 +1,605 @@
+﻿@{
+    ViewData["Title"] = "سوابق بیمه ها";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+    System.Data.DataTable LifeTable = null;
+    System.Data.DataTable LifePlusTable = null;
+    System.Data.DataTable ThirdTable = null;
+    System.Data.DataTable AccidentTable = null;
+    System.Data.DataTable TreatmentTable = null;
+    if (ViewBag.OfflineInsurance != null && ViewBag.OfflineInsurance.Tables.Count > 0)
+        LifeTable = ViewBag.OfflineInsurance.Tables[0];
+    if (ViewBag.OfflineInsurance != null && ViewBag.OfflineInsurance.Tables.Count > 1)
+        ThirdTable = ViewBag.OfflineInsurance.Tables[1];
+    if (ViewBag.OfflineInsurance != null && ViewBag.OfflineInsurance.Tables.Count > 2)
+        AccidentTable = ViewBag.OfflineInsurance.Tables[2];
+    if (ViewBag.OfflineInsurance != null && ViewBag.OfflineInsurance.Tables.Count > 3)
+        TreatmentTable = ViewBag.OfflineInsurance.Tables[3];
+    if (ViewBag.OfflineInsurance != null && ViewBag.OfflineInsurance.Tables.Count > 4)
+        LifePlusTable = ViewBag.OfflineInsurance.Tables[4];
+}
+<h1>سوابق بیمه ها
+<span class="backb"><a href="javascript:history.back()"><i class="icon-arrow-left"></i>
+            بازگشت</a></span>
+</h1>
+<a class="btn btn-primary mb-4 btn-sm-block" href="/OfflineInsurance/WageConfirmed">مشاهده کارمزدها</a>
+
+
+<div class="bititle">بیمه عمر</div>
+<div class="datat" dir="rtl">
+
+<table class="table">
+    <thead style="display: none;">
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (LifeTable != null && LifeTable.Rows.Count > 0)
+        {
+            foreach (System.Data.DataRow item in LifeTable.Rows)
+            {
+                var status = false;
+                try { status = ((bool)item["status"]); }
+                catch { }
+        <tr>
+            <td style="border: 0px;">
+                <div class="row border dradius prolist" onclick="expand(this)" dir="rtl" style="margin-bottom: 0px;">
+                    <div class="col-5 pb-2">بیمه کننده :</div><div class="col-7 text-right pb-2">@item["payer_name"]	@item["payer_lastname"]</div>
+                    <div class="col-6 pb-2">بیمه شونده :</div><div class="col-6 text-right pb-2">@item["Insured_name"]	@item["Insured_lastname"]</div>
+                    <div class="col-6 pb-2">کد بیمه :</div><div class="col-6 text-right pb-2">@item["LifeVoucherId"]</div>
+                    <div class="col-6 pb-2">شرکت بیمه :</div><div class="col-6 text-right pb-2">@(item["Insured_company"].ToString() == "saman" ? "سامان" : item["Insured_company"].ToString() == "novin" ? "نوین" : item["Insured_company"].ToString() == "mellat" ? "ملت" : "")</div>
+                    <div class="col-6 pb-2">عنوان طرح :</div><div class="col-6 text-right pb-2">@item["Title"]</div>
+
+                    <div class="col-6 pb-2">وضعیت :</div><div class="col-6 text-right pb-2">
+                        @(((bool)item["status"]) ? "موفق" : "ناتمام")
+                        @if (item.IsNull("SendToCompany") == false)
+                        {
+                            <span>@((bool)item["SendToCompany"] ? "(ارسال شده)" : "(رد شده)")</span>
+                        }
+                    </div>
+                    <div class="col-6 pb-2">نحوه پرداخت :</div><div class="col-6 text-right pb-2">@(item["PayCountInYear"].ToString() == "1" ? "سالانه" : item["PayCountInYear"].ToString() == "2" ? "شش ماه یکبار" : item["PayCountInYear"].ToString() == "4" ? "سه ماه یکبار" : item["PayCountInYear"].ToString() == "12" ? "ماهانه" : "")</div>
+                    <div class="col-6 pb-2">مبلغ :</div><div class="col-6 text-right pb-2">@(((long)item["TotalAmount"]).ToString("N0"))</div>
+                    <div class="col-6 pb-2">پرداخت شده :</div><div class="col-6 text-right pb-2">@(((long)item["sumPaid"]).ToString("N0"))</div>
+                    <div class="col-6 pb-2">کارمزد :</div><div class="col-6 text-right pb-2">
+                        @if (item.IsNull("sumWage") == false)
+                        {
+                            @(((long)item["sumWage"]).ToString("N0"))
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    <div class="col-6 pb-2">کارمزد تایید شده :</div><div class="col-6 text-right pb-2">
+                        @if (item.IsNull("sumConfirmedWage") == false)
+                        {
+                            @(((long)item["sumConfirmedWage"]).ToString("N0"))
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    <div class="col-6 pb-2">تاریخ ثبت :</div><div class="col-6 text-right pb-2">@ShppaingPart.Controllers.SharedLogic.ToShamsi(((DateTime)item["DateAdded"]).Date)</div>
+                    
+                    @{
+                        string strBankData = "";
+                        strBankData = item["BankData"].ToString();
+                        var arrData = strBankData.Split(new[] { "@@" }, StringSplitOptions.None);
+                        string bankCodes = arrData[0] + " - " + arrData[1];
+                        string responseDate = "";
+                        if (arrData[2].Length > 0)
+                            responseDate = ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(arrData[2]));
+                    }
+
+                    <div class="col-6 pb-2">کد پیگیری :</div><div class="col-6 text-right pb-2"> @bankCodes</div>
+                    <div class="col-6 pb-2">تاریخ پرداخت :</div><div class="col-6 text-right pb-2">@responseDate</div>
+                    <div class="col-6 pb-2">عملیات :</div><div class="col-6 text-right pb-2">
+                        <a href="/OfflineInsurance/ViewLifeDetail?id=@item["LifeVoucherId"]" data-id="">مشاهده</a>
+                            @if (status == false)
+                            {
+                            }
+                            else
+                            {
+                                if (User.IsInRole("Admin"))
+                                {
+                                    if (item.IsNull("SendToCompany") || (bool)item["SendToCompany"] == false)
+                                    {
+                                        <a href="/OfflineInsurance/SendToCompany?id=@item["LifeVoucherId"]&reportTypeId=1&SetSend=true" class="btn btn-success">ارسال شد</a>
+                                    }
+                                    if (item.IsNull("SendToCompany") || (bool)item["SendToCompany"])
+                                    {
+                                        <a href="/OfflineInsurance/SendToCompany?id=@item["LifeVoucherId"]&reportTypeId=1&SetSend=false" class="btn btn-danger">رد شد</a>
+                                    }
+                                }
+                            }
+                    </div>
+                </div>
+            </td>
+
+        </tr>
+            }
+
+        }
+
+    </tbody>
+</table>
+</div>
+
+
+<div class="bititle">بیمه عمر پلاس</div>
+<div class="datat" dir="rtl">
+<table class="table">
+    <thead style="display: none;">
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (LifePlusTable != null && LifePlusTable.Rows.Count > 0)
+        {
+            foreach (System.Data.DataRow item in LifePlusTable.Rows)
+            {
+                var status = false;
+                try { status = ((bool)item["status"]); }
+                catch { }
+        <tr>
+            <td style="border: 0px;">
+                <div class="row border dradius prolist" onclick="expand(this)" dir="rtl" style="margin-bottom: 0px;">
+                    <div class="col-5 pb-2">بیمه کننده :</div><div class="col-7 text-right pb-2">@item["payer_name"]	@item["payer_lastname"]</div>
+                    <div class="col-5 pb-2">بیمه شونده :</div><div class="col-7 text-right pb-2">@item["Insured_name"]	@item["Insured_lastname"]</div>
+                    <div class="col-5 pb-2">کد بیمه :</div><div class="col-7 text-right pb-2">@item["LifeVoucherId"]</div>
+                    <div class="col-5 pb-2">شرکت بیمه :</div><div class="col-7 text-right pb-2">@(item["Insured_company"].ToString()=="saman"?"سامان":item["Insured_company"].ToString() == "novin" ? "نوین":item["Insured_company"].ToString() == "mellat" ? "ملت":"")</div>
+                    <div class="col-5 pb-2">عنوان طرح :</div><div class="col-7 text-right pb-2">@item["Title"]</div>
+                    <div class="col-5 pb-2">وضعیت :</div><div class="col-7 text-right pb-2">
+                        @(((bool)item["status"])?"موفق":"ناتمام")
+                        @if (item.IsNull("SendToCompany") == false)
+                        {
+                            <span>@((bool)item["SendToCompany"] ?"(ارسال شده)":"(رد شده)")</span>
+                        }
+                    </div>
+                    <div class="col-5 pb-2">نحوه پرداخت :</div><div class="col-7 text-right pb-2">@(item["PayCountInYear"].ToString() == "1"?"سالانه":item["PayCountInYear"].ToString() == "2"?"شش ماه یکبار":item["PayCountInYear"].ToString() == "4"?"سه ماه یکبار":item["PayCountInYear"].ToString() == "12"?"ماهانه":"")</div>
+                    <div class="col-5 pb-2">مبلغ :</div><div class="col-7 text-right pb-2">@(((long)item["TotalAmount"]).ToString("N0"))</div>
+                    <div class="col-5 pb-2">پرداخت شده :</div><div class="col-7 text-right pb-2">@(((long)item["sumPaid"]).ToString("N0"))</div>
+                    <div class="col-5 pb-2">کارمزد :</div><div class="col-7 text-right pb-2">
+                        @if (item.IsNull("sumWage") == false)
+                        {
+                            @(((long)item["sumWage"]).ToString("N0"))
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    <div class="col-5 pb-2">کارمزد تایید شده :</div><div class="col-7 text-right pb-2">
+                        @if (item.IsNull("sumConfirmedWage") == false)
+                        {
+                            @(((long)item["sumConfirmedWage"]).ToString("N0"))
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    <div class="col-5 pb-2">تاریخ ثبت :</div><div class="col-7 text-right pb-2">@ShppaingPart.Controllers.SharedLogic.ToShamsi(((DateTime)item["DateAdded"]).Date)</div>
+                    @{
+                        string strBankData = "";
+                        strBankData = item["BankData"].ToString();
+                        var arrData = strBankData.Split(new[] { "@@" }, StringSplitOptions.None);
+                        string bankCodes = arrData[0] + " - " + arrData[1];
+                        string responseDate = "";
+                        if (arrData[2].Length > 0)
+                            responseDate = ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(arrData[2]));
+                    }
+                    <div class="col-5 pb-2">کد پیگیری :</div><div class="col-7 text-right pb-2">@bankCodes</div>
+                    <div class="col-5 pb-2">تاریخ پرداخت :</div><div class="col-7 text-right pb-2">@responseDate</div>
+                    <div class="col-5 pb-2">عملیات :</div><div class="col-7 text-right pb-2">
+                        <a href="/OfflineInsurance/ViewLifePlusDetail?id=@item["LifeVoucherId"]" data-id="">مشاهده</a>
+                        @if (status == false)
+                        {
+                        }
+                        else
+                        {
+                            if (User.IsInRole("Admin"))
+                            {
+                                if (item.IsNull("SendToCompany") || (bool)item["SendToCompany"] == false)
+                                {
+                                    <a href="/OfflineInsurance/SendToCompany?id=@item["LifeVoucherId"]&reportTypeId=1&SetSend=true" class="btn btn-success">ارسال شد</a>
+                                }
+                                if (item.IsNull("SendToCompany") || (bool)item["SendToCompany"])
+                                {
+                                    <a href="/OfflineInsurance/SendToCompany?id=@item["LifeVoucherId"]&reportTypeId=1&SetSend=false" class="btn btn-danger">رد شد</a>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </td>
+        </tr>
+            }
+
+        }
+
+    </tbody>
+</table>
+</div>
+
+
+<div class="bititle">بیمه ثالث</div>
+<div class="datat" dir="rtl">
+<table class="table">
+    <thead style="display: none;">
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ThirdTable != null && ThirdTable.Rows.Count > 0)
+        {
+            foreach (System.Data.DataRow item in ThirdTable.Rows)
+            {
+                var status = false;
+                try { status = ((bool)item["status"]); }
+                catch { }
+        <tr>
+
+            <td style="border: 0px;">
+                <div class="row border dradius prolist" onclick="expand(this)" dir="rtl" style="margin-bottom: 0px;">
+                    <div class="col-5 pb-2">بیمه شونده :</div><div class="col-7 text-right pb-2">@item["driver_name"]	@item["driver_lastname"]</div>
+                    <div class="col-5 pb-2">کد بیمه :</div><div class="col-7 text-right pb-2">@item["ThirdPartyInsuranceId"]</div>
+                    <div class="col-5 pb-2">طرح انتخابی :</div><div class="col-7 text-right pb-2">@(item["CompanyTitle"].ToString())</div>
+                    <div class="col-5 pb-2">وضعیت :</div><div class="col-7 text-right pb-2">
+                        @(((bool)item["status"])?"موفق":"ناتمام")
+                        @if (item.IsNull("SendToCompany") == false)
+                        {
+                            <span>@((bool)item["SendToCompany"] ?"(ارسال شده)":"(رد شده)")</span>
+                        }
+                    </div>
+                    <div class="col-5 pb-2">مبلغ :</div><div class="col-7 text-right pb-2">@(((long)item["Amount"]).ToString("N0"))</div>
+                    <div class="col-5 pb-2">پرداخت شده :</div><div class="col-7 text-right pb-2">@(((long)item["sumPaid"]).ToString("N0"))</div>
+                    <div class="col-5 pb-2">کارمزد :</div><div class="col-7 text-right pb-2">
+                        @if (item.IsNull("sumWage") == false)
+                        {
+                            @(((long)item["sumWage"]).ToString("N0"))
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    <div class="col-5 pb-2">کارمزد تایید شده :</div><div class="col-7 text-right pb-2">
+                        @if (item.IsNull("sumConfirmedWage") == false)
+                        {
+                            @(((long)item["sumConfirmedWage"]).ToString("N0"))
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    <div class="col-5 pb-2">تاریخ ثبت :</div><div class="col-7 text-right pb-2">@ShppaingPart.Controllers.SharedLogic.ToShamsi(((DateTime)item["DateAdded"]).Date)</div>
+                    @{
+                        string strBankData = "";
+                        strBankData = item["BankData"].ToString();
+                        var arrData = strBankData.Split(new[] { "@@" }, StringSplitOptions.None);
+                        string bankCodes = arrData[0] + " - " + arrData[1];
+                        string responseDate = "";
+                        if (arrData[2].Length > 0)
+                            responseDate = ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(arrData[2]));
+                    }
+                    <div class="col-5 pb-2">کد پیگیری :</div><div class="col-7 text-right pb-2">@bankCodes</div>
+                    <div class="col-5 pb-2">تاریخ پرداخت :</div><div class="col-7 text-right pb-2">@responseDate</div>
+                    <div class="col-5 pb-2">عملیات :</div><div class="col-7 text-right pb-2">
+                        <a href="/OfflineInsurance/ViewThirdDetail?id=@item["ThirdPartyInsuranceId"]" data-id="">مشاهده</a>
+                            @if (status == false)
+                            {
+                            }
+                            else
+                            {
+                                if (User.IsInRole("Admin"))
+                                {
+                                    if (item.IsNull("SendToCompany") || (bool)item["SendToCompany"] == false)
+                                    {
+                                        <a href="/OfflineInsurance/SendToCompany?id=@item["ThirdPartyInsuranceId"]&reportTypeId=2&SetSend=true" class="btn btn-success">ارسال شد</a>
+                                    }
+                                    if (item.IsNull("SendToCompany") || (bool)item["SendToCompany"])
+                                    {
+                                        <a href="/OfflineInsurance/SendToCompany?id=@item["ThirdPartyInsuranceId"]&reportTypeId=2&SetSend=false" class="btn btn-danger">رد شد</a>
+                                    }
+                                }
+                            }
+                    </div>
+                </div>
+            </td>
+
+        </tr>
+            }
+        }
+    </tbody>
+</table>
+</div>
+
+
+<div class="bititle">بیمه حوادث</div>
+<div class="datat" dir="rtl">
+<table class="table">
+    <thead style="display: none;">
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (AccidentTable != null && AccidentTable.Rows.Count > 0)
+        {
+            foreach (System.Data.DataRow item in AccidentTable.Rows)
+            {
+                var status = false;
+                try { status = ((bool)item["status"]); }
+                catch { }
+        <tr>
+            <td style="border: 0px;">
+                <div class="row border dradius prolist" onclick="expand(this)" dir="rtl" style="margin-bottom: 0px;">
+                    <div class="col-5 pb-2">بیمه شونده :</div><div class="col-7 text-right pb-2">@item["agent_name"]	@item["agent_lastname"]</div>
+                    <div class="col-5 pb-2">کد بیمه :</div><div class="col-7 text-right pb-2">@item["AccidentInsuranceId"]</div>
+                    <div class="col-5 pb-2">طرح انتخابی :</div><div class="col-7 text-right pb-2">@(item["CompanyTitle"].ToString())</div>
+                    <div class="col-5 pb-2">وضعیت :</div><div class="col-7 text-right pb-2">
+                        @(((bool)item["status"])?"موفق":"ناتمام")
+                        @if (item.IsNull("SendToCompany") == false)
+                        {
+                            <span>@((bool)item["SendToCompany"] ?"(ارسال شده)":"(رد شده)")</span>
+                        }
+                    </div>
+                    <div class="col-5 pb-2">مبلغ :</div><div class="col-7 text-right pb-2">@(((long)item["Amount"]).ToString("N0"))</div>
+                    <div class="col-5 pb-2">پرداخت شده :</div><div class="col-7 text-right pb-2">@(((long)item["sumPaid"]).ToString("N0"))</div>
+                    <div class="col-5 pb-2">کارمزد:</div><div class="col-7 text-right pb-2">
+                        @if (item.IsNull("sumWage") == false)
+                        {
+                            @(((long)item["sumWage"]).ToString("N0"))
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    <div class="col-5 pb-2">کارمزد تایید شده :</div><div class="col-7 text-right pb-2">
+                        @if (item.IsNull("sumConfirmedWage") == false)
+                        {
+                            @(((long)item["sumConfirmedWage"]).ToString("N0"))
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    <div class="col-5 pb-2">تاریخ ثبت :</div><div class="col-7 text-right pb-2">@ShppaingPart.Controllers.SharedLogic.ToShamsi(((DateTime)item["DateAdded"]).Date)</div>
+                    @{
+                        string strBankData = "";
+                        strBankData = item["BankData"].ToString();
+                        var arrData = strBankData.Split(new[] { "@@" }, StringSplitOptions.None);
+                        string bankCodes = arrData[0] + " - " + arrData[1];
+                        string responseDate = "";
+                        if (arrData[2].Length > 0)
+                            responseDate = ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(arrData[2]));
+                    }
+                    <div class="col-5 pb-2">کد پیگیری :</div><div class="col-7 text-right pb-2">@bankCodes</div>
+                    <div class="col-5 pb-2">تاریخ پرداخت :</div><div class="col-7 text-right pb-2">@responseDate</div>
+                    <div class="col-5 pb-2">عملیات :</div><div class="col-7 text-right pb-2">
+                        <a href="/OfflineInsurance/ViewAccidentDetail?id=@item["AccidentInsuranceId"]" data-id="">مشاهده</a>
+                        @if (status == false)
+                        {
+                        }
+                        else
+                        {
+                            if (User.IsInRole("Admin"))
+                            {
+                                if (item.IsNull("SendToCompany") || (bool)item["SendToCompany"] == false)
+                                {
+                                    <a href="/OfflineInsurance/SendToCompany?id=@item["AccidentInsuranceId"]&reportTypeId=3&SetSend=true" class="btn btn-success">ارسال شد</a>
+                                }
+                                if (item.IsNull("SendToCompany") || (bool)item["SendToCompany"])
+                                {
+                                    <a href="/OfflineInsurance/SendToCompany?id=@item["AccidentInsuranceId"]&reportTypeId=3&SetSend=false" class="btn btn-danger">رد شد</a>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </td>
+
+        </tr>
+            }
+        }
+    </tbody>
+</table>
+</div>
+
+<div class="bititle">بیمه درمان</div>
+<div class="datat" dir="rtl">
+<table class="table">
+    <thead style="display: none;">
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (TreatmentTable != null && TreatmentTable.Rows.Count > 0)
+        {
+            foreach (System.Data.DataRow item in TreatmentTable.Rows)
+            {
+                var status = false;
+                try { status = ((bool)item["status"]); }
+                catch { }
+        <tr>
+            <td style="border: 0px;">
+                <div class="row border dradius prolist" onclick="expand(this)" dir="rtl" style="margin-bottom: 0px;">
+                    <div class="col-5 pb-2">بیمه شونده :</div><div class="col-7 text-right pb-2">@item["agent_name"]	@item["agent_lastname"]</div>
+                    <div class="col-5 pb-2">کد بیمه :</div><div class="col-7 text-right pb-2">@item["TreatmentInsuranceId"]</div>
+                    <div class="col-5 pb-2">طرح انتخابی :</div><div class="col-7 text-right pb-2">@(item["CompanyTitle"].ToString())</div>
+                    <div class="col-5 pb-2">وضعیت :</div><div class="col-7 text-right pb-2">
+                        @(((bool)item["status"])?"موفق":"ناتمام")
+                        @if (item.IsNull("SendToCompany") == false)
+                        {
+                            <span>@((bool)item["SendToCompany"] ?"(ارسال شده)":"(رد شده)")</span>
+                        }
+                    </div>
+                    <div class="col-5 pb-2">مبلغ :</div><div class="col-7 text-right pb-2">@(((long)item["Amount"]).ToString("N0"))</div>
+                    <div class="col-5 pb-2">پرداخت شده :</div><div class="col-7 text-right pb-2">@(((long)item["sumPaid"]).ToString("N0"))</div>
+                    <div class="col-5 pb-2">کارمزد :</div><div class="col-7 text-right pb-2">
+                        @if (item.IsNull("sumWage") == false)
+                        {
+                            @(((long)item["sumWage"]).ToString("N0"))
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    <div class="col-5 pb-2">کارمزد تایید شده :</div><div class="col-7 text-right pb-2">
+                        @if (item.IsNull("sumConfirmedWage") == false)
+                        {
+                            @(((long)item["sumConfirmedWage"]).ToString("N0"))
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    <div class="col-5 pb-2">تاریخ ثبت :</div><div class="col-7 text-right pb-2">
+                        @if (item.IsNull("DateAdded") == false)
+                        {
+                            @ShppaingPart.Controllers.SharedLogic.ToShamsi(((DateTime)item["DateAdded"]).Date)
+                        }
+                        else
+                        {
+                            
+                        }
+                    </div>
+                    @{
+                        string strBankData = "";
+                        strBankData = item["BankData"].ToString();
+                        var arrData = strBankData.Split(new[] { "@@" }, StringSplitOptions.None);
+                        string bankCodes = "";
+                        string responseDate = "";
+                        if (string.IsNullOrEmpty(strBankData) == false)
+                        {
+                            bankCodes =arrData[0] + " - " + arrData[1];
+                            if (arrData[2].Length > 0)
+                                responseDate = ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(arrData[2]));
+                        }
+                    }
+                    <div class="col-5 pb-2">کد پیگیری :</div><div class="col-7 text-right pb-2">@bankCodes</div>
+                    <div class="col-5 pb-2">تاریخ پرداخت :</div><div class="col-7 text-right pb-2">@responseDate</div>
+                    <div class="col-5 pb-2">عملیات :</div><div class="col-7 text-right pb-2">
+                        <a href="/OfflineInsurance/ViewTreatmentDetail?id=@item["TreatmentInsuranceId"]" data-id="">مشاهده</a>
+                        @if (status == false)
+                        {
+                        }
+                        else
+                        {
+                            if (User.IsInRole("Admin"))
+                            {
+                                if (item.IsNull("SendToCompany") || (bool)item["SendToCompany"] == false)
+                                {
+                                    <a href="/OfflineInsurance/SendToCompany?id=@item["TreatmentInsuranceId"]&reportTypeId=4&SetSend=true" class="btn btn-success">ارسال شد</a>
+                                }
+                                if (item.IsNull("SendToCompany") || (bool)item["SendToCompany"])
+                                {
+                                    <a href="/OfflineInsurance/SendToCompany?id=@item["TreatmentInsuranceId"]&reportTypeId=4&SetSend=false" class="btn btn-danger">رد شد</a>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </td>
+
+
+        </tr>
+            }
+        }
+    </tbody>
+</table>
+</div>
+
+
+@section Scripts{
+    <style>
+        table.dataTable thead tr {
+            background-color: transparent;
+        }
+
+        table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > td.sorting_asc, table.dataTable thead > tr > td.sorting_desc, table.dataTable thead > tr > td.sorting {
+            background-color: transparent;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="~/datatables/datatables.min.css" />
+    <script type="text/javascript" src="~/datatables/dataTables.min.js?v=1"></script>
+    <script type="text/javascript">
+        if (document.addEventListener) {
+            document.addEventListener("DOMContentLoaded", init, false);
+        }
+        else {
+            document.attachEvent("onDOMContentLoaded", init);
+        }
+        function init() {
+            $('table').each(function (t_index, elem) {
+                var strElem = "";
+                $('table').eq(t_index).find('thead tr th').each(function (index, elem) {
+                    strElem += "<th>" + $('table').eq(t_index).find('thead tr th').eq(index).text() + "</th>";
+                });
+
+                var table = $('table').eq(t_index).DataTable({
+                    fixedHeader: true,
+                    orderCellsTop: true,
+                    responsive: true,
+                    dom: 'Bfrtip', "order": [],
+                    buttons: [
+                        {
+                            extend: 'collection',
+                            text: '<img src="../new/img/download.png" width="32px" />',
+                            buttons: [
+                                'copy',
+                                'excel',
+                                'csv',
+                                'pdf',
+                                'print'
+                            ]
+                        }
+                    ],
+					"oLanguage": {
+                        "sSearch": ""
+                    },
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "جستجو"
+                    },
+                    "bAutoWidth": false,
+                });
+                $('table').eq(t_index).on("order.dt", function () {
+                    if (table.settings().order().length === 1) {
+                        var order = table.settings().order()[0];
+                        var th = $("table th:eq(" + order[0] + ")");
+                        if (th.attr("data-sort-next") === "false") {
+                            table.order([]).draw();
+                            th.attr("data-sort-next", true);
+                        } else {
+                            if (order[1] === "desc") {
+                                th.attr("data-sort-next", false);
+                            } else {
+                                th.attr("data-sort-next", true);
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+
+        function expand(card) {
+            card.classList.toggle('profile--expanded');
+            if (!card.classList.contains('profile--expanded')) card.classList.toggle('profile--unexpanded');
+            else if (card.classList.contains('profile--expanded') && card.classList.contains('profile--unexpanded')) card.classList.toggle('profile--unexpanded');
+        }
+    </script>
+
+    
+}

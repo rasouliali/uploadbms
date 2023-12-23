@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewData["Title"] = "کیف پول";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+
+<h1>کیف پول</h1>
+
+<div class="first-row row">
+    <div class="panel panel-default panel-group simple">
+        <div class="panel-heading">موجودی</div>
+
+        <div class="panel-body panel-group simple">
+
+            <a href="/Wallet/Index" title="موجودی">
+                <div class="green">
+                    @ViewBag.Remain.ToString("N0") ريال
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-default panel-group simple">
+        <div class="panel-heading">قابل برداشت</div>
+
+        <div class="panel-body panel-group simple">
+
+            <a href="/Wallet/Index" title="موجودی">
+                <div class="green">
+                    @ViewBag.RealRemain.ToString("N0") ريال
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<hr class="light-hr" />
+<div class="row">
+    <div class="col-xs-4 center-content simple">
+        <a href="/Wallet/Increase" title="افزایش">
+            <div class="panel panel-default panel-group simple">
+                <div class="panel-body panel-group simple">
+                    <img src="~/Mobile/ico/increase.png" />
+                    <div class="green">افزایش موجودی</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-xs-4 center-content simple">
+        <a href="/Wallet/Transfer" title="انتقال">
+            <div class="panel panel-default panel-group simple">
+                <div class="panel-body panel-group simple">
+                    <img src="~/Mobile/ico/transfer.png" />
+                    <div class="green">انتقال موجودی</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-xs-4 center-content simple">
+        <a href="/Wallet/Request" title="برداشت">
+            <div class="panel panel-default panel-group simple">
+                <div class="panel-body panel-group simple">
+                    <img src="~/Mobile/ico/decrease.png" />
+                    <div class="green">برداشت موجودی</div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="col-xs-12">
+    <a href="/Transactions/Index?typeOfTransaction=6">
+        <div class="orange">مشاهده گردش حساب کیف اعتبار</div>
+    </a>
+</div>
+

@@ -1,0 +1,484 @@
+﻿
+@{
+    ViewBag.Title = "بیمه مسافرتی سامان";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+
+<h2>بیمه مسافرتی سامان</h2>
+<form method="post" action="/Info/ShoppingData">
+    <input type="hidden" name="WorkFlowId" value="1011" />
+    <input type="hidden" name="ShoppingPageId" value="4" />
+    <div class="row bordergreen" style="direction:rtl">
+        <div>
+            <div class="form-group col-sm-6">
+                <input type="checkbox" id="forMySelf" />
+                <label for="forMySelf">خرید برای خودم</label>
+            </div>
+            <div class="form-group col-sm-6">
+                <input type="checkbox" id="beforeCustomer" />
+                <label for="beforeCustomer">خرید برای مشتریان قبلی</label>
+            </div>
+        </div>
+        <div id="befDiv" style="display:none">
+            <select id="beforeSelect" class="form-control sample"></select>
+        </div>
+
+        <fieldset>
+            <legend>خرید برای فرد جدید</legend>
+
+            <div class="form-group col-sm-4">
+                <label for="NationalCode_new">کد ملی</label>
+                <input id="NationalCode_new" type="text" required maxlength="10" class="form-control" />
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="birthdate_new">تاریخ تولد</label>
+                <input id="birthdate_new" class="form-control persian-date" />
+            </div>
+            <div class="form-group col-sm-4">
+                <label for="" class="col-sm-12">&nbsp;</label>
+                <button class="btn btn-default" id="SearchPerson" type="button">جست و جو</button>
+            </div>
+        </fieldset>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="NationalCode">کد ملی *</label>
+            </div>
+            <div class="col-sm-6">
+                <input required type="text" id="NationalCode" readonly name="NationalCode" class="form-control" value="" />
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="Name">نام(فارسی) *</label>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" required name="Name" readonly id="Name" class="form-control" value="" />
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="LastName">نام خانوادگی(فارسی) *</label>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" required name="LastName" readonly id="LastName" class="form-control" value="" />
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2" id="divBirthDate">
+            <div class="col-sm-6">
+                <label for="BirthDay">تاریخ تولد *</label>
+            </div>
+            <div class="col-sm-6">
+                <input required type="date" id="BirthDay" name="BirthDay" readonly class="form-control" placeholder="1988-12-25" />
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="EngName">نام(انگلیسی) *</label>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" required id="EngName" name="EngName" class="form-control" value="" />
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="EngLastName">نام خانوادگی(انگلیسی) *</label>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" required id="EngLastName" name="EngLastName" class="form-control" value="" />
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="Mobile">موبایل</label>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" name="Mobile" id="Mobile" class="form-control" value="" />
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="Email">ایمیل</label>
+            </div>
+            <div class="col-sm-6">
+                <input type="email" name="Email" id="Email" class="form-control" value="" />
+            </div>
+        </div>
+
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="Gender">جنسیت *</label>
+            </div>
+            <div class="col-sm-6">
+                <select class="form-control" id="Gender" name="Gender"><option value="">لطفا انتخاب کنید</option><option value="1">مرد</option><option value="2">زن</option></select>
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="birthPlace">محل تولد</label>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" id="birthPlace" name="birthPlace" class="form-control" value="" />
+            </div>
+        </div>
+
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="PassportNumber">شماره پاسپورت *</label>
+
+            </div>
+            <div class="col-sm-6">
+                <input required type="text" id="PassportNumber" name="PassportNumber" class="form-control" value="" />
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="PostalCode">کد پستی</label>
+
+            </div>
+            <div class="col-sm-6">
+                <input type="number" id="PostalCode" name="PostalCode" class="form-control" value="" />
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="travelKind">نوع ویزا *</label>
+            </div>
+            <div class="col-sm-6">
+                <select required class="form-control" id="travelKind" name="travelKind"><option value="">لطفا انتخاب کنید</option><option value="1">تک سفره</option><option value="2">چند سفره</option></select>
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="countryId">کشور *</label>
+            </div>
+            <div class="col-sm-6">
+                <select class="form-control" id="countryId" required name="countryId" asp-items="@ViewBag.Countries"><option value="">لطفا انتخاب کنید</option></select>
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="DurationsOfStay">مدت زمان سفر *</label>
+            </div>
+            <div class="col-sm-6">
+                <select class="form-control" id="DurationsOfStay" required name="DurationsOfStay" asp-items="@ViewBag.DurationsOfStay"><option value="">لطفا انتخاب کنید</option></select>
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                <label for="PlanInfoId">انتخاب طرح *</label>
+            </div>
+            <div class="col-sm-6">
+                <select class="form-control" required id="PlanInfoId" name="PlanInfoId"></select>
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6 coverData">
+                <label for="PlanInfoId">پوشش های طرح</label>
+            </div>
+            <div class="col-sm-6 coverData">
+                <a href="javascript:LoadCoverData()" class="btn btn-success">مشاهده</a>
+            </div>
+        </div>
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-6">
+                &nbsp;
+            </div>
+            <div class="col-sm-6">
+                <button type="submit" class="btn btn-warning form-control">ثبت نام</button>
+            </div>
+        </div>
+
+    </div>
+    <input hidden="hidden" name="Amount" id="Amount" />
+</form>
+@*<form method="post" action="/Info/ShoppingData">
+        <input type="hidden" name="WorkFlowId" value="1011" />
+        <input type="hidden" name="ShoppingPageId" value="4"  />
+        <div class="row" style="direction:rtl">
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-6">
+                    کشور *
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control" id="countryId" required name="countryId" asp-items="@ViewBag.Countries"><option value="">لطفا انتخاب کنید</option></select>
+                </div>
+                <div class="col-sm-6">
+                    مدت زمان سفر *
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control" id="DurationsOfStay" required name="DurationsOfStay" asp-items="@ViewBag.DurationsOfStay"><option value="">لطفا انتخاب کنید</option></select>
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-6">
+                    انتخاب طرح *
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control" required id="PlanInfoId" name="PlanInfoId"></select>
+                </div>
+                <div class="col-sm-6 coverData">
+                    پوشش های طرح
+                </div>
+                <div class="col-sm-6 coverData">
+                    <a href="javascript:LoadCoverData()" class="btn btn-success">مشاهده</a>
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-6">
+                    نام(فارسی) *
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" required name="Name" class="form-control" value="علی" />
+                </div>
+                <div class="col-sm-6">
+                    نام خانوادگی(فارسی) *
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" required name="LastName" class="form-control" value="رسولی" />
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-6">
+                    نام(انگلیسی) *
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" required name="EngName" class="form-control" value="Ali"  />
+                </div>
+                <div class="col-sm-6">
+                    نام خانوادگی(انگلیسی) *
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" required name="EngLastName" class="form-control" value="Rasouli" />
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-6">
+                    کد ملی *
+                </div>
+                <div class="col-sm-6">
+                    <input required type="text" name="NationalCode" class="form-control" value="4285694263" />
+                </div>
+                <div class="col-sm-6">
+                    تاریخ تولد *
+                </div>
+                <div class="col-sm-6">
+                    <input required type="text" name="BirthDay" class="form-control" value="1988-12-25" />
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-6">
+                    موبایل
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" name="Mobile" class="form-control" value="" />
+                </div>
+                <div class="col-sm-6">
+                    ایمیل
+                </div>
+                <div class="col-sm-6">
+                    <input type="email" name="Email" class="form-control" value=""  />
+                </div>
+            </div>
+
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-6">
+                    جنسیت *
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control" name="Gender"><option value="">لطفا انتخاب کنید</option><option selected value="1">مرد</option><option value="2">زن</option></select>
+                </div>
+                <div class="col-sm-6">
+                    محل تولد
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" name="birthPlace" class="form-control" value="زنجان" />
+                </div>
+            </div>
+
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-6">
+                    شماره پاسپورت *
+                </div>
+                <div class="col-sm-6">
+                    <input required type="text" name="PassportNumber" class="form-control" value="R46356063"  />
+                </div>
+                <div class="col-sm-6">
+                    کد پستی
+                </div>
+                <div class="col-sm-6">
+                    <input type="number" name="PostalCode" class="form-control" value=""  />
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2">
+                <div class="col-sm-6">
+                    نوع ویزا *
+                </div>
+                <div class="col-sm-6">
+                    <select required class="form-control" name="travelKind"><option value="">لطفا انتخاب کنید</option><option value="1" selected>تک سفره</option><option value="2">چند سفره</option></select>
+                </div>
+                <div class="col-sm-6">
+                    &nbsp;
+                </div>
+                <div class="col-sm-6">
+                    <button type="submit" class="btn-primary">ثبت نام</button>
+                </div>
+            </div>
+
+        </div>
+        <input hidden="hidden" name="Amount" id="Amount"/>
+    </form>*@
+@section scripts{
+
+    <link id="datepickerTheme" href="~/persiandate/css/persian-datepicker.min.css" rel="stylesheet" />
+    <script src="~/persiandate/js/persian-date.min.js"></script>
+    <script src="~/persiandate/js/persian-datepicker.js"></script>
+    <script type="text/javascript">
+        $('#countryId').on('change', function () {
+            LoadPlanInfo($('#countryId').val(), $('#DurationsOfStay').val())
+        });
+        $('#DurationsOfStay').on('change', function () {
+            LoadPlanInfo($('#countryId').val(), $('#DurationsOfStay').val())
+        });
+        $('#PlanInfoId').on('change', function () {
+            if ($('#PlanInfoId')[0].selectedIndex >= 0) {
+                $('#Amount').val(amountList[$('#PlanInfoId')[0].selectedIndex - 1]);
+                $('.coverData').css('display', '');
+            }
+            else {
+                $('#Amount').val('');
+                $('.coverData').css('display', 'none');
+            }
+        });
+        var amountList = [];
+
+        function LoadPlanInfo(countryId, DurationsOfStay) {
+            debugger;
+            if (countryId && DurationsOfStay) {
+                $.post("/Info/Travis_Plans", { countryId: countryId, staydate: DurationsOfStay }, function (data, status) {
+                    amountList = [];
+                    var htmlReport = '<option >لطفا انتخاب کنید </option>';
+                    for (var i = 0; i < data.length; i++) {
+                        htmlReport += "<option value='" + data[i].code + "' >" + data[i].title + " - " + digitGroup(data[i].priceTotal) + " ريال </option>";
+                        amountList.push(data[i].priceTotal);
+                    }
+                    $('#PlanInfoId').html(htmlReport);
+                });
+            }
+            else
+                $('.coverData').css('display', 'none');
+        }
+        function digitGroup(num) {
+            try {
+                return num.toLocaleString();
+            } catch (err) {
+                return "";
+            }
+        }
+        $('.coverData').css('display', 'none');
+        function LoadCoverData() {
+            if ($('#PlanInfoId').val())
+                window.location.href = "/Info/TravisCoverData?PlanId=" + $('#PlanInfoId').val() + "&Country=" + $('#countryId').val() + "&Duration=" + $('#DurationsOfStay').val();
+        }
+
+
+
+
+        var reportName = "mosaferati-saman";
+        document.addEventListener("DOMContentLoaded", function (event) {
+
+            window.pd = $('.persian-date').each(function (index, elem) {
+                $(this).persianDatepicker({
+                    //altField: "#alt" + (index + 1).toString(),
+                    altFormat: 'LLLL',
+                    initialValue: false,
+                    observer: true,
+                    format: 'YYYY/MM/DD',
+                    //timePicker: {
+                    //    enabled: true
+                    //}
+                });
+            });
+            var loaddata = false;
+            $('#beforeCustomer').on('change', function () {
+                if ($('#beforeCustomer').prop('checked')) {
+                    $('#forMySelf').prop('checked', false);
+                    $('#befDiv').show();
+                    if (loaddata == false) {
+                        $.get('/JsonData/GetBeforeData?forProduct=' + reportName, function (data) {
+                            var jsonData = JSON.parse(data);
+                            var strCombo = '<option value="">لطفا انتخاب کنید</option>';
+                            if (jsonData.length == 0)
+                                strCombo = '<option value="">خرید قبلی ندارید</option>';
+                            for (var i = 0; i < jsonData.length; i++) {
+                                strCombo += '<option value="' + i.toString() + '">' + jsonData[i].NationalCode + "-" + jsonData[i].Name + "-" + jsonData[i].Family + "-" + jsonData[i].Mobile + '</option>';
+
+                            }
+                            $('#beforeSelect').html(strCombo);
+                            $('#beforeSelect').on('change', function () {
+                                var index = $('#beforeSelect').val();
+                                if (index) {
+                                    $('#NationalCode').val(jsonData[index].NationalCode);
+                                    showLoadedData(jsonData[index])
+                                }
+                            });
+                        });
+                    }
+                } else {
+                    $('#befDiv').hide();
+                }
+            });
+
+            $('#forMySelf').on('change', function () {
+                if ($('#forMySelf').prop('checked')) {
+                    $('#beforeCustomer').prop('checked', false);
+                    $.post('/Sale/MyselfData', { forProduct: reportName }, function (data) {
+                        if (data) {
+                            var jsonData = JSON.parse(data.data);
+                            //var jsonData = new JSON.parse(data.toString().substring(1, data.length - 2));
+
+                            //var jsonData = JSON.parse(data);
+                            if (jsonData.length > 0) {
+                                showLoadedData(jsonData[0])
+                            }
+                        }
+                    });
+                }
+            });
+
+
+            $('#SearchPerson').on('click', function () {
+                var NationalCode_new = $('#NationalCode_new').val();
+                var birthdate_new = $('#birthdate_new').val();
+                $.post('/Sale/GetCivilRegistryOfficeData', { nc: NationalCode_new, bt: birthdate_new }, function (data) {
+                    $('#NationalCode').val(data.nationalCode);
+                    $('#Name').val(data.first_name);
+                    $('#LastName').val(data.last_name);
+                    $('#BirthDay').val(data.birthdateMiladi.split('T')[0].split(' ')[0]);
+                });
+            });
+        });
+        function showLoadedData(data) {
+            //NationalCode, Name, Family, EngName, EngFamily, BirthDay, Mobile, Email, GenderIsMan1IsWoman2, BirthPlace, PassportNumber, ZipPostal, TravelKind
+            $('[name=NationalCode]').val(data.NationalCode.trim());
+            $('#Name').val(data.Name);
+            $('#LastName').val(data.Family);
+            $('#EngName').val(data.EngName);
+            $('#EngLastName').val(data.EngFamily);
+            if (data.BirthDay)
+                $('#BirthDay').val(data.BirthDay.toString().split('T')[0]);
+            $('#Mobile').val(data.Mobile);
+            $('#Email').val(data.Email);
+            $('#Gender').val(data.GenderIsMan1IsWoman2);
+            $('#birthPlace').val(data.BirthPlace);
+            $('#PassportNumber').val(data.PassportNumber);
+            $('#PostalCode').val(data.ZipPostal);
+            $('#travelKind').val(data.TravelKind);
+            $('#countryId').val(data.CountryId);
+            $('#countryId').trigger('change');
+            $('#DurationsOfStay').val(data.DurationStayDay);
+            $('#DurationsOfStay').trigger('change');
+
+
+        }
+    </script>
+}

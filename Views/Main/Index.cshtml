@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewData["Title"] = "صفحه اصلی";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+<div class="page-item page-item--home">
+
+    <div class="page-home wrapper wrapper--large" data-component="PageHome">
+        <div class="backs">
+            <div class="back back--home" id="back-36"
+                 style="background-image: url('/MainPage/voucher.jpg')"></div>
+            <div class="back back--home" id="back-44"
+                 style="background-image: url('/MainPage/mobile.jpg')"></div>
+            <div class="back back--home" id="back-47"
+                 style="background-image: url('/MainPage/bime.jpg')"></div>
+        </div>
+        <div class="content vertical-center-wrapper">
+            <div class="content-wrapper vertical-center-inner">
+                <h2 class="title-4"><span><br /> همپیشه، ما با شما <br />هستیم...</span></h2>
+                <div class="pushs-page">
+                    <div class="push-page push-page--live-dance"
+                         data-part="36" data-component="LazyImage"
+                         data-bkg-desktop="/MainPage/voucher.jpg">
+                        <div class="overlay-degrade"></div>
+                        <h3 class="bouton vertical-center-wrapper">
+                            <span class="text vertical-center-inner">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; سرویس پین</span>
+                            <span class="voir">
+                                <i class="icon">
+                                    <svg class="icon-svg" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="48" height="48" fill="" ></rect>
+                                        <line class="stroke" x1="24" y1="18" x2="24" y2="30" stroke="white" stroke-width="1.5" ></line>
+                                        <line class="stroke" x1="18" y1="24.0002" x2="30" y2="24.0002" stroke="white" stroke-width="1.5" ></line>
+                                    </svg>
+                                </i>
+                                <i class="label">
+                                    <span class="letter">پ</span>
+                                    <span class="letter">ی</span>
+                                    <span class="letter">ن</span>
+                                </i>
+                            </span>
+                        </h3>
+                        <div class="description">
+                            <p>رمز شارژ هایی مطمئن با دسترسی و خرید سریع داشته باشید</p>
+                        </div> @*href="@Url.Action("PinService","Info")"*@
+                        <a onclick="window.location.href='@Url.Action("PinService","Info")'" class="link-over"></a>
+                    </div>
+                    <div class="push-page push-page--listen-watch"
+                         data-part="44" data-component="LazyImage"
+                         data-bkg-desktop="/MainPage/mobile.jpg">
+                        <div class="overlay-degrade"></div>
+                        <h3 class="bouton vertical-center-wrapper">
+                            <span class="text vertical-center-inner">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;سرویس های موبایل</span>
+                            <span class="voir">
+                                <i class="icon">
+                                    <svg class="icon-svg" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="48" height="48" fill="" ></rect>
+                                        <line class="stroke" x1="24" y1="18" x2="24" y2="30" stroke="white" stroke-width="1.5" ></line>
+                                        <line class="stroke" x1="18" y1="24.0002" x2="30" y2="24.0002" stroke="white" stroke-width="1.5" ></line>
+                                    </svg>
+                                </i>
+                                <i class="label">
+                                    <span class="letter">م</span>
+                                    <span class="letter">و</span>
+                                    <span class="letter">ب</span>
+                                    <span class="letter">ا</span>
+                                    <span class="letter">ی</span>
+                                    <span class="letter">ل</span>
+                                </i>
+                            </span>
+                        </h3>
+                        <div class="description">
+                            <p>با ما از تمامی خدمات تلفن همراه بهره مند شوید.</p>
+                        </div> @*href="@Url.Action("Index","Info")"*@
+                        <a onclick="window.location.href='@Url.Action("Index","Info")'" class="link-over"></a>
+                    </div>
+                    <div class="push-page push-page--eat-drink"
+                         data-part="47" data-component="LazyImage"
+                         data-bkg-desktop="/MainPage/bime.jpg">
+                        <div class="overlay-degrade"></div>
+                        <h3 class="bouton vertical-center-wrapper">
+                            <span class="text vertical-center-inner">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;بیمه مسافرتی</span>
+                            <span class="voir">
+                                <i class="icon">
+                                    <svg class="icon-svg" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="48" height="48" fill=""></rect>
+                                        <line class="stroke" x1="24" y1="18" x2="24" y2="30" stroke="white" stroke-width="1.5" ></line>
+                                        <line class="stroke" x1="18" y1="24.0002" x2="30" y2="24.0002" stroke="white" stroke-width="1.5" ></line>
+                                    </svg>
+                                </i>
+                                <i class="label">
+                                    <span class="letter">ب</span>
+                                    <span class="letter">ی</span>
+                                    <span class="letter">م</span>
+                                    <span class="letter">ه</span>
+                                </i>
+                            </span>
+                        </h3>
+                        <div class="description">
+                            <p>با ما راحت سفر کنید</p>
+                        </div> @*href="@Url.Action("Travis","Info")"*@
+                        <a onclick="window.location.href='@Url.Action("Travis","Info")'" class="link-over"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

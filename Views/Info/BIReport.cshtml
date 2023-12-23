@@ -1,0 +1,396 @@
+﻿
+@{
+    ViewData["Title"] = "گزارش هوشمند کسب کار";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+
+<h1>گزارش هوشمند کسب کار<span class="backb"><a href="javascript:history.back()"><i class="icon-arrow-left"></i> بازگشت</a></span></h1>
+
+<div class="row">
+
+    <div class="col-lg-6">
+        <img src="../new/img/report.png" alt="report" class="img-fluid mb-4" />
+    </div>
+
+    <div class="col-lg-6">
+        <div class="row" dir="rtl">
+    
+
+        <div class="col-6">
+            هدایای دریافت شده
+        </div>
+        <div class="col-6 text-right">
+            @(ViewBag.Gift!=null?ViewBag.Gift.ToString("N0"):"") هدیه
+        </div>
+                
+        <div class="col-12">
+            <hr />
+        </div>
+
+        <div class="col-6">
+            تعداد همپیشه ها
+        </div>
+        <div class="col-6 text-right">
+            @(ViewBag.Coworker!=null?ViewBag.Coworker.ToString("N0"):"") نفر
+        </div>
+
+        <div class="col-12">
+            <hr />
+        </div>
+
+
+        @if (ViewBag.RemainAmount > 0)
+        {
+            
+            <div class="col-6">
+                چقدر تا گرفتن جایزه ها
+            </div>
+            <div class="col-6 text-right">
+                @(ViewBag.RemainAmount!=null?ViewBag.RemainAmount.ToString("N0"):"") ريال
+            </div>
+
+            <div class="col-12">
+                <hr />
+            </div>
+
+        }
+        @if (ViewBag.RemainCnt > 0)
+        {   
+            <div class="col-6">
+                چقدر تا گرفتن جایزه ها
+            </div>
+            <div class="col-6 text-right">
+                @(ViewBag.RemainCnt != null ? ViewBag.RemainCnt.ToString("N0") : "") نفر
+            </div>
+
+            <div class="col-12">
+                <hr />
+            </div>
+
+        }
+            @if (ViewBag.MinimumAmountSaleGift1 != null)
+            {   
+                <div class="col-6">
+                    جایزه طرح @ViewBag.MinimumAmountSaleGift1["TransactionProductTypeTitle"] - پاداش:@ViewBag.MinimumAmountSaleGift1["MinimumAmountSaleGift"] ريال
+                </div>
+                <div class="col-6 text-right">
+                    @(ViewBag.MinimumAmountSaleGift1["getGift"] == 1?"دریافت شده": "مانده " +ViewBag.MinimumAmountSaleGift1["remainAmount"].ToString() + "ريال") 
+                </div>
+
+                <div class="col-12">
+                    <hr />
+                </div>
+
+            }
+            @if (ViewBag.MinimumAmountSaleGift2 != null)
+            {
+                <div class="col-6">
+                    جایزه طرح @ViewBag.MinimumAmountSaleGift2["TransactionProductTypeTitle"] - پاداش:@ViewBag.MinimumAmountSaleGift2["MinimumAmountSaleGift"] ريال
+                </div>
+                <div class="col-6 text-right">
+                    @(ViewBag.MinimumAmountSaleGift2["getGift"] == 1?"دریافت شده": "مانده " +ViewBag.MinimumAmountSaleGift2["remainAmount"].ToString() + "ريال") 
+                </div>
+
+                <div class="col-12">
+                    <hr />
+                </div>
+
+            }
+            @if (ViewBag.MinimumAmountSaleGift3 != null)
+            {
+                <div class="col-6">
+                    جایزه طرح @ViewBag.MinimumAmountSaleGift3["TransactionProductTypeTitle"] - پاداش:@ViewBag.MinimumAmountSaleGift3["MinimumAmountSaleGift"] ريال
+                </div>
+                <div class="col-6 text-right">
+                    @(ViewBag.MinimumAmountSaleGift3["getGift"] == 1?"دریافت شده": "مانده " +ViewBag.MinimumAmountSaleGift3["remainAmount"].ToString() + "ريال") 
+                </div>
+
+                <div class="col-12">
+                    <hr />
+                </div>
+
+
+            }
+            @if (ViewBag.MinimumAmountSaleGift4 != null)
+            {
+                <div class="col-6">
+                    جایزه طرح @ViewBag.MinimumAmountSaleGift4["TransactionProductTypeTitle"] - پاداش:@ViewBag.MinimumAmountSaleGift4["MinimumAmountSaleGift"] ريال
+                </div>
+                <div class="col-6 text-right">
+                    @(ViewBag.MinimumAmountSaleGift4["getGift"] == 1?"دریافت شده": "مانده " +ViewBag.MinimumAmountSaleGift4["remainAmount"].ToString() + "ريال")
+                </div>
+
+                <div class="col-12">
+                    <hr />
+                </div>
+
+            }
+            @if (ViewBag.MinimumAmountSaleGift5 != null)
+            {
+                <div class="col-6">
+                    جایزه طرح @ViewBag.MinimumAmountSaleGift5["TransactionProductTypeTitle"] - پاداش:@ViewBag.MinimumAmountSaleGift5["MinimumAmountSaleGift"] ريال
+                </div>
+                <div class="col-6 text-right">
+                    @(ViewBag.MinimumAmountSaleGift5["getGift"] == 1?"دریافت شده": "مانده " +ViewBag.MinimumAmountSaleGift5["remainAmount"].ToString() + "ريال") 
+                </div>
+
+                <div class="col-12">
+                    <hr />
+                </div>
+
+            }
+
+            
+        </div>
+
+        
+</div>
+
+<div class="col-12">
+    <div id="FirstChart" class="chart-container"></div>
+</div>
+
+<div class="col-12 mt-4">
+    <div id="ThirdChart" class="chart-container"></div>
+</div>
+<div class="col-12 mt-4">
+    <div id="SecondChart" class="chart-container"></div>
+</div>
+<div class="col-12 mt-4">
+    <div id="ForthChart" class="chart-container"></div>
+</div>
+
+
+@section Scripts{
+
+    <link rel="stylesheet" href="/highcharts/style.css">
+    <script src="~/highcharts/highcharts.js"></script>
+    @*<script src="~/highcharts/exporting.js"></script>
+        <script src="~/highcharts/export-data.js"></script>*@
+    <script src="~/highcharts/accessibility.js"></script>
+
+
+    <script type="text/javascript">
+        //<![CDATA[
+        var mySale = JSON.parse('@Html.Raw(ViewBag.mySale)');
+
+        Highcharts.setOptions({
+            lang: {
+                thousandsSep: ","
+            }
+        });
+        Highcharts.chart('FirstChart', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'فروش خودم'
+            },
+            xAxis: {
+                type: 'category',
+                labels: {
+                    rotation: -45,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'مبلغ فروش(ريال)'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: 'مبلغ فروش: <b>{point.y:,.0f} ريال</b>'
+            },
+            series: [{
+                name: 'مبلغ فروش',
+                data:mySale,
+                //    [
+                //    ['Shanghai', 24.2],
+                //    ['Beijing', 20.8],
+                //    ['Karachi', 14.9],
+                //    ['Shenzhen', 13.7],
+                //    ['Guangzhou', 13.1],
+                //    ['Istanbul', 12.7],
+                //    ['Mumbai', 12.4],
+                //    ['Moscow', 12.2],
+                //    ['São Paulo', 12.0],
+                //    ['Delhi', 11.7],
+                //    ['Kinshasa', 11.5],
+                //    ['Tianjin', 11.2],
+                //    ['Lahore', 11.1],
+                //    ['Jakarta', 10.6],
+                //    ['Dongguan', 10.6],
+                //    ['Lagos', 10.6],
+                //    ['Bengaluru', 10.3],
+                //    ['Seoul', 9.8],
+                //    ['Foshan', 9.3],
+                //    ['Tokyo', 9.3]
+                //],
+                dataLabels: {
+                    enabled: true,
+                    rotation: -90,
+                    color: '#FFFFFF',
+                    align: 'right',
+                    format: '{point.y:,.0f}', // one decimal
+                    y: 10, // 10 pixels down from the top
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            }]
+        });
+
+
+          //]]></script>
+
+
+    <script type="text/javascript">
+        //<![CDATA[
+        var MyContainerSale = JSON.parse('@Html.Raw(ViewBag.MyContainerSale)');
+        Highcharts.chart('SecondChart', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'فروش همپیشه ها'
+            },
+            xAxis: {
+                type: 'category',
+                labels: {
+                    rotation: -45,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'مبلغ دریافتی(ريال)'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: 'مبلغ دریافتی: <b>{point.y:,.0f} ريال</b>'
+            },
+            series: [{
+                name: 'مبلغ دریافتی',
+                data:MyContainerSale,
+                //    [
+                //    ['Shanghai', 24.2],
+                //    ['Beijing', 20.8],
+                //    ['Karachi', 14.9],
+                //    ['Shenzhen', 13.7],
+                //    ['Guangzhou', 13.1],
+                //    ['Istanbul', 12.7],
+                //    ['Mumbai', 12.4],
+                //    ['Moscow', 12.2],
+                //    ['São Paulo', 12.0],
+                //    ['Delhi', 11.7],
+                //    ['Kinshasa', 11.5],
+                //    ['Tianjin', 11.2],
+                //    ['Lahore', 11.1],
+                //    ['Jakarta', 10.6],
+                //    ['Dongguan', 10.6],
+                //    ['Lagos', 10.6],
+                //    ['Bengaluru', 10.3],
+                //    ['Seoul', 9.8],
+                //    ['Foshan', 9.3],
+                //    ['Tokyo', 9.3]
+                //],
+                dataLabels: {
+                    enabled: true,
+                    rotation: -90,
+                    color: '#FFFFFF',
+                    align: 'right',
+                    format: '{point.y:,.0f}', // one decimal
+                    y: 10, // 10 pixels down from the top
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            }]
+        });
+
+
+          //]]></script>
+    <script>
+        var mySaleProduct = JSON.parse('@Html.Raw(ViewBag.mySaleProduct)');
+        Highcharts.chart('ThirdChart', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'فروش خودم به تفکیک محصول'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:,.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:,.1f} %'
+                    },
+                    showInLegend: true
+
+                }
+            },
+            series: [{
+                name: 'محصول ها',
+                colorByPoint: true,
+                data: mySaleProduct
+            }]
+        });
+    </script>
+    <script>
+        var MyContainerSaleProduct = JSON.parse('@Html.Raw(ViewBag.MyContainerSaleProduct)');
+        Highcharts.chart('ForthChart', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'فروش همپیشه ها به تفکیک محصول'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:,.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:,.1f} %'
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'محصول ها',
+                colorByPoint: true,
+                data: MyContainerSaleProduct
+            }]
+        });
+    </script>
+}

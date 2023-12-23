@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "PDFReport";
+    Layout = null;
+    var sanitizer = new Ganss.XSS.HtmlSanitizer();
+    sanitizer.AllowedTags.Add("iframe");
+    sanitizer.AllowedTags.Add("style");
+    sanitizer.AllowedCssProperties.Add("position");
+    sanitizer.AllowedAttributes.Add("class");
+    sanitizer.AllowedAttributes.Add("mozallowfullscreen");
+    sanitizer.AllowedAttributes.Add("webkitallowfullscreen");
+    sanitizer.AllowedAttributes.Add("allowFullScreen");
+}
+
+@Html.Raw(sanitizer.Sanitize(ViewBag.reportSring,"https://www.aparat.com"))
+
