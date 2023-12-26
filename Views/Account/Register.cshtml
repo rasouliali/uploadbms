@@ -33,21 +33,21 @@
         <div id="carouselExampleIndicators" dir="ltr" class="carousel slide sliv" data-ride="carousel">
         <div class="carousel-inner ccx">
             <div class="carousel-item active">
-                <img class="d-block w-100" src="../new/img/s1.png" alt="First slide">
+                <img class="d-block w-100" src="/new/img/s1.png" alt="First slide">
                 <div class="slidec"></div>
                 <div class="carousel-caption fcapt">
                     <h5>تو خونه بیکاری و حوصله‌ت سر رفته؟</h5>
                 </div>
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="../new/img/s2.png" alt="Second slide">
+                <img class="d-block w-100" src="/new/img/s2.png" alt="Second slide">
                 <div class="slidec"></div>
                 <div class="carousel-caption fcapt">
                     <h5>واسه آیندت سرمایه گذاری کن</h5>
                 </div>
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="../new/img/s3.png" alt="Third slide">
+                <img class="d-block w-100" src="/new/img/s3.png" alt="Third slide">
                 <div class="slidec"></div>
                 <div class="carousel-caption fcapt">
                     <h5>از دوستان و آشناهات دعوت کن</h5>
@@ -66,7 +66,7 @@
    <div id="carouselExampleIndicators" dir="ltr" class="carousel slide sliv" data-ride="carousel">
             <div class="carousel-inner ccx">
                 <div class="carousel-item active">
-                    <img class="d-block w-100" src="../new/img/rich.png" alt="First slide">
+                    <img class="d-block w-100" src="/new/img/rich.png" alt="First slide">
                     <div class="slidec"></div>
                     <div class="carousel-caption fcapt">
                         <h5>می‌خوای بدونی چه جوری پولدار شدم؟ </h5>
@@ -97,7 +97,7 @@ else
 {
 <div class="row">
     <div class="col-md-7 regimg">
-        <img src="../new/img/register.png" />
+        <img src="/new/img/register.png" />
     </div>
         <div class="col-md-5 reg-d" dir="rtl">
     @switch (Model.PageIndex)
@@ -105,9 +105,9 @@ else
             case 1:
                 {
                     <form  method="post">
-                            @Html.AntiForgeryToken()
+                        @Html.AntiForgeryToken()
 
-                            <input asp-for="FromLogin" type="hidden"  />
+                        <input asp-for="FromLogin" type="hidden"  />
                         <input asp-for="PageIndex" type="hidden" value="1" />
                         <input asp-for="returnUrl" type="hidden" />
                         <input asp-for="FCMToken" type="hidden" />
@@ -200,28 +200,23 @@ else
                 }
             case 5:
                 {
-                    <form method="post">
+                    @*<form method="post" enctype="multipart/form-data">
                             @Html.AntiForgeryToken()
 
-                            <input asp-for="Introducer" type="hidden" />
+							       <input asp-for="Introducer" type="hidden" />
                         <input asp-for="PageIndex" type="hidden" value="5" />
                         <input asp-for="returnUrl" type="hidden" />
                         <input asp-for="FCMToken" type="hidden" />
                         <input asp-for="ShowOnboard" type="hidden" />
                         <input asp-for="SkipOnboard" type="hidden" />
-                        <input asp-for="RegisterOtherFieldsViewModel.Mobile" type="hidden" />
+                      <input asp-for="RegisterOtherFieldsViewModel.Mobile" type="hidden" />
                         <div asp-validation-summary="All" class="text-danger"></div>
-                        
-                    <div class="form-group">
+*@
+							@* <div class="form-group">
                         <label asp-for="RegisterOtherFieldsViewModel.NationalCode"></label>
                         <input asp-for="RegisterOtherFieldsViewModel.NationalCode" id="NationalCode" type="tel" class="form-control" />
                         <span asp-validation-for="RegisterOtherFieldsViewModel.NationalCode"  class="text-danger"></span>
                         <span id="NationalCodeErr" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="RegisterOtherFieldsViewModel.BirthDate"></label>
-                        <input asp-for="RegisterOtherFieldsViewModel.BirthDate" class="form-control persian-date" />
-                        <span asp-validation-for="RegisterOtherFieldsViewModel.BirthDate" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="RegisterOtherFieldsViewModel.Name"></label>
@@ -242,15 +237,20 @@ else
                         <span asp-validation-for="RegisterOtherFieldsViewModel.IsMan" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <label asp-for="RegisterOtherFieldsViewModel.BirthDate"></label>
+                        <input asp-for="RegisterOtherFieldsViewModel.BirthDate" class="form-control persian-date" />
+                        <span asp-validation-for="RegisterOtherFieldsViewModel.BirthDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
                         <label asp-for="RegisterOtherFieldsViewModel.Email"></label>
                         <input asp-for="RegisterOtherFieldsViewModel.Email" class="form-control" />
                         <span asp-validation-for="RegisterOtherFieldsViewModel.Email" class="text-danger"></span>
-                    </div>
+			</div>
                     <div class="form-group">
 						<button type="submit" class="btn btn-warning col-xs-5 col-md-3 text-start">تایید نهایی</button>
 						<button type="button" class="btn btn-warning col-xs-5 col-md-3 text-end" id="btn-later">بعدا</button>
                     </div>
-                    </form>
+                    </form>*@
                     break;
                 }
             default:
@@ -300,18 +300,18 @@ else
             })
         })
 
-        $('form').submit(function (e) {
-            if (isResendCode == false && validateNationalCode($('#NationalCode').val()) == false && $('#PageIndex').val()=="5") {
-                e.preventDefault();
-                $('#NationalCodeErr').html('کد ملی وارد شده صحیح نیست. لطفا دوباره بررسی نمایید');
-                $('#NationalCode').focus();
-            }
-            //if (isResendCode == false && $('#rule').prop('checked') == false && $('#PageIndex').val() == "5") {
-            //    e.preventDefault();
-            //    $('#ruleErr').html('برای ثبتنام قوانین را باید بپذیرید.');
-            //    $('#rule').focus();
-            //}
-        });
+        //$('form').submit(function (e) {
+        //    if (isResendCode == false && validateNationalCode($('#NationalCode').val()) == false && $('#PageIndex').val()=="5") {
+        //        e.preventDefault();
+        //        $('#NationalCodeErr').html('کد ملی وارد شده صحیح نیست. لطفا دوباره بررسی نمایید');
+        //        $('#NationalCode').focus();
+        //    }
+        //    //if (isResendCode == false && $('#rule').prop('checked') == false && $('#PageIndex').val() == "5") {
+        //    //    e.preventDefault();
+        //    //    $('#ruleErr').html('برای ثبتنام قوانین را باید بپذیرید.');
+        //    //    $('#rule').focus();
+        //    //}
+        //});
         function validateNationalCode(nc) {
             var sumNaCode = 0;
             for (var i = 0; i < nc.length - 1; i++) {
@@ -416,7 +416,7 @@ else
         </script>
 
     }
-    else if (Model.PageIndex == 5)
+   @* else if (Model.PageIndex == 5)
     {
         <link rel="stylesheet" href="/new/css/jalaliDatepicker.min.css">
         <script src="/new/js/jalaliDatepicker.min.js"></script>
@@ -445,5 +445,5 @@ else
 
             }
         </script>
-    }
+    }*@
 }

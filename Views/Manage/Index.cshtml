@@ -33,6 +33,7 @@
                     <label asp-for="Username"></label>
                     <input asp-for="Username" class="form-control" disabled />
                 </div>
+                <a class="btn btn-primary" href="/Account/ProfileInfo"><< تنظیم اطلاعات کاربری >></a>
                 <div class="form-group">
                     <label for="NationalCode">کد ملی</label>
                     @if (string.IsNullOrEmpty(Model.NationalCode) == false)
