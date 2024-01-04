@@ -1,0 +1,317 @@
+﻿@model IEnumerable<ShppaingPart.Models.BMS.Transaction>
+
+@{
+    ViewData["Title"] = "تراکنش ها";
+    //Layout = "~/Views/Shared/_AdminDashboard.cshtml";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+
+
+@section header {
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-toggle.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/datatables/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/datatables/DataTables-1.10.20/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/datatables/Buttons-1.6.0/css/buttons.dataTables.min.css">
+}
+<h2>تراکنش ها</h2>
+<div class="row bordergreen">
+    <div class="col-xs-8"><input type="text" class="form-control" id="searchBox" placeholder="جست و جو" /></div>
+    <div class="col-xs-2"><a class="btn btn-warning" id="excelBtn" download="mycsv.csv">خروجی اکسل</a></div>
+</div>
+<!-- Modal -->
+<div id="transactionDetailModal" class="modal fade modal-sm Introducer" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body simple-panel">
+                <div id="transactionDetail">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="filterModal" class="modal fade modal-xs Introducer" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="p-background-Intro transaction">
+                    <div><label>فیلتر</label></div>
+
+                    <div class="row bordergreen transaction">
+
+                        <form method="get" action="/Transactions/Index">
+                            <div>
+                                <div class="first-row"></div>
+                                <div class="">
+                                    <input type="checkbox" name="OwnBuy" id="OwnBuy" value="true" @(ViewBag.OwnBuy ? "checked" : "") />
+                                    <label for="OwnBuy">خرید برای خودم</label>
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" name="transactionid" placeholder="کد تراکنش" class="form-control" />
+
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" name="mobile" placeholder="موبایل" value="@ViewBag.mobile" class="form-control" />
+                                </div>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <div class="col-12">
+                                        <select type="text" name="userid" placeholder="کد کاربر" value="@ViewBag.userid" class="form-control" asp-items="ViewBag.Users"><option value="">لطفا انتخاب کنید</option></select>
+                                    </div>
+                                }
+                                <div class="col-12">
+                                    <input name="FromDateJalali" id="FromDateJalali" value="@ViewBag.FromDateJalali" placeholder="از تاریخ" autocomplete="off" class="form-control persian-date" />
+                                </div>
+                                <div class="col-12">
+                                    <input name="ToDateJalali" id="ToDateJalali" value="@ViewBag.ToDateJalali" placeholder="تا تاریخ" autocomplete="off" class="form-control persian-date" />
+                                </div>
+                                <div class="col-12">
+                                    <select name="ProductTypeId" class="form-control" asp-items="ViewBag.ProductTypeList">
+                                        <option value="">همه</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <select name="typeOfTransaction" class="form-control">
+                                        <option value="-1">همه</option>
+                                        <option value="6">کیف اعتبار</option>
+                                        <option value="-6">افزایش - MLM - درخت</option>
+                                        <option value="-7">افزایش - MLM - خاص</option>
+                                        <option value="-8">افزایش - MLM - زیرمجموعه اول</option>
+                                        <option value="-999">همه MLM</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <select name="Count" class="form-control">
+                                        <option value="5">پنج رکورد آخر</option>
+                                        <option value="20">بیست رکورد آخر</option>
+                                        <option value="1000">هزار رکورد آخر</option>
+                                        <option value="5000">پنج هزار رکورد آخر</option>
+                                        <option value="all">تمام رکوردها</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-warning form-control"> اعمال فیلتر <i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row d-block" id="TransactionList">
+                </div>
+                <div class="modal fade" id="Details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12" style="width:100%;max-height:200px;overflow:auto">
+                                        <table>
+                                            <tbody id="dataOfTransaction"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @section Scripts {
+                    @*<script type="text/javascript" src="~/datatables/jQuery-3.3.1/jquery-3.3.1.min.js"></script>*@
+                    <script src="~/lib/bootstrap/dist/js/bootstrap-toggle.min.js"></script>
+
+                    <script type="text/javascript" src="~/datatables/dataTables.min.js"></script>
+                    <script type="text/javascript" src="~/datatables/FixedHeader-3.1.6/js/dataTables.fixedHeader.min.js"></script>
+                    <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/dataTables.buttons.min.js"></script>
+                    <script type="text/javascript" src="~/datatables/JSZip-2.5.0/jszip.min.js"></script>
+                    <script type="text/javascript" src="~/datatables/pdfmake-0.1.36/pdfmake.min.js"></script>
+                    <script type="text/javascript" src="~/datatables/pdfmake-0.1.36/vfs_fonts.js"></script>
+                    <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/buttons.html5.min.js"></script>
+                    <script type="text/javascript" src="~/datatables/Buttons-1.6.0/js/buttons.print.min.js"></script>
+
+                    <link id="datepickerTheme" href="~/persiandate/css/persian-datepicker.min.css" rel="stylesheet" />
+                    <script src="~/persiandate/js/persian-date.min.js"></script>
+                    <script src="~/persiandate/js/persian-datepicker.js"></script>
+                    @*<script src="~/Scripts/json2csv.js"></script>*@
+
+<script type="text/javascript">
+    var jsTransactions = JSON.parse('@Html.Raw(ViewBag.transactions)');
+
+        var pageIndexBase = 5;
+        var pageIndex = 5;
+        var i = 0;
+    createData(i); function digitGroup(num) {
+        try {
+            return num.toLocaleString();
+
+        } catch (e) {
+            return "";
+        }
+    }
+        function createData(i) {
+            var data = "";
+            for (; i < pageIndex; i++) {
+                if (i >= jsTransactions.length)
+                    break;
+                data += `<div class="simple-panel transaction"  data-toggle="modal" onclick="GetDetails(` + i +`)" data-target="#transactionDetailModal">
+<div class="row">
+<div class="col-xs-4 right">`+ jsTransactions[i].ProductType + `</div>
+<div class="col-xs-5 center">`+ jsTransactions[i].DateAddedJalali + `</div>
+<div class="col-xs-3 left">`+ digitGroup(jsTransactions[i].Amount) + `</div>
+</div>
+</div>`;
+            }
+            var beforeStyle = '';
+            var filterStyle = '';
+            var nextStyle = '';
+            if (i - pageIndexBase <= 0)
+                beforeStyle = " disabled"
+            if (i >= jsTransactions.length)
+                nextStyle = " disabled"
+            data += '<div class="transaction-btn"><div class="btn-before col-xs-4 right' + beforeStyle + '">قبلی</div><div  data-toggle="modal" data-target="#filterModal" class="btn-filter col-xs-4 center' + filterStyle + '">فیلتر</div><div class="btn-next col-xs-4 left' + nextStyle + '">بعدی</div></div>';
+            $('#TransactionList').html(data);
+            $('.btn-next').on('click', function () {
+                if (i < jsTransactions.length && jsTransactions.length > 0) {
+                    pageIndex += pageIndexBase;
+                    createData(i);
+                }
+            });
+            $('.btn-before').on('click', function () {
+                if (i - pageIndexBase > 0) {
+                    pageIndex -= pageIndexBase;
+                    i -= pageIndexBase;
+                    i -= pageIndexBase;
+                    createData(i);
+                }
+            });
+        }
+        $(document).ready(function () {
+            // Debug mode
+            // --------------------------------------------
+            //        window.persianDatepickerDebug = true;
+
+            // Normal Sample
+            // --------------------------------------------
+            window.pd = $('.persian-date').each(function (index, elem) {
+                $(this).persianDatepicker({
+                    //altField: "#alt" + (index + 1).toString(),
+                    altFormat: 'LLLL',
+                    initialValue: false,
+                    observer: true,
+                    format: 'YYYY/MM/DD',
+                    //timePicker: {
+                    //    enabled: true
+                    //}
+                });
+            });
+            if('@ViewBag.userid'!='')
+            $('[name=userid]').val("@ViewBag.userid");
+            if('@ViewBag.typeOfTransaction'!='')
+                $('[name=typeOfTransaction]').val("@ViewBag.typeOfTransaction");
+            if('@ViewBag.Count'!='')
+                $('[name=Count]').val("@ViewBag.Count");
+        });
+                        function GetDetails(i) {
+
+                            var data = `<div class="row"><div class="col-xs-4 right">` + jsTransactions[i].ProductType + `</div><div class="col-xs-5 center">` + jsTransactions[i].DateAddedJalali + `</div><div class="col-xs-3 left">` + jsTransactions[i].Amount.toLocaleString() + `</div></div>`+
+                                `<div class="row"><div class="col-xs-6 right">نوع پرداخت</div><div class="col-xs-6 left">` + jsTransactions[i].BankAndTerminal + `</div></div>` +
+                                `<div class="row"><div class="col-xs-6 right">کد پیگیری همپیشه</div><div class="col-xs-6 left">` + jsTransactions[i].TransactionId + `</div></div>` +
+                                `<div class="row"><div class="col-xs-6 right">کد پیگیری</div><div class="col-xs-6 left">` + jsTransactions[i].WorkFlowRunId + `</div></div>` +
+                                `<div class="row"><div class="col-xs-6 right">کد مرجع</div><div class="col-xs-6 left">` + jsTransactions[i].ReferenceNumber + `</div></div>` +
+                                `<div class="row"><div class="col-xs-6 right">وضعیت خرید</div><div class="col-xs-6 left">` + jsTransactions[i].PaymentStatus + `</div></div>` +
+                                `<div class="row"><div class="col-xs-6 right">وضعیت محصول</div><div class="col-xs-6 left">` + jsTransactions[i].ProductStatus + `</div></div>`;
+                            $('#transactionDetail').html(data);
+                        }
+    $('#searchBox').keyup( function () {
+        var text = $(this).val();
+        searchedJson = [];
+        debugger;
+        jsTransactions = JSON.parse('@Html.Raw(ViewBag.transactions)');
+
+        if (text) {
+            for (var j = 0; j < jsTransactions.length; j++) {
+
+                if (jsTransactions[j].ProductType.indexOf(text) >= 0 || jsTransactions[j].DateAddedJalali.indexOf(text) >= 0 || jsTransactions[j].Amount.toLocaleString().indexOf(text) >= 0) {
+                    searchedJson.push(jsTransactions[j]);
+                }
+            }
+            jsTransactions = searchedJson;
+        }
+        i = 0;
+        pageIndex = pageIndexBase;
+        createData(i);
+
+    });
+                        //$('#excelBtn').on('click', function () {
+
+
+                        //});
+                        var text = obj2csv(jsTransactions, null);
+                        var data = new Blob([text], { type: 'text/plain' });
+
+                        var url = window.URL.createObjectURL(data);
+
+                        document.getElementById('excelBtn').href = url;
+
+                        function obj2csv(obj, opt) {
+                            if (typeof obj !== 'object') return null;
+                            opt = opt || {};
+                            var scopechar = opt.scopechar || '/';
+                            var delimeter = opt.delimeter || ',';
+                            if (Array.isArray(obj) === false) obj = [obj];
+                            var curs, name, rownum, key, queue, values = [], rows = [], headers = {}, headersArr = [];
+                            for (rownum = 0; rownum < obj.length; rownum++) {
+                                queue = [obj[rownum], ''];
+                                rows[rownum] = {};
+                                while (queue.length > 0) {
+                                    name = queue.pop();
+                                    curs = queue.pop();
+                                    if (curs !== null && typeof curs === 'object') {
+                                        for (key in curs) {
+                                            if (curs.hasOwnProperty(key)) {
+                                                queue.push(curs[key]);
+                                                queue.push(name + (name ? scopechar : '') + key);
+                                            }
+                                        }
+                                    } else {
+                                        if (headers[name] === undefined) headers[name] = true;
+                                        rows[rownum][name] = curs;
+                                    }
+                                }
+                                values[rownum] = [];
+                            }
+                            // create csv text
+                            for (key in headers) {
+                                if (headers.hasOwnProperty(key)) {
+                                    headersArr.push(key);
+                                    for (rownum = 0; rownum < obj.length; rownum++) {
+                                        values[rownum].push(rows[rownum][key] === undefined
+                                            ? ''
+                                            : JSON.stringify(rows[rownum][key]));
+                                    }
+                                }
+                            }
+                            for (rownum = 0; rownum < obj.length; rownum++) {
+                                values[rownum] = values[rownum].join(delimeter);
+                            }
+                            return '"' + headersArr.join('"' + delimeter + '"') + '"\n' + values.join('\n');
+                        }
+
+</script>
+
+                }
