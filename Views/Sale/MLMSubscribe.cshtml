@@ -83,7 +83,7 @@
             <thead>
                 <tr>
                     <th>کد</th>
-                    <th>پنهان</th>
+                    <th>نوع کیف اعتبار</th>
                     <th>مبلغ</th>
                     <th>کد تراکنش</th>
                     <th>تاریخ</th>
@@ -100,7 +100,7 @@
                     //TransactionId = r["TransactionId"], DateAdded = r["DateAdded"], ToUserId = r["ToUserId"], TypeOfGiftId = r["TypeOfGiftId"], MLMPlanId = r["MLMPlanId"]
                     <tr>
                         <td>@item.TransactionMLMGiftId</td>
-                        <td>@item.IsHidden</td>
+                        <td>@((bool)item.IsHidden?"اصلی":"پنهان")</td>
                         <td>@(((long)item.Amount).ToString("N0"))</td>
                         <td>@item.TransactionId</td>
                         <td>@ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(item.DateAdded.ToString()))</td>
