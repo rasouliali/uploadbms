@@ -25,6 +25,7 @@
 : ViewBag.WorkFlowId == 1033 && pageType == "1" ? "بیمه شخص ثالث"
 : ViewBag.WorkFlowId == 1033 && pageType == "2" ? "بیمه موتورسیکلت"
 : ViewBag.WorkFlowId == 1034 ? "بیمه حوادث"
+: ViewBag.WorkFlowId == 2003 ? "خرید اشتراک"
 : ViewBag.WorkFlowId == 1035 ? "بیمه درمان" : "";
     Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
 }
@@ -46,6 +47,7 @@
 : ViewBag.WorkFlowId == 1033 && pageType == "2" ? "بیمه موتورسیکلت"
 : ViewBag.WorkFlowId == 100 ? "بیمه تست"
 : ViewBag.WorkFlowId == 1034 ? "بیمه حوادث"
+: ViewBag.WorkFlowId == 2003 ? "خرید اشتراک"
 : ViewBag.WorkFlowId == 1035 ? "بیمه درمان"  : "")
 <span class="backb"><a href="javascript:history.back()"><i class="icon-arrow-left"></i> بازگشت</a></span>
 </h1>
@@ -102,6 +104,10 @@ else if (ViewBag.WorkFlowId == 1034)
 else if (ViewBag.WorkFlowId == 1035)
 {
     @await Html.PartialAsync("Treatment")
+}
+else if (ViewBag.WorkFlowId == 2003)
+{// ViewBag.WorkFlowId == 2003
+    @await Html.PartialAsync("MLMSubscribe")
 }
 else if (ViewBag.WorkFlowId == 100)
 {

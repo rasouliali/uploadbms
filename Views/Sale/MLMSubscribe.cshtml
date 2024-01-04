@@ -1,0 +1,39 @@
+﻿@using Microsoft.Data.SqlClient;
+@using System.Security.Claims;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+    var db = new DataAccess();
+    var mlmPackageDt = db.ProccessSelectQuery("sp_getMLMSubscribe", new SqlParameter[] {
+                new SqlParameter("@UserId",User.FindFirstValue(ClaimTypes.NameIdentifier)),
+        }, System.Data.CommandType.StoredProcedure);
+
+    var mlmPackageList = mlmPackageDt.Select().Select(r => new { code = r["MLMSubscribePackageId"], title = r["PackageDetails"] }).ToList();
+    var dtSelect = new SelectList(mlmPackageList, "code", "title");
+
+}
+
+
+
+<form action="/Info/ShoppingData" method="post">
+    @Html.Hidden("WorkFlowId", 2003)
+    @Html.Hidden("ShoppingPageId", 1015)
+    @Html.Hidden("Amount", 0)
+    <fieldset dir="rtl">
+        <fieldset id="packageFieldset" class="allpart row">
+            <div class="col-12"><h5>طرح انتخابی</h5></div>
+            <div class="col-12 mb-4">
+                <div class="form-group col-md-4">
+                    <label for="package_id">اشتراک MLM</label>
+                    <select name="mlmsubpackageid" id="package_id" class="form-control sample" required asp-items="dtSelect">
+                        <option value="">لطفا انتخاب کنید</option>
+                    </select>
+                    <span validation-for="package_id" class="text-danger"></span>
+                </div>
+            </div>
+        </fieldset>
+    </fieldset>
+    <button class="btn btn-warning" type="submit" id="btn-pay">خرید</button>
+</form>
