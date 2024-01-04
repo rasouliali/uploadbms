@@ -4,17 +4,21 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-
+    var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
     var db = new DataAccess();
     var mlmPackageDt = db.ProccessSelectQuery("sp_getMLMSubscribe", new SqlParameter[] {
-                new SqlParameter("@UserId",User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                new SqlParameter("@UserId",uid),
         }, System.Data.CommandType.StoredProcedure);
-
     var mlmPackageList = mlmPackageDt.Select().Select(r => new { code = r["MLMSubscribePackageId"], title = r["PackageDetails"] }).ToList();
     var dtSelect = new SelectList(mlmPackageList, "code", "title");
 
-}
 
+
+    var CurrentPackageDt = db.ProccessSelectQuery("sp_getCurrentMLMSubscribe", new SqlParameter[] {
+                new SqlParameter("@UserId",uid),
+        }, System.Data.CommandType.StoredProcedure);
+    var CurrentPackageList = CurrentPackageDt.Select().Select(r => new { title = r["PackageDetails"], fromdate = r["DateAdded"], todate = r["SubscribeToDate"] }).ToList();//PackageDetails,a.DateAdded,a.SubscribeToDate
+}
 
 
 <form action="/Info/ShoppingData" method="post">
@@ -22,6 +26,30 @@
     @Html.Hidden("ShoppingPageId", 1015)
     @Html.Hidden("Amount", 0)
     <fieldset dir="rtl">
+        @if (CurrentPackageList.Count > 0)
+        {
+            <fieldset id="packageFieldset" class="allpart row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>عنوان بسته</th>
+                            <th>از تاریخ</th>
+                            <th>تا تاریخ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in CurrentPackageList)
+                        {
+                            <tr>
+                                <td>@item.title</td>
+                                <td>@ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(item.fromdate.ToString()))</td>
+                                <td>@ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(item.todate.ToString()))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </fieldset>
+        }
         <fieldset id="packageFieldset" class="allpart row">
             <div class="col-12"><h5>طرح انتخابی</h5></div>
             <div class="col-12 mb-4">
