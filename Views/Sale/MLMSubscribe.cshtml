@@ -100,7 +100,7 @@
                     //TransactionId = r["TransactionId"], DateAdded = r["DateAdded"], ToUserId = r["ToUserId"], TypeOfGiftId = r["TypeOfGiftId"], MLMPlanId = r["MLMPlanId"]
                     <tr>
                         <td>@item.TransactionMLMGiftId</td>
-                        <td>@((bool)item.IsHidden?"اصلی":"پنهان")</td>
+                        <td>@((bool)item.IsHidden ? "پنهان":"اصلی")</td>
                         <td>@(((long)item.Amount).ToString("N0"))</td>
                         <td>@item.TransactionId</td>
                         <td>@ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(item.DateAdded.ToString()))</td>
