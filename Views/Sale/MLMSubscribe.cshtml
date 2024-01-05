@@ -34,30 +34,6 @@
     @Html.Hidden("ShoppingPageId", 1015)
     @Html.Hidden("Amount", 0)
     <fieldset dir="rtl">
-        @if (CurrentPackageList.Count > 0)
-        {
-            <fieldset id="packageFieldset" class="allpart row">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>عنوان بسته</th>
-                            <th>از تاریخ</th>
-                            <th>تا تاریخ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in CurrentPackageList)
-                        {
-                            <tr>
-                                <td>@item.title</td>
-                                <td>@ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(item.fromdate.ToString()))</td>
-                                <td>@ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(item.todate.ToString()))</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </fieldset>
-        }
         <fieldset id="packageFieldset" class="allpart row">
             <div class="col-12"><h5>طرح انتخابی</h5></div>
             <div class="col-12 mb-4">
@@ -71,15 +47,45 @@
             </div>
         </fieldset>
     </fieldset>
-    <button class="btn btn-warning" type="submit" id="btn-pay">خرید</button>
+    <button class="btn btn-warning mb-3" type="submit" id="btn-pay">خرید</button>
 </form>
 
 
+@if (CurrentPackageList.Count > 0)
+{
+    <fieldset dir="rtl" id="packageFieldset" class="allpart row border">
+        <div>
+            بسته اشتراک MLM فعال
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>عنوان اشتراک فعال</th>
+                    <th>از تاریخ</th>
+                    <th>تا تاریخ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in CurrentPackageList)
+                {
+                    <tr>
+                        <td>@item.title</td>
+                        <td>@ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(item.fromdate.ToString()))</td>
+                        <td>@ShppaingPart.Controllers.SharedLogic.ToShamsi(DateTime.Parse(item.todate.ToString()))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </fieldset>
+}
 
 @if (AllGiftList.Count > 0)
 {
-    <fieldset id="packageFieldset" class="allpart row">
-        <table class="table">
+    <fieldset dir="rtl" id="packageFieldset" class="allpart row">
+        <div>
+            مجموع کارمزهای MLM
+        </div>
+        <table class="table ">
             <thead>
                 <tr>
                     <th>کد</th>
