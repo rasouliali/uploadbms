@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewData["Title"] = "افزایش اعتبار";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+    var IsCompleteProfile = ShppaingPart.Controllers.SharedLogic.IsCompeleteProfile();
+}
+
+<h1>افزایش اعتبار</h1>
+@if (IsCompleteProfile == false)
+{
+    <div>
+        برای فعال سازی کیف پول خود باید اطلاعات پروفایل خود را تکمیل کنید
+    </div>
+
+    <div>
+        برای تکمیل اطلاعات پروفایل خود لینک زیر را لمس کنید:
+    </div>
+
+    <div>
+        <a href="/Account/ProfileInfo" class="btn btn-primary">تکمیل اطلاعات</a>
+    </div>
+    return;
+
+}
+
+
+<div class="first-row row">
+    <div class="panel panel-default panel-group simple">
+        <div class="panel-heading">موجودی قابل برداشت</div>
+        <div class="panel-body panel-group simple">
+            <a href="/Wallet/Index" title="موجودی">
+                <div class="green">
+                    @ViewBag.Remain.ToString("N0") ريال
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-offset-5 col-sm-2 center-content">
+        <div class="input-group">
+            <span class="input-group-addon"><i>ريال</i></span>
+            <input name="Amount" id="Amount" class="form-control" type="number" placeholder="لطفا مبلغ را به ريال وارد نمایید" />
+        </div>
+    </div>
+</div>
+<hr class="light-hr" />
+<div class="row" id="step3Link">
+    <label for="Amount">مبلغ پیشنهادی</label>
+    <div class="tab">
+        <button class="tablinks4 " onclick="ChangeAmount(event, '100000')"> 100،000 ريالی </button>
+        <button class="tablinks4 " onclick="ChangeAmount(event, '200000')"> 200،000 ريالی </button>
+        <button class="tablinks4 " onclick="ChangeAmount(event, '500000')"> 500،000 ريالی </button>
+        <button class="tablinks4 " onclick="ChangeAmount(event, '1000000')"> 1،000،000 ريالی </button>
+    </div>
+</div>
+<div id="hr_step4Link" class="only-charge">
+    <hr class="light-hr" />
+</div>
+
+<button class="form-control btn-paid btn-success " id="PayBtn"> پرداخت </button>
+
+@section Scripts{
+    <script type="text/javascript">
+        var amount_value = 0;
+        function ChangeAmount(evt, amount) {
+            var i, tabcontent, tablinks;
+            tablinks = document.getElementsByClassName("tablinks4");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            try {
+                amount_value = amount;
+                evt.currentTarget.className += " active";
+            } catch (e) {
+            }
+        }
+        $("#step3Link").show();
+        $('#PayBtn').on('click', function () {
+            if (amount_value > 0 && amount_value == Math.floor(amount_value)) {
+                $('#FormAmount').val(amount_value);
+                $('#formData').submit();
+                //$.post('/Wallet/Increase', { Amount: amount_value }, function (data, status) {
+
+                //});
+            } else {
+                alert("مبلغ نمی تواند کمتر از 1 و دارای اعشار باشد");
+            }
+
+        });
+        $('#Amount').on('keyup', function () {
+            ChangeAmount(null, $('#Amount').val());
+        });
+    </script>
+    <style>
+        .tab, .tablinks4, #step3Link > label {
+            float: right;
+        }
+
+        #Amount {
+            font-size: smaller;
+        }
+    </style>
+}
+<form method="post" action="/Info/ShoppingData" id="formData">
+    <input type="hidden" name="WorkFlowId" value="1013" />
+    <input type="hidden" name="ShoppingPageId" value="5" />
+    <input type="hidden" name="Amount" id="FormAmount" value="" />
+</form>
