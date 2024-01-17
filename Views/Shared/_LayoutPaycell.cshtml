@@ -502,6 +502,12 @@
                                     <li>
                                         <a asp-area="" asp-controller="Search" asp-action="Index" title="جست و جو"><i class="glyphicon glyphicon-search"></i></a>
                                     </li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li>
+                                            <a asp-area="" asp-controller="Admin" asp-action="Index" title="صفحات مدیریتی">صفحات مدیریتی</a>
+                                        </li>
+                                    }
                                 }
                                 @*<li>
                                         <a asp-area="" asp-controller="Manage" asp-action="Index" title="مقدار اعتبار" id="creditA">&nbsp;</a>
@@ -671,7 +677,13 @@
                                 </li>
                                 <li>
                                     <a href="/hampisheh.apk?v=9" title="دانلود اپ"><div class="n-btn c-btn c-violet"><i class="icon icon-cloud-download"></i></div>دانلود اپ اندروید<span class="aricon icon icon-arrow-left"></span></a>
+                            </li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li>
+                                    <a asp-area="" asp-controller="Admin" asp-action="Index" title="صفحات مدیریتی">صفحات مدیریتی</a>
                                 </li>
+                            }
                                 @*<li>
                                         <a asp-area="" asp-controller="Search" asp-action="Index" title="جست و جو"><i class="fa fa-search fa-2x"></i>جست و جو</a>
                                     </li>*@
