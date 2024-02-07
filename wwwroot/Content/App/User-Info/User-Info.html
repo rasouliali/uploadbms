@@ -1,0 +1,76 @@
+﻿<div class="Link-Css"></div>
+
+<script>autoversion('/Content/App/User-Info/User-Info.css')</script>
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-12 reg-d">
+
+
+            <div class="form-group">
+                <label>نام</label>
+                <input id="Name" class="form-control" />
+
+            </div>
+            <div class="form-group">
+                <label>نام خانوادگی</label>
+                <input id="LastName" class="form-control" />
+
+            </div>
+            <div class="form-group">
+                <label>کد ملی</label>
+                <input id="NationalCode" maxlength="10" type="tel" class="form-control" />
+                <span id="NationalCodeErr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+                <input type="radio" value="true" id="isMan" name="optradio" /><label for="isMan">مرد</label>
+                <input type="radio" value="false" id="IsWoman" name="optradio" /><label for="IsWoman">زن</label>
+                <label>جنسیت</label>
+            </div>
+            <div class="form-group" id="IntroducerD">
+                <label>معرف</label>
+
+                <input id="Introducer" type="tel" class="form-control" disabled />
+
+            </div>
+            <!--<div class="row">
+                <div class="col-sm">
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio2" name="optradio" value="option2">خانم
+                        <label class="form-check-label" for="radio2"></label>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" id="radio1" name="optradio" value="option1">آقا
+                        <label class="form-check-label" for="radio1"></label>
+                    </div>
+                </div>
+            </div>-->
+
+            <div class="form-group right">
+                <input id="rule" type="checkbox" />
+                <label for="rule">
+                    <span id="ruleClick" class="green">قوانین ازمن 24</span> را می پذیرم
+                </label>
+                <span id="ruleErr" class="text-danger"></span>
+            </div>
+
+        </div>
+    </div>
+    <div class="bbar">
+        <div class="row">
+
+            <div class="col-sm">
+                <button type="button" id="confermCancel" class="btn btn-warning form-control">بعدا تکمیل میکنم</button>
+            </div>
+            <div class="col-sm">
+                <button type="button" id="conferm" class="btn btn-success form-control">تکمیل ثبت نام</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="Link-script"></div>
+
+<script>autoversion('/Content/App/User-Info/User-Info.js', 1)</script>

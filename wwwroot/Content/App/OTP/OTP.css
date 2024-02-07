@@ -1,0 +1,38 @@
+﻿.form-group {
+    margin-bottom: 2rem;
+}
+
+input {
+    text-align: center;
+}
+
+.row {
+    MARGIN-TOP: 25px;
+}
+
+.btn-warning {
+    margin-top: -20px;
+}
+
+.bbar {
+    height: 38px;
+    left: 0px;
+}
+@media (max-width: 768px) {
+    .reg-d {
+        margin-top: 45%;
+    }
+}
+
+/*body {
+    background: #000;
+}*/
+
+svg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 150px;
+    width: 150px;
+}
