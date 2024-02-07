@@ -1,0 +1,1172 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	Layout = null;
+}
+<!DOCTYPE html>
+<html dir="rtl" lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>آسان پرداخت</title>
+	<link rel="stylesheet" href="/netcharge/css/bootstrap-icons.css" />
+	<link rel="stylesheet" href="/netcharge/css/swiper-bundle.min.css" />
+	<link rel="stylesheet" href="/netcharge/css/bootstrap.rtl.min.css" />
+	<link rel="stylesheet" href="/netcharge/css/toastr.min.css" />
+	<link rel="stylesheet" href="/netcharge/css/nice-select.css" />
+	<link rel="stylesheet" href="/netcharge/css/fonts.css" />
+	<link rel="stylesheet" href="/netcharge/css/css.css" />
+	<link rel="stylesheet" href="/netcharge/css/app.css" />
+	<link rel="stylesheet" id="code-theme">
+</head>
+
+<body>
+	<div id="wrapper-buy-credit internet-page">
+		<form class="buy-credit-form" action="" method="post" onsubmit="return false;" autocomplete="off">
+			<section class="buy-credit-section buy-credit-step-1 d-flex" style="opacity: 1;">
+				<header class="header__mobile__sharge">
+					<div>
+						<a href="/" class="header__btn__move_page btn__move_page btn_back"></a>
+					</div>
+					<div class="header__title">
+						<span class="header__title__text">بسته اینترنت</span>
+					</div>
+					<div class="header__help">
+						<span class="header__help__icon icon-info"></span>
+					</div>
+				</header>
+				<main>
+					<div class="modal_mobile_overlay">
+						<div class="modal_mobile_content">
+							<div class="modal_mobile_header">
+								<span class="icon-info"></span>
+							</div>
+
+							<div class="modal_mobile_body">
+								<div class="mb-20px">
+									<span class="icon-sim-card-mobile icon"></span><span class="title">شارژ اینترنت</span>
+									<p class="mt-5px">
+										در این صفحه شما می توانید اکانت سیم کارت یا سرویس اینترنت خانگی خود را شارژ کنید.
+										برای شروع از بین تب های بالای صفحه نوع سرویس خود را انتخاب کرده و سپس اطلاعات مورد نیاز را وارد کنید. پس اطمینان از اینکه اطلاعات درست را وارد کرده اید بر روی دکمه مرحله بعد کلیک کرده تا ادامه فرایند
+										خود را انجام دهید.
+									</p>
+								</div>
+							</div>
+
+							<div class="modal_mobile_footer">
+								<span class="close_modal"></span>
+							</div>
+						</div>
+					</div>
+					<div class="container w-90">
+						<div class="app-slide-collapse">
+							<div class="adsl internet-package-slide-collapse" data-type="1">
+								<span>ADSL</span>
+							</div>
+							<div class="internet-package internet-package-slide-collapse-active internet-package-slide-collapse" data-type="2">
+								<span>پکیج اینترنت</span>
+							</div>
+						</div>
+						<input type="hidden" id="internet_type" value="1">
+						<div class="internet-adsl-slide internet-page-slide d-block" data-type="2">
+							<p class="mobile__sharge__title mb-8">
+								شماره مویایل یا کد پرداخت که میخواهید برای آن بسته خریداری کنید را وارد نمایید و یا آیکون
+								شماره موبایل خود را لمس نمایید
+							</p>
+							<div class="mobile__sharge__form__input__box">
+								<span class="mobile__sharge_input clear__input"></span>
+
+								<span class="get_my_mobile_number_btn"></span>
+
+								<input type="tel" placeholder="09112345678" maxlength="11"
+									   class="form__input__mobile only_number" value="" autocomplete="off" />
+
+								<button class="user_search_btn" data-current_url=".mobile__sharge__step_one"
+										data-current_title="خرید شارژ" type="button"></button>
+							</div>
+							<div>
+								<p class="mobile__sharge__title mt-15">
+									اپراتور شماره موبایل وارد شده را انتخاب نمایید
+								</p>
+							</div>
+							<input type="hidden" id="operator" />
+							<div class="swiper mt-30">
+								<div class="swiper-wrapper">
+									<div class="swiper-slide">
+										<div class="swiper-image operator-list-item">
+											<img src="/netcharge/images/img/a.png" class="swiper-img operator-type" data-value="0"
+												 data-src1="/netcharge/images/img/a.png" data-src2="/netcharge/images/img/aa.png" />
+										</div>
+									</div>
+									<div class="swiper-slide">
+										<div class="swiper-image operator-list-item">
+											<img src="/netcharge/images/img/b.png" class="swiper-img operator-type" data-value="1"
+												 data-src1="/netcharge/images/img/b.png" data-src2="/netcharge/images/img/bbb.png" />
+										</div>
+									</div>
+									<div class="swiper-slide">
+										<div class="swiper-image operator-list-item">
+											<img src="/netcharge/images/img/c.jpg" class="swiper-img operator-type" data-value="2"
+												 data-src1="/netcharge/images/img/c.jpg" data-src2="/netcharge/images/img/cc.png" />
+										</div>
+									</div>
+									<div class="swiper-slide">
+										<div class="swiper-image operator-list-item">
+											<img src="/netcharge/images/img/e.png" class="swiper-img operator-type" data-value="3"
+												 data-src1="/netcharge/images/img/e.png" data-src2="/netcharge/images/img/ee.png" />
+										</div>
+									</div>
+									<div class="swiper-slide">
+										<div class="swiper-image operator-list-item">
+											<img src="/netcharge/images/img/f.png" class="swiper-img operator-type" data-value="4"
+												 data-src1="/netcharge/images/img/f.png" data-src2="/netcharge/images/img/ff.png" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="internet-package-slide internet-page-slide" data-type="1">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur reprehenderit dolor distinctio officia velit, voluptate deserunt maiores, aperiam ut eos sequi harum nostrum fuga veritatis quas, quis ducimus. Nesciunt, iusto!
+						</div>
+					</div>
+				</main>
+			</section>
+			<section class="buy-credit-section buy-credit-step-2" data-role="search">
+				<header class="header__mobile__sharge">
+					<div>
+						<a href="#" class="header__btn__move_page btn__move_page btn_back"></a>
+					</div>
+					<div class="header__title">
+						<span class="header__title__text">دفترچه تلفن</span>
+					</div>
+					<div class="header__help">
+						<span class="header__help__icon icon-info"></span>
+					</div>
+				</header>
+				<main>
+					<div class="modal_mobile_overlay">
+						<div class="modal_mobile_content">
+							<div class="modal_mobile_header">
+								<span class="icon-info"></span>
+							</div>
+							<div class="modal_mobile_body">
+								<div class="mt-20px">
+									<span class="icon-description icon"></span>
+									<span class="title">توضیحات</span>
+									<p>
+										در این قسمت می توانید با وارد کردن نام کاربر مورد نظر عمل جستجو کاربر رو انجام
+										دهید.
+									</p>
+								</div>
+							</div>
+							<div class="modal_mobile_footer">
+								<span class="close_modal"></span>
+							</div>
+						</div>
+					</div>
+					<div class="container" id="users">
+						<div class="search_user_box_input icon-search position-relative">
+							<span class="clear__input clear__input_serach_user"></span>
+							<input type="text" class="search_user_input search" />
+						</div>
+						<ul class="search_user_list_ul list">
+							<li class="search_user_li" data-name="hossein" data-number="09114030262">
+								<span class="search_user_name">حسین</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="ali" data-number="09324030265">
+								<span class="search_user_name">علی</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="hossein" data-number="09114030262">
+								<span class="search_user_name">حسین</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="ali" data-number="09324030265">
+								<span class="search_user_name">علی</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="hossein" data-number="09114030262">
+								<span class="search_user_name">حسین</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="ali" data-number="09324030265">
+								<span class="search_user_name">علی</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09354030264">
+								<span class="search_user_name">کریم</span>
+								<span class="search_user_icon"></span>
+							</li>
+							<li class="search_user_li" data-name="karim" data-number="09994030264">
+								<span class="search_user_name">reza</span>
+								<span class="search_user_icon"></span>
+							</li>
+						</ul>
+					</div>
+				</main>
+				<div class="search_user_box_footer">
+					<button type="button" class="user_search_list_ok btn_back">
+						<span class="number"></span>
+					</button>
+					<button type="button" class="btn__cancel__user_search btn_back app-btn">
+						لغو
+					</button>
+					</d>
+			</section>
+			<section class="buy-credit-section buy-credit-step-3">
+				<header class="header__mobile__sharge">
+					<div>
+						<a href="#" class="header__btn__move_page btn__move_page btn_back"></a>
+					</div>
+					<div class="header__title">
+						<span class="header__title__text">بسته اینترنت سیم کارت دایمی</span>
+					</div>
+					<div class="header__help">
+						<span class="header__help__icon icon-info"></span>
+					</div>
+				</header>
+				<main>
+					<div class="modal_mobile_overlay">
+						<div class="modal_mobile_content">
+							<div class="modal_mobile_header">
+								<span class="icon-info"></span>
+							</div>
+
+							<div class="modal_mobile_body">
+								<div class="mb-20px">
+									<span class="icon-sim-card-mobile icon"></span><span class="title">بسته اینترنت</span>
+									<p class="mt-5px">
+										در این صفحه شما لیست تمامی بسته های در درسترس برای شماره خود را مشاهده می کنید. با انتخاب هر بسته قادر به خرید آن خواهید بود.
+										در صورتی که بسته خاصی مد نظر شماست، می توانید با فیلترها سریع تر بسته مورد نظر خود را پیدا کنید.
+									</p>
+								</div>
+							</div>
+
+							<div class="modal_mobile_footer">
+								<span class="close_modal"></span>
+							</div>
+						</div>
+					</div>
+					<div class="container select-internet-package-slide">
+						<div class="select-internet-package-slide-header">
+							<div x-data class="filter-list-ul">
+								<ul @@click.outside="$('.filter-list-ul').slideUp('fast');">
+									<li class="internet-package-filter-ul-li" data-value="1">مدت</li>
+									<li class="internet-package-filter-ul-li" data-value="2">روزانه</li>
+									<li class="internet-package-filter-ul-li" data-value="3">هفتگی</li>
+									<li class="internet-package-filter-ul-li" data-value="4">ماهانه</li>
+									<li class="internet-package-filter-ul-li" data-value="5">دو ماهه</li>
+									<li class="internet-package-filter-ul-li" data-value="6">چهار ماهه</li>
+								</ul>
+							</div>
+							<div x-data class="filter-list-ul-type">
+								<ul @@click.outside="$('.filter-list-ul-type').slideUp('fast');">
+									<li class="internet-package-filter-ul-li-type" data-value="1">نوع</li>
+									<li class="internet-package-filter-ul-li-type" data-value="2">اینترنت همراه</li>
+								</ul>
+							</div>
+							<div id="internet-package-filter-type" class="right_column">
+								<span class="icon_slide"></span>
+								<span class="text internet-package-filter-type">نوع</span>
+								<span class="icon_funnel"></span>
+							</div>
+							<div class="left_column" id="internet-package-filter-text">
+								<span class="icon_slide"></span>
+								<span class="text internet-package-filter-text">مدت</span>
+								<span class="icon_date"></span>
+							</div>
+						</div>
+						<div class="select-internet-package-body">
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+							<div class="box-info-internet-package">
+								<a class="d-block info-internet-package-link" data-value="1">
+									<p>
+										<span class="cloud-arrow-down-icon __icon"></span>
+										<span class="text">15 گیگابایت</span>
+									</p>
+									<p>
+										<span class="data-time-icon __icon"></span>
+										<span class="text">چهار ماهه</span>
+									</p>
+									<p class="m-0 fs-11">20 روزه 15 گیگ</p>
+									<p class="m-0 fs-11">مبلغ با احتساب 9 درصد مالیات 675800 ریال</p>
+									<div class="amount-package">
+										<span class="number">213,000</span> <span>ریال</span>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</main>
+				<div></div>
+			</section>
+
+			<section class="buy-credit-section buy-credit-step-result-payment-error">
+				<header class="header__mobile__sharge">
+					<div>
+						<a href="/" class="header__btn__move_page btn__move_page btn_back"></a>
+					</div>
+					<div class="header__title">
+						<span class="header__title__text">تراکنش ناموفق</span>
+					</div>
+					<div class="header__help">
+					</div>
+				</header>
+				<main>
+					<div class="container w-90">
+						<div class="success_box_payment error_payment_box">
+							<div class="error_payment_image">
+								<img src="../images/img/error_icon_payment.png" class="error_payment_img" alt="">
+							</div>
+							<div class="success_image">
+								<img src="/netcharge/images/img/error_payment.jpg" class="success_image" alt="">
+							</div>
+							<p class="alert alert-info">
+								مشتری گرامی با عرض پوزش در روند خرید شما مشکلی پیش آمده و خرید انجام نگرفته در صورت کسر مبلغ از حساب شما حداکثر تا 72 ساعت مبلغ به حساب شما برگشت داده خواهد شد.
+							</p>
+							<div class="return_btn">
+								<button class="btn btn-secondary btn-sm">بازگشت</button>
+							</div>
+						</div>
+
+					</div>
+				</main>
+			</section>
+
+			<section class="buy-credit-section buy-credit-step-result-payment-success">
+				<header class="header__mobile__sharge">
+					<div>
+						<a href="/" class="header__btn__move_page share-icon btn__move_page btn_back"></a>
+					</div>
+					<div class="header__title">
+						<span class="header__title__text">تراکنش موفق</span>
+					</div>
+					<div class="header__help">
+					</div>
+				</header>
+				<main>
+					<div class="container w-90">
+						<div class="success_box_payment">
+							<div class="success_image">
+								<img src="/netcharge/images/img/done2.png" class="success_image" alt="">
+							</div>
+							<p class="thanks_message"><span>از خرید شما سپاس گذاریم</span></p>
+							<p class="tracking_code">کد پیگیری تراکنش : <span>1234567890</span></p>
+						</div>
+
+					</div>
+				</main>
+			</section>
+		</form>
+	</div>
+
+	<div class="loading">
+		<div id="loading">
+			<div class="spinner-border text-light" role="status">
+				<span class="visually-hidden">لطفا منتظر بمانید...</span>
+			</div>
+		</div>
+	</div>
+
+	<div id="overlayer"></div>
+	<span class="loader"><span class="loader-inner"></span></span>
+
+	<script src="/netcharge/js/jquery-3.4.1.min.js"></script>
+	<script src="/netcharge/js/jquery.validate.min.js"></script>
+	<script src="/netcharge/js/alpine.min.js"></script>
+	<script src="/netcharge/js/list.min.js"></script>
+	<script src="/netcharge/js/bootstrap.bundle.min.js"></script>
+	<script src="/netcharge/js/toastr.min.js"></script>
+	<script src="/netcharge/js/swiper-bundle.min.js"></script>
+	<script src="/netcharge/js/jquery.nice-select.min.js"></script>
+	<script src="/netcharge/js/wordifyfa.min.js"></script>
+	<script src="/netcharge/js/NumberFormat.js"></script>
+	<script src="/netcharge/js/js.js"></script>
+	<script src="/netcharge/js/internet.js"></script>
+	<script>
+		let listMobileNumber = [
+			['0911', '0912', '0913', '0914', '0915', '0916', '0917', '0918', '0919', '0990', '0991', '0992', '0993', '0994'], // پیش شماره های همراه اول
+			['0930', '0933', '0935', '0936', '0937', '0938', '0939', '0901', '0902', '0903', '0904', '0905', '0941'], // ایرانسل
+			['0932'], // تالیا
+			['0920', '0921', '0922', '0923'], // رایتل
+			['0998'] // شاتل
+		];
+		window.listMobileNumber = listMobileNumber;
+
+		$('select.wide').niceSelect();
+
+	</script>
+</body>
+
+</html>
