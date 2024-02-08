@@ -1,0 +1,501 @@
+body {
+    background-color: #f2f9fd;
+}
+
+.color-black {
+    color: black;
+}
+
+.sidebar-menu {
+    background: #f2f9fd;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-menu li a {
+    color: #fff;
+}
+
+.sidebar-menu .menu li.sidebar-menu-item:hover {
+    background-color: #868686;
+}
+
+.sidebar-menu li a {
+    color: #4a4646;
+}
+
+.sidebar-menu li .icon {
+    color: #4a4646;
+}
+
+.sidebar-menu .menu li:hover a,
+.sidebar-menu .menu li:hover .icon {
+    color: #fff;
+}
+
+.user-mobile-number {
+    color: #4a4646;
+}
+
+.sidebar-menu-permissons {
+    border-color: #d7d7d7;
+}
+
+.sidebar-menu-permissons-title {
+    color: #4a4646;
+}
+
+header {
+    background-color: #f2f9fd;
+    border-bottom: 2px solid #a2a2a2;
+}
+
+.header-brand span {
+    background-color: #110c0c;
+}
+
+.footer {
+    background: #f2f9fd;
+    border-top: 2px solid #ccc;
+}
+
+.footer-top-text {
+    color: #4a4646;
+}
+
+.footer-icon {
+    background-color: #f05235;
+    color: #fdfdfd;
+}
+
+.bg-color {
+    background-color: #fff !important;
+}
+
+.footer-mid-icon {
+    background: black;
+}
+
+.footer-mid-icon-link {
+    color: white;
+}
+
+.footer-mid-text,
+.footer-bottom-text {
+    color: #4a4646;
+}
+
+.footer-bottom-icon-link {
+    color: white;
+}
+
+.box-text {
+    color: #4a4646;
+}
+
+
+/* begin style mobile sharge */
+
+.box-icon {
+    border: 1px solid #b7b7b7;
+}
+
+.form__input__mobile {
+    color: #2F2C2C;
+    border: 1px solid #ececec;
+    box-shadow: 0 0 8px #e6e6e6;
+}
+
+.clear__input::after {
+    border: 1px solid #403c3c;
+    color: black;
+}
+
+.user_search_btn {
+    color: #403d3d;
+    background-color: #fff;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    border: 1px solid #A9A9A9;
+    color: #6C6C6C;
+}
+
+.search_user_input {
+    color: #222020;
+    border: 1px solid #E8E8E8;
+}
+
+.search_user_box_input:after {
+    color: #6c6c6c;
+}
+
+.search_user_icon {
+    background: white;
+    color: #7B7B7B;
+    ;
+}
+
+.search_user_li {
+    color: #262222;
+    box-shadow: 0 0 1px rgb(181, 181, 181);
+    background-color: #fff;
+}
+
+.search_user_box_footer {
+    padding-bottom: 0;
+}
+
+.user_serarch_list_ok {
+    background: #fff;
+    color: black;
+    width: 100%;
+    border: solid #a2a2a22e;
+    border-width: 1px 0 1px 0;
+    border-radius: unset;
+}
+
+
+/*  page select price sharge */
+
+.sim_card_charge_right_icon {
+    border: 2px solid white;
+    background: #3ca0c8;
+    border-color: red;
+}
+
+.sim_card_charge_right_icon::before {
+    color: #fff;
+    text-shadow: -2px 0px 0px #939191;
+}
+
+.credit-type-box-right {
+    border: 2px solid black;
+    background: black;
+    border-color: red;
+    color: #fff;
+}
+
+.credit-type-box-left {
+    border: 2px solid black;
+    color: #fff;
+    background: black;
+}
+
+.sim_card_charge_list_price {
+    background: white;
+    box-shadow: 0 0 11px #dfdfdf;
+    padding: 0;
+}
+
+.sim_card_charge_list_price ul li {
+    background: #e8e8e8;
+    margin-bottom: 10px;
+}
+
+.sim_card_charge_list_price ul .number {
+    color: #6c6c6c;
+}
+
+.sim_card_charge_list_price ul .title {
+    color: #6c6c6c;
+}
+
+.list_price_active {
+    border-bottom: 1px solid #938f8f;
+}
+
+.list_price_active .number {
+    color: #ff8300 !important;
+}
+
+.list_price_active .number {
+    color: #ff8300 !important;
+}
+
+.charge_price_input,
+.charge_price_input:focus {
+    color: #6c6c6c !important;
+    border: 1px solid #e3e3e3 !important;
+}
+
+.sim_card_charge_price_input_box {
+    background: white;
+    color: #6c6c6c;
+}
+
+
+/* begin style payment page */
+
+p.text-white {
+    color: #201d1d !important;
+}
+
+.payment_price .number {
+    color: #ff6000;
+}
+
+.choose_payment_method .box_icon_payment {
+    background: #2b2828;
+}
+
+.box_icon_is_active {
+    border-color: #fd6205 !important;
+}
+
+.info_payment_bank input[type="text"],
+.info_payment_bank input[type="password"] {
+    border: 2px solid #eee!important;
+    background-color: unset;
+    color: #1a1717;
+    box-shadow: unset!important;
+}
+
+.info_payment_bank input[type="text"]:focus,
+.info_payment_bank input[type="password"]:focus {
+    box-shadow: unset!important;
+}
+
+.info_payment_bank #card_number_input-error,
+.info_payment_bank #card_bank_password-error,
+.info_payment_bank #year-error,
+.info_payment_bank #month-error,
+.info_payment_bank #card_bank_cvv2-error {
+    color: red !important;
+}
+
+.btn_bank_card_code {
+    color: white;
+    background: #6c6c6c;
+}
+
+.bank_code_timer {
+    background: white;
+    color: #00abff;
+    border-bottom: 2px solid #fff;
+    background: #fff;
+}
+
+.btn_payment {
+    color: white;
+    background: #E7492C;
+}
+
+.btn_payment a {
+    color: white;
+}
+
+.payment_tab label {
+    color: #201f1f;
+}
+
+.payment_tab .btn_remove_text_input {
+    color: black;
+}
+
+.payment_tab .payment_tab_wallet_li_is_active {
+    border-bottom: 1px solid #4a4848;
+}
+
+.payment_tab .payment_tab_wallet_li .title {
+    color: black;
+}
+
+.payment_tab_wallet_li_is_active .title {
+    color: black;
+}
+
+.payment_tab_wallet_li_is_active::after {
+    color: black;
+}
+
+.btn_shwo_hide_password {
+    color: #000;
+}
+
+.bank_code_timer {
+    background-color: #ececec;
+}
+
+.btn_bank_card_code {
+    background: #f08c0a;
+}
+
+.box_icon_payment .icon {
+    color: #fff;
+}
+
+.box_icon_is_active {
+    background: #000 !important;
+}
+
+.box_icon_is_active .icon {
+    color: #fff;
+}
+
+.circle_icon {
+    border: 2px solid #0d0d0d;
+}
+
+.payment_tab_wallet_li_is_active .circle_icon {
+    border: 2px solid #373535;
+}
+
+.payment_tab_wallet_li_is_active .circle_icon:before {
+    background-color: #000;
+}
+
+.payment_tab_wallet_li .price,
+.payment_tab_wallet_li .title {
+    color: #000;
+}
+
+.payment_tab_wallet_li_is_active .price {
+    color: #09eccc;
+}
+
+.insufficient_inventory {
+    color: #ff7800;
+}
+
+.div_btn_retry button {
+    background: #868282;
+    color: white;
+}
+
+.modal_mobile_overlay {
+    background-color: #0000007d;
+}
+
+.modal_mobile_content {
+    background-color: #fff;
+    border: 2px solid red;
+}
+
+.modal_mobile_header {
+    border-bottom: 1px solid #d9d9d980;
+    color: #515151;
+}
+
+.modal_mobile_body {
+    color: #515151;
+}
+
+.modal_mobile_body li {
+    color: #515151;
+}
+
+.modal_mobile_body p {
+    color: #515151;
+}
+
+.modal_mobile_body .title {
+    color: #13b9c1;
+}
+
+.modal_mobile_footer {
+    border-top: 1px solid #d9d9d980;
+}
+
+.close_modal:after {
+    color: red;
+}
+
+
+/* successful_transaction_page */
+
+.successful_transaction_page {
+    background-color: #fff;
+}
+
+.successful_transaction_card {
+    color: #3c3939;
+    background: #fff;
+}
+
+.successful_transaction_card_body {
+    border: 1px solid #eee;
+}
+
+.successful_transaction_card_body .title {
+    color: #464343;
+}
+
+.successful_transaction_card_body .info_row {
+    border: 1px solid #eee;
+    background-color: #fff;
+}
+
+.successful_transaction_card_header .title {
+    color: #4F4F4F;
+}
+
+.successful_transaction_card_header .title::before {
+    color: #fff;
+    background: #303130;
+}
+
+.successful-transaction-page .save_mobile_number {
+    color: #2c2c2d;
+}
+
+.successful-transaction-page .save_mobile_number .ui__checkbox__mark {
+    background-color: #FFF;
+    border: 1px solid #dfdfdf;
+}
+
+.successful-transaction-page .save_mobile_number .ui__checkbox__mark:before {
+    border-color: #fff;
+}
+
+.ui__checkbox__input:checked+.ui__checkbox__mark::before {
+    border-bottom-color: #000;
+    border-right-color: #000;
+}
+
+.successful-transaction-page .footer-button_return_back {
+    background: transparent;
+    color: #393030;
+    border: 1px solid #d9dbdb;
+    box-shadow: 0 0 3px #e6e6e6;
+}
+
+.text-orange {
+    color: #e67a1b !important;
+}
+
+
+/* success payment message */
+
+.success_box_payment {
+    box-shadow: 0 0 10px #00c3ff, 0 0 10px #ec09ff;
+    padding-bottom: 10px;
+}
+
+.success_box_payment p {
+    color: #312b2b;
+    border-bottom-color: #000;
+    text-shadow: 0 0 3px #565e62;
+}
+
+.success_box_payment .thanks_message {
+    color: #282525;
+}
+
+.success_box_payment p.tracking_code {
+    color: #262121;
+}
+
+.success_box_payment p.tracking_code span {
+    border-color: #828282;
+}
+
+.error_payment_box p.alert-info {
+    color: #221e1e;
+    border-bottom-color: #fff;
+}
+
+.success_box_payment.error_payment_box {
+    box-shadow: 0 0 10px #dbc3ba, 0 0 10px #bf1212;
+}
+
+.success_box_payment.error_payment_box .thanks_message {
+    color: #3e3d3d;
+}

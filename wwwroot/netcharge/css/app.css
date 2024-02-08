@@ -1,0 +1,276 @@
+.cloud-arrow-down-icon::before {
+    content: "\f294";
+}
+
+.data-time-icon::after {
+    content: "\f102";
+}
+
+ul.app-slide-collapse {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 3px;
+    margin-bottom: 25px;
+}
+
+    ul.app-slide-collapse li {
+        width: 100%;
+        max-width: 50%;
+        padding: 0;
+        text-align: center;
+    }
+
+        ul.app-slide-collapse li button {
+            border-radius: unset !important;
+            width: 100%;
+            text-align: center;
+            border: unset !important;
+        }
+
+            ul.app-slide-collapse li button span {
+                font-size: 12px;
+                color: #fff;
+            }
+
+            ul.app-slide-collapse li button.active span {
+                color: #495057;
+            }
+
+.select-internet-package-slide .select-internet-package-slide-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #Fff;
+    padding: 13px;
+    border-radius: 3px;
+}
+
+    .select-internet-package-slide .select-internet-package-slide-header div.filter-list-ul,
+    .select-internet-package-slide .select-internet-package-slide-header div.filter-list-ul-type {
+        display: none;
+        box-shadow: 0 0 5px #d7d7d7;
+        background-color: #fff;
+        border-radius: 3px;
+        height: auto;
+        text-align: center;
+        padding: 15px 0;
+        position: absolute;
+        z-index: 10;
+        top: 0px;
+        left: 0;
+    }
+
+        .select-internet-package-slide .select-internet-package-slide-header div.filter-list-ul ul,
+        .select-internet-package-slide .select-internet-package-slide-header div.filter-list-ul-type ul {
+            width: 100%;
+        }
+
+            .select-internet-package-slide .select-internet-package-slide-header div.filter-list-ul ul li,
+            .select-internet-package-slide .select-internet-package-slide-header div.filter-list-ul-type ul li {
+                width: 100%;
+                text-align: center;
+                font-size: 12px;
+                margin-bottom: 20px;
+            }
+
+                .select-internet-package-slide .select-internet-package-slide-header div.filter-list-ul ul li:last-child,
+                .select-internet-package-slide .select-internet-package-slide-header div.filter-list-ul-type ul li:last-child {
+                    margin-bottom: 0;
+                }
+
+    .select-internet-package-slide .select-internet-package-slide-header div.filter-list-ul-type {
+        left: unset;
+        right: 0;
+    }
+
+    .select-internet-package-slide .select-internet-package-slide-header div {
+        position: relative;
+        width: 100%;
+        max-width: 46%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .select-internet-package-slide .select-internet-package-slide-header div span.text {
+            font-size: 13px;
+        }
+
+        .select-internet-package-slide .select-internet-package-slide-header div .icon_date::after {
+            content: "\f102";
+            font-size: 16px;
+        }
+
+        .select-internet-package-slide .select-internet-package-slide-header div .icon_slide::after {
+            font-size: 16px;
+            content: "\f282";
+        }
+
+        .select-internet-package-slide .select-internet-package-slide-header div .icon_funnel::after {
+            font-size: 16px;
+            content: "\f3e1";
+        }
+
+    .select-internet-package-slide .select-internet-package-slide-header::after {
+        top: 5px;
+        right: 50%;
+        content: "";
+        display: block;
+        width: 0;
+        height: 80%;
+        background-color: #e1dfdf;
+        position: absolute;
+        width: 1px;
+    }
+
+    .select-internet-package-slide .select-internet-package-slide-header.fixed {
+        top: 54px;
+        left: 12px;
+        right: 12px;
+        z-index: 100;
+        position: fixed;
+        border-bottom: 1px solid #f0efef;
+    }
+
+.select-internet-package-slide .select-internet-package-body {
+    margin-top: 15px;
+}
+
+    .select-internet-package-slide .select-internet-package-body .box-info-internet-package {
+        width: 100%;
+        background-color: #fff;
+        color: #201d1d;
+        border-radius: 3px;
+        margin-bottom: 15px;
+        padding-right: 10px;
+        padding-top: 15px;
+        padding-bottom: 10px;
+        position: relative;
+    }
+
+        .select-internet-package-slide .select-internet-package-body .box-info-internet-package .amount-package {
+            position: absolute;
+            left: 0;
+            top: 20px;
+            height: 30px;
+            width: 84px;
+            background-color: #4CA996;
+            color: white;
+            text-align: center;
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            padding-left: 10px;
+            font-size: 12px;
+        }
+
+            .select-internet-package-slide .select-internet-package-body .box-info-internet-package .amount-package::before {
+                content: "";
+                position: relative;
+                right: -11px;
+                top: 0px;
+                background: transparent;
+                border-right: 20px solid #fff;
+                border-bottom: 14px solid #fff;
+                border-left: 22px solid #4CA996;
+                border-top: 16px solid #fff;
+            }
+
+            .select-internet-package-slide .select-internet-package-body .box-info-internet-package .amount-package .number {
+                margin-left: 5px;
+            }
+
+        .select-internet-package-slide .select-internet-package-body .box-info-internet-package p {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #171616;
+        }
+
+            .select-internet-package-slide .select-internet-package-body .box-info-internet-package p span.text {
+                font-size: 13px;
+            }
+
+            .select-internet-package-slide .select-internet-package-body .box-info-internet-package p .__icon::before {
+                color: #565656;
+                font-size: 15px;
+            }
+
+.internet-package-adsl-number-div {
+    display: none;
+}
+
+    .internet-package-adsl-number-div label {
+        font-size: 11px;
+        color: #fff;
+        margin-bottom: 6px;
+    }
+
+    .internet-package-adsl-number-div input {
+        text-align: center;
+        display: block !important;
+        color: #353131 !important;
+        width: 100%;
+        max-width: 100%;
+        height: 50px;
+        border-radius: 3px;
+        position: relative;
+        text-align: center;
+        letter-spacing: 6px;
+    }
+
+.internet-extension-box p.title {
+    font-size: 12px;
+    text-align: center;
+    margin-top: 35px;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.internet-extension-box .form_phone_number {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+}
+
+.ticket-page .list-group-item {
+    background-color: #262626;
+    margin-bottom: 7px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.ticket-page .list-group-item:hover {
+    background-color: #353131;
+    cursor: pointer;
+}
+
+    .ticket-page .list-group-item .icon {
+        background-color: #fff;
+        color: #424242;
+        border-radius: 100%;
+        font-size: 28px;
+        /*display: flex;*/
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        justify-content: center;
+        align-items: center;
+        padding: 8px 15px 2px 15px;
+    }
+
+    .ticket-page .list-group-item .airplane-fill {
+        transform: rotate(89deg);
+    }
+
+    .ticket-page .list-group-item .text {
+        font-size: 14px;
+        color: #fff;
+        margin-right: 10px;
+        line-height: 4;
+    }
+/*# sourceMappingURL=app.css.map */
