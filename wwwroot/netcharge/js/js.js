@@ -36,26 +36,26 @@ console.log(theme);
 
 if (theme) {
   if (theme === "moon") {
-    $("#code-theme").prop("href", "./css/light.css");
+    $("#code-theme").prop("href", "/netcharge/css/light.css");
     $('#dark-mode').attr('checked', true)
   }
   else {
-    $("#code-theme").prop("href", "./css/dark.css");
+    $("#code-theme").prop("href", "/netcharge/css/dark.css");
     $('#dark-mode').attr('checked', false)
   }
 }
 else {
-  $("#code-theme").prop("href", "./css/light.css");
+  $("#code-theme").prop("href", "/netcharge/css/light.css");
   $('#dark-mode').attr('checked', true)
 }
 
 function darkMode(bool) {
   if (bool) {
-    $("#code-theme").prop("href", "./css/light.css");
+    $("#code-theme").prop("href", "/netcharge/css/light.css");
     localStorage.setItem("themeAsan", "moon");
   }
   else {
-    $("#code-theme").prop("href", "./css/dark.css");
+    $("#code-theme").prop("href", "/netcharge/css/dark.css");
     localStorage.setItem("themeAsan", "sun");
   }
 }

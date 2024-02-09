@@ -1,0 +1,455 @@
+    body {
+        background-color: #2c2c2c;
+    }
+    
+    .sidebar-menu {
+        background: #4a4a4a;
+    }
+    
+    .sidebar-menu li a {
+        color: #fff;
+    }
+    
+    .sidebar-menu .menu li.sidebar-menu-item:hover {
+        background-color: #868686;
+    }
+    
+    .sidebar-menu li a {
+        color: white;
+    }
+    
+    .user-mobile-number {
+        color: white;
+    }
+    
+    .sidebar-menu-permissons {
+        background-color: #525252;
+    }
+    
+    .sidebar-menu-permissons-title {
+        color: white;
+    }
+    
+    header {
+        background-color: #2c2c2c;
+        border-bottom: 3px solid #141414;
+    }
+    
+    .header-brand span {
+        background-color: #fff;
+    }
+    
+    .footer {
+        background: #4a4a4a;
+        border-top: 2px solid white;
+    }
+    
+    .bg-color {
+        background-color: #2c2c2c !important;
+    }
+    
+    .footer-top-text {
+        color: #fff;
+    }
+    
+    .footer-mid-icon {
+        background: #fff;
+        color: black;
+    }
+    
+    .footer-mid-text,
+    .footer-bottom-text {
+        color: white;
+    }
+    
+    .footer-bottom-left:hover .footer-bottom-icon,
+    .footer-bottom-right:hover .footer-bottom-icon {
+        color: black;
+    }
+    
+    .box-text {
+        color: white;
+    }
+    /* begin style mobile sharge */
+    
+    .header__mobile__sharge {
+        color: white;
+    }
+    
+    .header__btn__move_page:hover,
+    .header__btn__move_page {
+        color: white;
+    }
+    
+    .mobile__sharge__title {
+        color: white;
+    }
+    
+    .clear__input::after {
+        background: #c6c6c6;
+        color: white;
+    }
+    
+    .get_my_mobile_number_btn {
+        color: white;
+    }
+    
+    .user_search_btn {
+        color: #403d3d;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        border: 1px solid #A9A9A9;
+        color: #6C6C6C;
+    }
+    
+    .sharge__title {
+        color: white;
+    }
+    
+    .mobile__sharge__btn__stelam:hover {
+        color: white;
+    }
+    
+    .search_user_input {
+        color: #A2A2A2;
+        border: 1px solid #A9A9A9;
+    }
+    
+    .search_user_box_input:after {
+        color: #6c6c6c;
+    }
+    
+    .search_user_icon {
+        background: white;
+        color: #C6C6C6;
+    }
+    
+    .search_user_li {
+        color: white;
+        box-shadow: 0 0 3px rgba(255, 255, 255, .1);
+        background-color: #262626;
+    }
+    
+    .user_serarch_list_ok {
+        color: white;
+        background: #FDFDFD;
+        color: black;
+        border: 2px solid #E7492C;
+    }
+    /*  page select price sharge */
+    
+    .buy-credit-section .buy-credit-step-3 {
+        color: white;
+    }
+    
+    .credit-type-box h5 {
+        color: #fff;
+    }
+    
+    .credit-type-box-right {
+        border: 2px solid white;
+        background: white;
+        border-color: red;
+    }
+    
+    .credit-type-box-right::before {
+        color: #515151;
+        text-shadow: -2px 0px 0px #939191;
+    }
+    
+    .credit-type-box-left {
+        border: 2px solid white;
+        background: white;
+        color: #515151;
+    }
+    
+    .sim_card_charge_text {
+        color: #fff;
+    }
+    
+    .sim_card_charge_list_price {
+        background: white;
+        box-shadow: 0 0 11px #b3b2b2;
+    }
+    
+    .sim_card_charge_list_price ul .number {
+        color: #6c6c6c;
+    }
+    
+    .sim_card_charge_list_price ul .title {
+        color: #6c6c6c;
+    }
+    
+    .list_price_active {
+        background-color: #e6e6e6;
+        box-shadow: inset 0 0 27px #777;
+        border-top: 1px solid #9b9797;
+        border-bottom: 1px solid #9b9797;
+    }
+    
+    .list_price_active .number {
+        color: #ff8300 !important;
+    }
+    
+    .list_price_active .number {
+        color: #ff8300 !important;
+    }
+    
+    .charge_price_input {
+        color: #6c6c6c !important;
+        border-color: white;
+    }
+    
+    .sim_card_charge_price_input_box {
+        background: white;
+        color: #6c6c6c;
+    }
+    /* begin style payment page */
+    
+    .payment_page div {
+        color: #fff;
+    }
+    
+    .text-white {
+        color: #fff;
+    }
+    
+    .payment_price .number {
+        color: #ffbf00;
+    }
+    
+    .choose_payment_method {
+        color: #fff;
+    }
+    
+    .box_icon_is_active {
+        border-color: #fd6205 !important;
+    }
+    
+    .info_payment_bank input[type="text"],
+    .info_payment_bank input[type="password"] {
+        background-color: #222324;
+        color: white;
+    }
+    
+    .info_payment_bank #card_number_input-error,
+    .info_payment_bank #card_bank_password-error,
+    .info_payment_bank #year-error,
+    .info_payment_bank #month-error,
+    .info_payment_bank #card_bank_cvv2-error {
+        color: red !important;
+    }
+    
+    .info_payment_bank label {
+        color: #fff;
+    }
+    
+    .btn_bank_card_code {
+        color: white;
+        background: #6c6c6c;
+    }
+    
+    .bank_code_timer {
+        background: white;
+        color: #00abff;
+        border-bottom: 2px solid #fff;
+        background: #fff;
+    }
+    
+    .btn_payment {
+        color: white;
+        background: #E7492C;
+    }
+    
+    .btn_payment a {
+        color: white;
+    }
+    
+    .payment_tab .payment_tab_wallet_li_is_active {
+        border-bottom: 1px solid #4a4848;
+    }
+    
+    .payment_tab .payment_tab_wallet_li .title {
+        color: #eee;
+    }
+    
+    .payment_tab_wallet_li_is_active .title {
+        color: #fff;
+    }
+    
+    .circle_icon {
+        border: 2px solid #dddada;
+    }
+    
+    .payment_tab_wallet_li_is_active .circle_icon {
+        border: 2px solid white;
+    }
+    
+    .payment_tab_wallet_li_is_active .circle_icon:before {
+        background-color: white;
+    }
+    
+    .payment_tab_wallet_li .price {
+        color: #dddddde3;
+    }
+    
+    .payment_tab_wallet_li_is_active .price {
+        color: #09eccc;
+    }
+    
+    .btn_remove_text_input,
+    .btn_shwo_hide_password {
+        color: #fff;
+    }
+    
+    .insufficient_inventory {
+        color: #ff7800;
+    }
+    
+    .div_btn_retry button {
+        background: #868282;
+        color: white;
+    }
+    
+    .modal_mobile_content {
+        background-color: #2c2c2c;
+        border: 2px solid white;
+    }
+    
+    .modal_mobile_content .icon {
+        font-size: 20px;
+    }
+    
+    .modal_mobile_header {
+        border-bottom: 1px solid #fff;
+        color: #fff;
+    }
+    
+    .modal_mobile_body {
+        color: #fff;
+    }
+    
+    .modal_mobile_body li {
+        color: #fff;
+    }
+    
+    .modal_mobile_body p {
+        color: #fff;
+    }
+    
+    .modal_mobile_body .title {
+        color: #ff7b06;
+        font-weight: bolder;
+        font-size: 13px;
+    }
+    
+    .modal_mobile_footer {
+        border-top: 1px solid #fff;
+    }
+    
+    .close_modal:after {
+        color: white;
+    }
+    /* successful_transaction_page */
+    
+    .successful_transaction_page {
+        background-color: #121212;
+    }
+    
+    .successful_transaction_card {
+        color: white;
+        background: #333333;
+    }
+    
+    .successful_transaction_card_header {
+        background-color: #3E4E41;
+    }
+    
+    .successful_transaction_card_header .title {
+        color: #6BC17A;
+    }
+    
+    .successful_transaction_card_header .title:before {
+        color: #314637;
+        background: #6BC17A;
+    }
+    
+    .successful_transaction_card_body .title {
+        color: white;
+    }
+    
+    .successful_transaction_card_body .info_row {
+        background-color: #1A1A1A;
+    }
+    
+    .successful_transaction_card_body .info_row .title {
+        color: #A2A2A2;
+    }
+    
+    .successful_transaction_card_body .info_row .price {
+        color: #fff;
+    }
+    
+    .successful_transaction_card_footer .save_mobile_number {
+        color: white;
+    }
+    
+    .successful_transaction_card_footer .save_mobile_number .ui__checkbox__mark {
+        background-color: #41DF64;
+    }
+    
+    .successful_transaction_card_footer .save_mobile_number .ui__checkbox__mark:before {
+        border-color: #41DF64;
+    }
+    
+    .ui__checkbox__input:checked+.ui__checkbox__mark::before {
+        border-bottom-color: #000;
+        border-right-color: #000;
+    }
+    
+    .successful-transaction-page .footer-button_return_back {
+        color: white;
+        border: 1px solid white;
+    }
+    
+    .text-orange {
+        color: #e67a1b !important;
+    }
+    
+    .header__help__icon::after {
+        color: #fff;
+    }
+    
+    .success_box_payment {
+        border: 2px solid white;
+        box-shadow: 0 0 10px #00ffb7, 0 0 10px #ec09ff;
+        padding-bottom: 15px;
+    }
+    
+    .success_box_payment p {
+        color: #49ce3e;
+        text-shadow: 0 0 5px #b3c1c4;
+    }
+    
+    .success_box_payment .thanks_message {
+        color: #fff;
+    }
+    
+    .success_box_payment p.tracking_code {
+        color: #fff;
+    }
+    
+    .success_box_payment p.tracking_code span {
+        background: #0894bf;
+        color: white;
+    }
+    
+    .error_payment_box {
+        border-color: #c68a8a;
+        box-shadow: 0 0 10px #e33636;
+    }
+    
+    .error_payment_box p.alert-info {
+        background-color: #65aab9;
+        color: white;
+    }
