@@ -347,7 +347,7 @@ a {
 
     .sidebar-menu-permissons-title:after {
         position: absolute;
-        content: '\f52a';
+        content: '';/*'\f52a';*/
         right: 44px;
         top: 18px;
     }
@@ -355,7 +355,7 @@ a {
     .sidebar-menu-permissons-title:before {
         right: 59px;
         position: absolute;
-        content: '\f52a';
+        content: ''; /*'\f52a';*/
         top: 18px;
     }
 
@@ -417,6 +417,7 @@ header {
 }
 
 .header-brand {
+    margin-left: calc(100% - 100px);
     width: 30px;
     height: 23px;
     cursor: pointer;
@@ -674,9 +675,16 @@ section.successful-transaction-page {
 /* begin style credit card mobile */
 
 .header__btn__move_page:before {
-    content: '\F285';
+    /*content: '\F285';*/
+    content: '>';
+    font-family: monospace;
+    font-size: 27px;
 }
 
+a.btn_back {
+    margin: 0 3px;
+    padding: 0 10px;
+}
 .mobile__sharge__title {
     text-align: center;
     font-size: 12px;

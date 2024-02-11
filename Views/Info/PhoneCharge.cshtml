@@ -1,42 +1,10 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-	Layout = null;
+﻿@{
+	Layout = "~/Views/Shared/_LayoutNetCharge.cshtml";
 }
-<!DOCTYPE html>
-<html dir="rtl" lang="en">
-
-<head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>آسان پرداخت</title>
-	<link rel="stylesheet" href="/netcharge/css/bootstrap-icons.css" />
-	<link rel="stylesheet" href="/netcharge/css/swiper-bundle.min.css" />
-	<link rel="stylesheet" href="/netcharge/css/bootstrap.rtl.min.css" />
-	<link rel="stylesheet" href="/netcharge/css/toastr.min.css" />
-	<link rel="stylesheet" href="/netcharge/css/nice-select.css" />
-	<link rel="stylesheet" href="/netcharge/css/fonts.css" />
-	<link rel="stylesheet" href="/netcharge/css/css.css" />
-	<link rel="stylesheet" id="code-theme">
-</head>
-
-<body>
 	<div id="wrapper-buy-credit">
 		<form class="buy-credit-form" action="" method="post" onsubmit="return false;" autocomplete="off">
 			<section class="buy-credit-section buy-credit-step-1 d-flex" style="opacity: 1;">
-				<header class="header__mobile__sharge">
-					<div>
-						<a href="/" class="header__btn__move_page btn__move_page btn_back"></a>
-					</div>
-					<div class="header__title">
-						<span class="header__title__text">خرید شارژ</span>
-					</div>
-					<div class="header__help">
-						<span class="header__help__icon icon-info"></span>
-					</div>
-				</header>
+
 
 				<main>
 					<div class="modal_mobile_overlay">
@@ -988,32 +956,6 @@
 	<div id="overlayer"></div>
 	<span class="loader"><span class="loader-inner"></span></span>
 
-	<script src="/netcharge/js/jquery-3.4.1.min.js"></script>
-	<script src="/netcharge/js/jquery.validate.min.js"></script>
-	<script src="/netcharge/js/alpine.min.js"></script>
-	<script src="/netcharge/js/list.min.js"></script>
-	<script src="/netcharge/js/bootstrap.bundle.min.js"></script>
-	<script src="/netcharge/js/toastr.min.js"></script>
-	<script src="/netcharge/js/swiper-bundle.min.js"></script>
-	<script src="/netcharge/js/jquery.nice-select.min.js"></script>
-	<script src="/netcharge/js/wordifyfa.min.js"></script>
-	<script src="/netcharge/js/js.js"></script>
-	<script src="/netcharge/js/credit-card.js"></script>
-	<script>
-		let listMobileNumber = [
-			['0911', '0912', '0913', '0914', '0915', '0916', '0917', '0918', '0919', '0990', '0991', '0992', '0993', '0994'], // پیش شماره های همراه اول
-			['0930', '0933', '0935', '0936', '0937', '0938', '0939', '0901', '0902', '0903', '0904', '0905', '0941'], // ایرانسل
-			['0932'], // تالیا
-			['0920', '0921', '0922', '0923'], // رایتل
-			['0998'] // شاتل
-		];
-		window.listMobileNumber = listMobileNumber;
-
-
-		$('select.wide').niceSelect();
-
-	</script>
-	</script>
-</body>
-
-</html>
+@section Scripts{
+	<script src="/netcharge/js/credit-card.js" asp-append-version="true"></script>
+	}
