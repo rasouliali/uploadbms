@@ -22,8 +22,6 @@ async function getContacts() {
 		//	$(".user_search_list_ok").addClass("d-block");
 		//});
 
-		autoSelectOperatorType(normalTel.substring(0, 4))
-		$(".form__input__mobile").triger('keyup')
 		setTimeout(function () {
 			var normalTel = getNormalPhone(contacts[0].tel);
 			$(".form__input__mobile").val(normalTel);
@@ -42,6 +40,7 @@ async function getContacts() {
 		*/
 	} catch (ex) {
 		// Handle any errors here.
+		alert(ex);
 		alert("لیست مخاطبین در این مرورگر یا در این سیستم عامل فعال نیست!");
 		return false;
 	}
