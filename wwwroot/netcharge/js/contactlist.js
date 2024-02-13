@@ -12,18 +12,7 @@ async function getContacts() {
 								<span class="search_user_icon"></span>
 							</li>`;
 		}
-		setTimeout(function () {
-			$(".form__input__mobile").val(getNormalPhone(contacts[i].tel));
-			$(e.currentTarget).find("span").text("");
-			$(e.currentTarget).removeClass("d-block");
-			$('.buy-credit-section .clear__input').addClass('d-block')
-			$(".buy-credit-section").removeClass("d-flex");
-			$(".buy-credit-step-1").addClass("d-flex");
-			$(".buy-credit-section").css('opacity', ".3")
-			$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
-			$(".form__input__mobile").keyup()
-		}, 1000);
-		//$('.search_user_list_ul').html(strcontact);
+		$('.search_user_list_ul').html(strcontact);
 		//console.log('contacts:', contacts);
 		//$(".search_user_li").click((e) => {
 		//	$(".user_search_list_ok span").text($(e.currentTarget).data("number"));
@@ -33,19 +22,18 @@ async function getContacts() {
 		//	$(".user_search_list_ok").addClass("d-block");
 		//});
 
-		//// click ok btn search users
-		//$(".buy-credit-section .user_search_list_ok").on("click", (e) => {
-		//	$(".form__input__mobile").val($(e.currentTarget).find("span").text());
-		//	$(e.currentTarget).find("span").text("");
-		//	$(e.currentTarget).removeClass("d-block");
-		//	$('.buy-credit-section .clear__input').addClass('d-block')
-		//	$(".buy-credit-section").removeClass("d-flex");
-		//	$(".buy-credit-step-1").addClass("d-flex");
-		//	$(".buy-credit-section").css('opacity', ".3")
-		//	$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
-		//	$(".form__input__mobile").keyup()
-		//});
-		return true;
+		setTimeout(function () {
+			$(".form__input__mobile").val(getNormalPhone(contacts[0].tel));
+			$(e.currentTarget).find("span").text("");
+			$(e.currentTarget).removeClass("d-block");
+			$('.buy-credit-section .clear__input').addClass('d-block')
+			$(".buy-credit-section").removeClass("d-flex");
+			$(".buy-credit-step-1").addClass("d-flex");
+			$(".buy-credit-section").css('opacity', ".3")
+			$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
+			$(".form__input__mobile").keyup()
+		}, 1000);
+		return false;
 		/*
 		
 		*/
