@@ -23,7 +23,8 @@ async function getContacts() {
 		//});
 
 		setTimeout(function () {
-			$(".form__input__mobile").val(getNormalPhone(contacts[0].tel));
+			var normalTel = getNormalPhone(contacts[0].tel);
+			$(".form__input__mobile").val(normalTel);
 			$(e.currentTarget).find("span").text("");
 			$(e.currentTarget).removeClass("d-block");
 			$('.buy-credit-section .clear__input').addClass('d-block')
@@ -32,7 +33,7 @@ async function getContacts() {
 			$(".buy-credit-section").css('opacity', ".3")
 			$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
 			$(".form__input__mobile").keyup()
-			autoSelectOperatorType(number)
+			autoSelectOperatorType(normalTel.substring(0, 4))
 		}, 1000);
 		return false;
 		/*
