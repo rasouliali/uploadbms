@@ -14,10 +14,25 @@
 	Layout = null;
 	var db = new ShppaingPart.Models.DataAccess();
 
-	var mlmPackageDt = db.ProccessSelectQuery("sp_getMLMSubscribe", new SqlParameter[] {
+	var tpeOfUser = db.ProccessSelectQuery("sp_getTpeOfUser", new SqlParameter[] {
 				new SqlParameter("@UserId",thisuser.Id),
 		}, System.Data.CommandType.StoredProcedure);
-	var mlmPackageList = mlmPackageDt.Select().Select(r => new { code = r["MLMSubscribePackageId"], title = r["PackageDetails"] }).ToList();
+	var tpeOfUserList = tpeOfUser.Select().Select(r => new { IsCompleteProfile = r["IsCompleteProfile"], hasSubscribe = r["hasSubscribe"] }).ToList();
+	var TypeOfUserTitle = "کاربر مهمان";
+	var redirectTypeOfUserUrl = "/Account/ProfileInfo";
+	if (tpeOfUserList.Count > 0)
+	{
+		if (((bool)tpeOfUserList.First().IsCompleteProfile) && ((bool)tpeOfUserList.First().hasSubscribe) == false)
+		{
+			redirectTypeOfUserUrl = "/Sale/Index?WorkFlowId=2003";
+			TypeOfUserTitle = "کاربر عادی";
+		}
+		if (((bool)tpeOfUserList.First().IsCompleteProfile) && ((bool)tpeOfUserList.First().hasSubscribe))
+		{
+			redirectTypeOfUserUrl = "";
+			TypeOfUserTitle = "کاربر VIP";
+		}
+	}
 	var dt3 = db.ProccessSelectQuery("sp_getAffiliateLink", new SqlParameter[] {
 				new SqlParameter("userid",ShppaingPart.Controllers.SharedLogic.GetCurrentUserId()),
 				new SqlParameter("AffiliateLink", GetUri(false,false).ToString().Replace(":80","") + "Account/Register?Introducer=" + thisuser.SimpleId),
@@ -61,7 +76,7 @@
 	<link rel="stylesheet" href="/netcharge/css/swiper-bundle.min.css" />
 	<link rel="stylesheet" href="/netcharge/css/switcher.css" />
 	<link rel="stylesheet" href="/netcharge/css/app.css" />
-	<link rel="stylesheet" id="code-theme">
+	<link rel="stylesheet" id="code-theme" />
 </head>
 
 <body>
@@ -88,14 +103,14 @@
 	<div class="overlay"></div>
 	<div class="sidebar-menu">
 		<div class="sidebar-menu-permissons">
-			@if (mlmPackageList.Count > 0)
+			@if (string.IsNullOrEmpty(redirectTypeOfUserUrl))
 			{
-				<span class="sidebar-menu-permissons-title">@mlmPackageList[0].title</span>
+				<span class="sidebar-menu-permissons-title">@TypeOfUserTitle</span>
 			}
 			else
 			{
-				<span class="sidebar-menu-permissons-title">بدون اشتراک</span>
-				<a href="/Sale/Index?WorkFlowId=2003" class="sidebar-menu-permissons-link">ارتقا</a>
+				<span class="sidebar-menu-permissons-title">@TypeOfUserTitle</span>
+				<a href="@redirectTypeOfUserUrl" class="sidebar-menu-permissons-link">ارتقا</a>
 			}
 		</div>
 		<div class="user-mobile-number">
@@ -207,28 +222,16 @@
 	@RenderBody()
 
 
-	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-		Launch demo modal
-	</button>
-
-	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					...
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
+	<div class="loading">
+		<div id="loading">
+			<div class="spinner-border text-light" role="status">
+				<span class="visually-hidden">لطفا منتظر بمانید...</span>
 			</div>
 		</div>
 	</div>
+
+	<div id="overlayer"></div>
+	<span class="loader"><span class="loader-inner"></span></span>
 
 	<script src="/netcharge/js/jquery-3.4.1.min.js"></script>
 	<script src="/netcharge/js/jquery.validate.min.js"></script>
@@ -335,6 +338,11 @@
 		<button type="submit" class="btn btn-link navbar-btn navbar-link">خروج</button>
 		<input type="hidden" value="" name="FCMToken" />
 	</form>
+	<script src="/netcharge/js/contactlist.js">
+	</script>
+	<script>
+		localStorage.setItem("my_mobile_number",@("0"+User.Identity.Name))
+	</script>
 </body>
 
 </html>

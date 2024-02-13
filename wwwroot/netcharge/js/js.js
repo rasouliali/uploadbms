@@ -144,24 +144,24 @@ $(".clear__input").click((e) => {
 
 // script show page search users
 $(".user_search_btn").click((e) => {
-  $('.loading').addClass('d-block')
+  //$('.loading').addClass('d-block')
 
-  setTimeout(() => {
-    $('.user_search_list_ok').attr('data-target', $(e.currentTarget).data('target'))
-    $('.btn__cancel__user_search').attr('data-target', $(e.currentTarget).data('target'))
-    $('.user_search_list_ok').attr('data-input', $(e.currentTarget).data('input'))
+  //setTimeout(() => {
+  //  $('.user_search_list_ok').attr('data-target', $(e.currentTarget).data('target'))
+  //  $('.btn__cancel__user_search').attr('data-target', $(e.currentTarget).data('target'))
+  //  $('.user_search_list_ok').attr('data-input', $(e.currentTarget).data('input'))
 
-    $(".buy-credit-section").removeClass("d-flex");
-    $('.loading').removeClass('d-block')
+  //  $(".buy-credit-section").removeClass("d-flex");
+  //  $('.loading').removeClass('d-block')
 
-    $(".buy-credit-section").css('opacity', ".3")
+  //  $(".buy-credit-section").css('opacity', ".3")
 
-    $(".buy-credit-step-2 .btn_back").attr("data-target", $(e.currentTarget).data('target'))
+  //  $(".buy-credit-step-2 .btn_back").attr("data-target", $(e.currentTarget).data('target'))
 
-    $(".buy-credit-step-2").addClass("d-flex")
-    $(".buy-credit-step-2").animate({ opacity: 1 }, 500);
+  //  $(".buy-credit-step-2").addClass("d-flex")
+  //  $(".buy-credit-step-2").animate({ opacity: 1 }, 500);
 
-  }, 1000);
+  //}, 1000);
 });
 
 
@@ -196,14 +196,14 @@ $(document).ready(function () {
 
 
 // read fast my mobile number
-$(".get_my_mobile_number_btn").click((e) => {
-  let parent = $(e.currentTarget).parent('div')
-  $(".form__input__mobile").val(localStorage.getItem("my_mobile_number"));
-  let number = $(".form__input__mobile").val()
-  number = number.substring(0, 4);
-  autoSelectOperatorType(number)
-  parent.find(".clear__input").addClass("d-block");
-});
+//$(".get_my_mobile_number_btn").click((e) => {
+//  let parent = $(e.currentTarget).parent('div')
+//  $(".form__input__mobile").val(localStorage.getItem("my_mobile_number"));
+//  let number = $(".form__input__mobile").val()
+//  number = number.substring(0, 4);
+//  autoSelectOperatorType(number)
+//  parent.find(".clear__input").addClass("d-block");
+//});
 
 
 

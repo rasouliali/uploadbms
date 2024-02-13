@@ -37,10 +37,10 @@ $(".clear__input").click((e) => {
 
 
 // script show page search users
-$(".user_search_btn").click((e) => {
-    $('.loading').addClass('d-block')
-    setTimeout(() => {
-
+$(".user_search_btn").click(async (e) => {
+    var canCreateContactList = await getContacts();
+    if (canCreateContactList) {
+        $('.loading').addClass('d-block')
         $(".buy-credit-section").removeClass("d-flex");
         $('.loading').removeClass('d-block')
 
@@ -48,8 +48,7 @@ $(".user_search_btn").click((e) => {
 
         $(".buy-credit-section").css('opacity', ".3")
         $(".buy-credit-step-2").animate({ opacity: 1 }, 500);
-
-    }, 1000);
+    }
 });
 
 
@@ -115,7 +114,9 @@ $(".operator-type").click((e) => {
 // read fast my mobile number
 $(".get_my_mobile_number_btn").click((e) => {
     let parent = $(e.currentTarget).parent('div')
-    $(".form__input__mobile").val(localStorage.getItem("my_mobile_number"));
+    var mypnumber = "0" + localStorage.getItem("my_mobile_number");
+
+    $(".form__input__mobile").val(mypnumber);
     let number = $(".form__input__mobile").val()
     number = number.substring(0, 4);
     autoSelectOperatorType(number)
