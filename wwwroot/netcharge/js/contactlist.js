@@ -32,6 +32,7 @@ async function getContacts() {
 			$(".buy-credit-section").css('opacity', ".3")
 			$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
 			$(".form__input__mobile").keyup()
+			autoSelectOperatorType(number)
 		}, 1000);
 		return false;
 		/*
