@@ -14,6 +14,13 @@ async function getContacts() {
         }
 		$('.search_user_list_ul').html(strcontact);
 		console.log('contacts:', contacts);
+		$(".search_user_li").click((e) => {
+			$(".user_search_list_ok span").text($(e.currentTarget).data("number"));
+			let number = $(e.currentTarget).data("number");
+			number = number.substring(0, 4);
+			autoSelectOperatorType(number)
+			$(".user_search_list_ok").addClass("d-block");
+		});
 		return true;
 		/*
 		
