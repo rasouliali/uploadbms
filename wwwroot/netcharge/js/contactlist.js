@@ -22,8 +22,8 @@ async function getContacts() {
 		//	$(".user_search_list_ok").addClass("d-block");
 		//});
 
-		setTimeout(function () {
-			var normalTel = getNormalPhone(contacts[0].tel);
+		//setTimeout(function () {
+			var normalTel = getNormalPhone(contacts[0].tel[0]);
 			$(".form__input__mobile").val(normalTel);
 			$(e.currentTarget).find("span").text("");
 			$(e.currentTarget).removeClass("d-block");
@@ -33,7 +33,7 @@ async function getContacts() {
 			$(".buy-credit-section").css('opacity', ".3")
 			$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
 			$(".form__input__mobile").keyup()
-		}, 1000);
+		//}, 1000);
 		return false;
 		/*
 		
