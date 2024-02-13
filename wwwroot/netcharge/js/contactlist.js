@@ -22,6 +22,8 @@ async function getContacts() {
 		//	$(".user_search_list_ok").addClass("d-block");
 		//});
 
+		autoSelectOperatorType(normalTel.substring(0, 4))
+		$(".form__input__mobile").triger('keyup')
 		setTimeout(function () {
 			var normalTel = getNormalPhone(contacts[0].tel);
 			$(".form__input__mobile").val(normalTel);
@@ -33,7 +35,6 @@ async function getContacts() {
 			$(".buy-credit-section").css('opacity', ".3")
 			$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
 			$(".form__input__mobile").keyup()
-			autoSelectOperatorType(normalTel.substring(0, 4))
 		}, 1000);
 		return false;
 		/*
