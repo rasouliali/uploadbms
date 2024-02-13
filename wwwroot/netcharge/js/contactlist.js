@@ -44,11 +44,17 @@ async function getContacts() {
 	}
 }
 function getNormalPhone(tel) {
-	if (tel.toString().startsWith("+"))
-		return "0" + tel.toString().substr(3);
-	else if (tel.toString().startsWith("00"))
-		return "0" + tel.toString().substr(4);
-	else (tel.toString()[0]!="0")
+    try {
+		tel = tel.toString();
+		tel = tel.split(' ').join('');
+		if (tel.startsWith("+"))
+			return "0" + tel.toString().substr(3);
+		else if (tel.startsWith("00"))
+			return "0" + tel.toString().substr(4);
+		else (tel[0] != "0")
 		return "0" + tel.toString();
-	return tel.toString();
+		return tel;
+    } catch (e) {
+
+    }
 }
