@@ -51,7 +51,7 @@ function getNormalPhone(tel) {
 			return "0" + tel.toString().substr(3);
 		else if (tel.startsWith("00"))
 			return "0" + tel.toString().substr(4);
-		else (tel[0] != "0")
+		else if(tel[0] != "0")
 		return "0" + tel.toString();
 		return tel;
     } catch (e) {
