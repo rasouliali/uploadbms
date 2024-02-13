@@ -4,19 +4,19 @@ function check_phone(number) {
     return result;
 }
 
-function autoSelectOperatorType(number) {
-    for (let i = 0; i < listMobileNumber.length; i++) {
-        let index = listMobileNumber[i].indexOf(number);
-        if (index > -1) {
-            $(".operator-type").each((i, el) => {
-                $(el).prop("src", $(el).data("src1"));
-            });
-            let el = $('.operator-list-item .operator-type[data-value="' + i + '"]')
-            el.prop('src', el.data('src2'))
-            $('#operator').val(i)
-        }
-    }
-}
+//function autoSelectOperatorType(number) {
+//    for (let i = 0; i < listMobileNumber.length; i++) {
+//        let index = listMobileNumber[i].indexOf(number);
+//        if (index > -1) {
+//            $(".operator-type").each((i, el) => {
+//                $(el).prop("src", $(el).data("src1"));
+//            });
+//            let el = $('.operator-list-item .operator-type[data-value="' + i + '"]')
+//            el.prop('src', el.data('src2'))
+//            $('#operator').val(i)
+//        }
+//    }
+//}
 
 
 // -------------

@@ -111,6 +111,8 @@ function check_phone(number) {
 }
 
 function autoSelectOperatorType(number) {
+    if (number.length > 4)
+        number = number.substring(0, 4);
   for (let i = 0; i < listMobileNumber.length; i++) {
     let index = listMobileNumber[i].indexOf(number);
     if (index > -1) {
