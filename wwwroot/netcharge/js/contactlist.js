@@ -11,16 +11,40 @@ async function getContacts() {
 								<span class="search_user_name">`+ contacts[i].name +`</span>
 								<span class="search_user_icon"></span>
 							</li>`;
-        }
-		$('.search_user_list_ul').html(strcontact);
-		console.log('contacts:', contacts);
-		$(".search_user_li").click((e) => {
-			$(".user_search_list_ok span").text($(e.currentTarget).data("number"));
-			let number = $(e.currentTarget).data("number");
-			number = number.substring(0, 4);
-			autoSelectOperatorType(number)
-			$(".user_search_list_ok").addClass("d-block");
-		});
+		}
+		setTimeout(function () {
+			$(".form__input__mobile").val(getNormalPhone(contacts[i].tel));
+			$(e.currentTarget).find("span").text("");
+			$(e.currentTarget).removeClass("d-block");
+			$('.buy-credit-section .clear__input').addClass('d-block')
+			$(".buy-credit-section").removeClass("d-flex");
+			$(".buy-credit-step-1").addClass("d-flex");
+			$(".buy-credit-section").css('opacity', ".3")
+			$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
+			$(".form__input__mobile").keyup()
+		}, 1000);
+		//$('.search_user_list_ul').html(strcontact);
+		//console.log('contacts:', contacts);
+		//$(".search_user_li").click((e) => {
+		//	$(".user_search_list_ok span").text($(e.currentTarget).data("number"));
+		//	let number = $(e.currentTarget).data("number");
+		//	number = number.substring(0, 4);
+		//	autoSelectOperatorType(number)
+		//	$(".user_search_list_ok").addClass("d-block");
+		//});
+
+		//// click ok btn search users
+		//$(".buy-credit-section .user_search_list_ok").on("click", (e) => {
+		//	$(".form__input__mobile").val($(e.currentTarget).find("span").text());
+		//	$(e.currentTarget).find("span").text("");
+		//	$(e.currentTarget).removeClass("d-block");
+		//	$('.buy-credit-section .clear__input').addClass('d-block')
+		//	$(".buy-credit-section").removeClass("d-flex");
+		//	$(".buy-credit-step-1").addClass("d-flex");
+		//	$(".buy-credit-section").css('opacity', ".3")
+		//	$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
+		//	$(".form__input__mobile").keyup()
+		//});
 		return true;
 		/*
 		
