@@ -25,8 +25,8 @@ async function getContacts() {
 		//setTimeout(function () {
 			var normalTel = getNormalPhone(contacts[0].tel[0]);
 			$(".form__input__mobile").val(normalTel);
-			$(e.currentTarget).find("span").text("");
-			$(e.currentTarget).removeClass("d-block");
+			//$(e.currentTarget).find("span").text("");
+			//$(e.currentTarget).removeClass("d-block");
 			$('.buy-credit-section .clear__input').addClass('d-block')
 			$(".buy-credit-section").removeClass("d-flex");
 			$(".buy-credit-step-1").addClass("d-flex");
