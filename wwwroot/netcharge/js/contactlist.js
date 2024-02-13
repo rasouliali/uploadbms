@@ -7,7 +7,7 @@ async function getContacts() {
 		var strcontact = "";
 		for (var i = 0; i < contacts.length; i++) {
 
-			strcontact += `<li class="search_user_li" data-name="` + contacts[i].name +`" data-number="` + contacts[i].tel +`">
+			strcontact += `<li class="search_user_li" data-name="` + contacts[i].name +`" data-number="` + getNormalPhone(contacts[i].tel) +`">
 								<span class="search_user_name">`+ contacts[i].name +`</span>
 								<span class="search_user_icon"></span>
 							</li>`;
@@ -23,4 +23,13 @@ async function getContacts() {
 		alert("لیست مخاطبین در این مرورگر یا در این سیستم عامل فعال نیست!");
 		return false;
 	}
+}
+function getNormalPhone(tel) {
+	if (tel.toString().startsWith("+"))
+		return "0" + tel.toString().substr(3);
+	else if (tel.toString().startsWith("00"))
+		return "0" + tel.toString().substr(4);
+	else (tel.toString()[0]!="0")
+		return "0" + tel.toString();
+	return tel.toString();
 }
