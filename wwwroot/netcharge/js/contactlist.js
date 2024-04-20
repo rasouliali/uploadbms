@@ -3,7 +3,10 @@ const props = ['name', 'tel'];
 const opts = { multiple: false };
 async function getContacts() {
 	try {
+		console.log("getContacts","First")
 		if (navigator.contacts) {
+			console.log("getContacts", "in navigator.contacts if")
+
 			const contacts = await navigator.contacts.select(props, opts);
 			LoadContactSecondStep(contacts);
 			//}, 1000);
@@ -13,7 +16,9 @@ async function getContacts() {
 			*/
 		}
 		else {
+			console.log("getContacts", "in navigator.contacts else")
 			JSBridge.LoadContact();
+			console.log("getContacts", "in navigator.contacts else after JSBridge.LoadContact")
 		}
 
 	} catch (ex) {
