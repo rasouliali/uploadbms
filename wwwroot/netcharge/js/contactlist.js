@@ -3,7 +3,16 @@ const props = ['name', 'tel'];
 const opts = { multiple: false };
 async function getContacts() {
 	try {
-		console.log("getContacts","First")
+		console.log("getContacts", "in navigator.contacts else")
+		JSBridge.LoadContact();
+		console.log("getContacts", "in navigator.contacts else after JSBridge.LoadContact")
+
+	} catch (ex) {
+		return false;
+	}
+	try {
+		console.log("getContacts", "First")
+
 		if (navigator.contacts) {
 			console.log("getContacts", "in navigator.contacts if")
 
@@ -18,15 +27,12 @@ async function getContacts() {
 			*/
 		}
 		else {
-			console.log("getContacts", "in navigator.contacts else")
-			JSBridge.LoadContact();
-			console.log("getContacts", "in navigator.contacts else after JSBridge.LoadContact")
 		}
 
 	} catch (ex) {
 		// Handle any errors here.
 		//alert(ex);
-		alert("لیست مخاطبین در این مرورگر یا در این سیستم عامل فعال نیست!");
+		//alert("لیست مخاطبین در این مرورگر یا در این سیستم عامل فعال نیست!");
 		return false;
 	}
 }
