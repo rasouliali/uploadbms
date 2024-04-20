@@ -8,6 +8,8 @@ async function getContacts() {
 			console.log("getContacts", "in navigator.contacts if")
 
 			const contacts = await navigator.contacts.select(props, opts);
+			console.log("getContacts", "contacts:" + JSON.stringify(contacts));
+
 			LoadContactSecondStep(contacts);
 			//}, 1000);
 			return false;
