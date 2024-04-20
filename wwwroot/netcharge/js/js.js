@@ -31,8 +31,13 @@ $(".header-brand").click(function () {
 
 
 var theme;
-theme = localStorage.getItem("themeAsan");
-console.log(theme);
+try {
+    theme = localStorage.getItem("themeAsan");
+    console.log(theme);
+
+} catch (e) {
+
+}
 
 if (theme) {
   if (theme === "moon") {
@@ -51,12 +56,21 @@ else {
 
 function darkMode(bool) {
   if (bool) {
-    $("#code-theme").prop("href", "/netcharge/css/light.css");
-    localStorage.setItem("themeAsan", "moon");
+      $("#code-theme").prop("href", "/netcharge/css/light.css");
+      try {
+          localStorage.setItem("themeAsan", "moon");
+
+      } catch (e) {
+
+      }
   }
   else {
-    $("#code-theme").prop("href", "/netcharge/css/dark.css");
-    localStorage.setItem("themeAsan", "sun");
+      $("#code-theme").prop("href", "/netcharge/css/dark.css");
+      try {
+          localStorage.setItem("themeAsan", "sun");
+      } catch (e) {
+
+      }
   }
 }
 
