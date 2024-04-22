@@ -3,9 +3,8 @@ const props = ['name', 'tel'];
 const opts = { multiple: false };
 async function getContacts() {
 	try {
-		console.log("getContacts", "in navigator.contacts else")
 		JSBridge.LoadContact();
-		console.log("getContacts", "in navigator.contacts else after JSBridge.LoadContact")
+		console.log("getContacts", "after JSBridge.LoadContact")
 
 	} catch (ex) {
 		return false;
@@ -46,26 +45,42 @@ function LoadContactSecondStep(contacts) {
 							</li>`;
 	}
 	$('.search_user_list_ul').html(strcontact);
-	//console.log('contacts:', contacts);
-	//$(".search_user_li").click((e) => {
-	//	$(".user_search_list_ok span").text($(e.currentTarget).data("number"));
-	//	let number = $(e.currentTarget).data("number");
-	//	number = number.substring(0, 4);
-	//	autoSelectOperatorType(number)
-	//	$(".user_search_list_ok").addClass("d-block");
-	//});
+	console.log('LoadContactSecondStep', contacts);
+	$(".search_user_li").click((e) => {
+		$(".user_search_list_ok span").text($(e.currentTarget).data("number"));
+		let number = $(e.currentTarget).data("number");
+		number = number.split(';')[0];
+		$('.form__input__mobile').val(number);
+		number = number.substring(0, 4);
+		autoSelectOperatorType(number)
+		$(".user_search_list_ok").addClass("d-block");
+	});
 
 	//setTimeout(function () {
-	var normalTel = getNormalPhone(contacts[0].tel[0]);
-	$(".form__input__mobile").val(normalTel);
-	//$(e.currentTarget).find("span").text("");
-	//$(e.currentTarget).removeClass("d-block");
-	$('.buy-credit-section .clear__input').addClass('d-block')
-	$(".buy-credit-section").removeClass("d-flex");
-	$(".buy-credit-step-1").addClass("d-flex");
-	$(".buy-credit-section").css('opacity', ".3")
-	$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
-	$(".form__input__mobile").keyup();
+	//var normalTel = getNormalPhone(contacts[0].tel[0]);
+	//$(".form__input__mobile").val(normalTel);
+	////$(e.currentTarget).find("span").text("");
+	////$(e.currentTarget).removeClass("d-block");
+	//$('.buy-credit-section .clear__input').addClass('d-block')
+	//$(".buy-credit-section").removeClass("d-flex");
+	//$(".buy-credit-step-1").addClass("d-flex");
+	//$(".buy-credit-section").css('opacity', ".3")
+	//$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
+	//$(".form__input__mobile").keyup();
+
+	setTimeout(() => {
+
+		$(".buy-credit-section").removeClass("d-flex");
+		$('.loading').removeClass('d-block')
+
+		$(".buy-credit-step-2").addClass("d-flex")
+
+		$(".buy-credit-section").css('opacity', ".3")
+		$(".buy-credit-step-2").animate({ opacity: 1 }, 500);
+
+	}, 1000);
+
+
 
 }
 function getNormalPhone(tel) {
