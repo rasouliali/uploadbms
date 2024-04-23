@@ -100,7 +100,7 @@ $(document).ready(function () {
 
 // select operator
 $(".operator-type").click((e) => {
-    if (!$('.form__input__mobile ').val().trim()) {
+    if (!$('.form__input__mobile').val().trim()) {
         $('#operator').val($(e.target).data("value"))
         $(".operator-type").each((i, el) => {
             $(el).prop("src", $(el).data("src1"));
@@ -146,6 +146,9 @@ $(".buy-credit-section .user_search_list_ok").on("click", (e) => {
     //$(".buy-credit-section").css('opacity', ".3")
     //$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
     //$(".form__input__mobile").keyup()
+    setTimeout(function () {
+        $(".buy-credit-section .form__input__mobile").trigger("keyup")
+    },1000)
 });
 
 

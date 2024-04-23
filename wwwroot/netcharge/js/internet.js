@@ -159,6 +159,10 @@ $(".buy-credit-section .user_search_list_ok").on("click", (e) => {
     //$(".buy-credit-section").css('opacity', ".3")
     //$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
     //$(".form__input__mobile").keyup()
+
+    setTimeout(function () {
+        $(".buy-credit-section .form__input__mobile").trigger("keyup")
+    }, 1000)
 });
 
 
