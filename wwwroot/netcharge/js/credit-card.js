@@ -137,15 +137,15 @@ $('.buy-credit-section .btn__cancel__user_search').click(() => {
 
 // click ok btn search users
 $(".buy-credit-section .user_search_list_ok").on("click", (e) => {
-    $(".form__input__mobile").val($(e.currentTarget).find("span").text());
-    $(e.currentTarget).find("span").text("");
-    $(e.currentTarget).removeClass("d-block");
-    $('.buy-credit-section .clear__input').addClass('d-block')
-    $(".buy-credit-section").removeClass("d-flex");
-    $(".buy-credit-step-1").addClass("d-flex");
-    $(".buy-credit-section").css('opacity', ".3")
-    $(".buy-credit-step-1").animate({ opacity: 1 }, 500);
-    $(".form__input__mobile").keyup()
+    //$(".form__input__mobile").val($(e.currentTarget).find("span").text());
+    //$(e.currentTarget).find("span").text("");
+    //$(e.currentTarget).removeClass("d-block");
+    //$('.buy-credit-section .clear__input').addClass('d-block')
+    //$(".buy-credit-section").removeClass("d-flex");
+    //$(".buy-credit-step-1").addClass("d-flex");
+    //$(".buy-credit-section").css('opacity', ".3")
+    //$(".buy-credit-step-1").animate({ opacity: 1 }, 500);
+    //$(".form__input__mobile").keyup()
 });
 
 
