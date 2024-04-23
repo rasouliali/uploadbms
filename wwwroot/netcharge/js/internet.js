@@ -128,7 +128,7 @@ $(".operator-type").click((e) => {
 $(".get_my_mobile_number_btn").click((e) => {
     let parent = $(e.currentTarget).parent('div');
 
-    var mypnumber= "0"+localStorage.getItem("my_mobile_number");
+    //var mypnumber= "0"+localStorage.getItem("my_mobile_number");
     $(".form__input__mobile").val(mypnumber);
     let number = $(".form__input__mobile").val()
     number = number.substring(0, 4);
