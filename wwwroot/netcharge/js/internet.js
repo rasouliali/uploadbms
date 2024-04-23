@@ -208,6 +208,8 @@ $(".buy-credit-section .form__input__mobile").on("keyup", (e) => {
             $(".buy-credit-section").css('opacity', ".3")
             $(".buy-credit-step-3").addClass("d-flex");
             $(".buy-credit-step-3").animate({ opacity: 1 }, 500);
+            $('a.header__btn__move_page.btn__move_page.btn_back').eq(0).attr('href', window.location.href);
+
         }, 500);
     }
 });

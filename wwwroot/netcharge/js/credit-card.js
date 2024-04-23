@@ -211,7 +211,7 @@ $(".buy-credit-section .form__input__mobile").on("keyup", (e) => {
 
 
             console.log("mobileNumber = " + mobileNumber, "operator = " + operator);
-
+            $('a.header__btn__move_page.btn__move_page.btn_back').eq(0).attr('href', window.location.href);
 
         }, 500);
     }
