@@ -47,9 +47,9 @@ function LoadContactSecondStep(contacts) {
 	$('.search_user_list_ul').html(strcontact);
 	console.log('LoadContactSecondStep', contacts);
 	$(".search_user_li").click((e) => {
-		$(".user_search_list_ok span").text($(e.currentTarget).data("number"));
 		let number = $(e.currentTarget).data("number");
 		number = number.split(';')[0];
+		$(".user_search_list_ok span").text(number);
 		$('.form__input__mobile').val(number);
 		number = number.substring(0, 4);
 		autoSelectOperatorType(number)
