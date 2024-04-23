@@ -98,3 +98,12 @@ function getNormalPhone(tel) {
 
     }
 }
+
+
+$('.search_user_input').on('keyup', function () {
+	var search = $(this).val();
+	console.log('search_user_input', search);
+	if (search.length > 2) {
+		JSBridge.SearchContact(search);
+	}
+})
