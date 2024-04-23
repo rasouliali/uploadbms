@@ -54,6 +54,10 @@ function LoadContactSecondStep(contacts) {
 		number = number.substring(0, 4);
 		autoSelectOperatorType(number)
 		$(".user_search_list_ok").addClass("d-block");
+
+		setTimeout(function () {
+			$(".buy-credit-section .form__input__mobile").trigger("keyup")
+		}, 1000);
 	});
 
 	//setTimeout(function () {
