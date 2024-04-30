@@ -162,7 +162,15 @@
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script type="text/javascript">
         $('#frmlogin').submit(function(){
-            JSBridge.loginData($('#Mobile').val(), $('#Password').val());
+            try {
+                console.log("frmlogin", "start");
+                JSBridge.loginData($('#Mobile').val(), $('#Password').val());
+                console.log("frmlogin", "end");
+
+            } catch (e) {
+                console.log("frmlogin", "error:",e);
+
+            }
         });
     </script>
 
