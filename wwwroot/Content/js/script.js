@@ -181,7 +181,11 @@ function customeSetter(typeOfCustomDialoug) {
 }
 $('#CustomModalBtn').on('click', function () {
     if (_typeOfCustomDialoug == "exit") {
-        localStorage.removeItem("CurrentUrlPhone");
+        try {
+            localStorage.removeItem("CurrentUrlPhone");
+
+        } catch (e) {
+        }
         $('#logoutForm').submit();
 
     }
