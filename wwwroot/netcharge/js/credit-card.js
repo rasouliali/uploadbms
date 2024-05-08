@@ -303,7 +303,7 @@ $('.btn-move-payment-page').click(e => {
         //$(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
         $('#price').val(getPrice());
         $('#operator').val(getOpt());
-        $('#isAmazingCharge').val('false');
+        $('#isAmazingCharge').val('0');
         $('#mobile').val(getMobile());
         $('.buy-credit-form').eq(0).submit();
         return true;
@@ -325,7 +325,7 @@ $('.btn-move-payment-page').click(e => {
         toastr["success"]('لطفا برای پرداخت شکبیا باشید!');
         $('#price').val(getPrice());
         $('#operator').val(getOpt());
-        $('#isAmazingCharge').val('true');
+        $('#isAmazingCharge').val('1');
         $('#mobile').val(getMobile());
         //toastr["success"]('نوع خدمات و سرویس به درستی وارد شده است')
         $('.buy-credit-form').eq(0).submit();
