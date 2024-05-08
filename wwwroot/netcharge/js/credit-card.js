@@ -297,10 +297,11 @@ $('.btn-move-payment-page').click(e => {
 
         toastr["success"]('نوع شارژ و مبلغ شارژ به درستی وارد شده است')
         //TODO SENT REQUEST TO SERVER
-        $(".buy-credit-section").removeClass('d-flex')
-        $(".buy-credit-section").css('opacity', ".3")
-        $('.buy-credit-step-result-payment-success').addClass('d-flex')
-        $(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
+        //$(".buy-credit-section").removeClass('d-flex')
+        //$(".buy-credit-section").css('opacity', ".3")
+        //$('.buy-credit-step-result-payment-success').addClass('d-flex')
+        //$(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
+        $('.buy-credit-form').eq(0).submit();
         // $('.buy-credit-step-result-payment-error').addClass('d-flex')
         // $(".buy-credit-step-result-payment-error").animate({ opacity: 1 }, 500);
     } else { // شارژ پلاس انتخاب شده است
@@ -316,6 +317,8 @@ $('.btn-move-payment-page').click(e => {
             return false;
         }
         toastr["success"]('نوع خدمات و سرویس به درستی وارد شده است')
+        $('.buy-credit-form').eq(0).submit();
+
         //TODO SENT REQUEST TO SERVER
         // $(".buy-credit-section").removeClass('d-flex')
         // $(".buy-credit-section").css('opacity', ".3")
