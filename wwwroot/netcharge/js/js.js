@@ -365,64 +365,64 @@ $('.credit_card_amount_drop_down').change(e => {
 
 
 $('.btn-move-payment-page').click(e => {
-  let mobileNumber = $(".form__input__mobile").val().trim();
-  let operator = $("#operator").val().trim();
+  //let mobileNumber = $(".form__input__mobile").val().trim();
+  //let operator = $("#operator").val().trim();
 
-  let charge_type = $('#type_charge').val().trim();
+  //let charge_type = $('#type_charge').val().trim();
 
-  if (!charge_type) {
-    toastr["error"]('نوع شارژ را انتخاب نمایید', "خطا")
-    return false;
-  }
+  //if (!charge_type) {
+  //  toastr["error"]('نوع شارژ را انتخاب نمایید', "خطا")
+  //  return false;
+  //}
 
-  let type_operator_parent = $('.type_operator_parent[type_operator=' + operator + ']');
+  //let type_operator_parent = $('.type_operator_parent[type_operator=' + operator + ']');
 
-  //  شارژ مستقیم انتخاب شده است
-  if (charge_type == 1) {
-    let charge_price_input = type_operator_parent.find('.charge_price_input[charge_type=' + charge_type + ']').val().trim();
-    if (!charge_price_input) {
-      toastr["error"]('وارد کردن مبلغ شارژ الزامیست', "خطا")
-      return false;
-    }
+  ////  شارژ مستقیم انتخاب شده است
+  //if (charge_type == 1) {
+  //  let charge_price_input = type_operator_parent.find('.charge_price_input[charge_type=' + charge_type + ']').val().trim();
+  //  if (!charge_price_input) {
+  //    toastr["error"]('وارد کردن مبلغ شارژ الزامیست', "خطا")
+  //    return false;
+  //  }
 
 
-    if (charge_price_input == -1) {
-      charge_price_input = type_operator_parent.find('.form_desired_amount_input[type]').val().trim();
+  //  if (charge_price_input == -1) {
+  //    charge_price_input = type_operator_parent.find('.form_desired_amount_input[type]').val().trim();
 
-      if (!charge_price_input) {
-        toastr["error"]('وارد کردن مبلغ شارژ الزامیست', "خطا")
+  //    if (!charge_price_input) {
+  //      toastr["error"]('وارد کردن مبلغ شارژ الزامیست', "خطا")
 
-        return false;
-      }
-    }
+  //      return false;
+  //    }
+  //  }
 
-    toastr["success"]('نوع شارژ و مبلغ شارژ به درستی وارد شده است')
-    //TODO SENT REQUEST TO SERVER
-    $(".buy-credit-section").removeClass('d-flex')
-    $(".buy-credit-section").css('opacity', ".3")
-    $('.buy-credit-step-result-payment-success').addClass('d-flex')
-    $(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
-    // $('.buy-credit-step-result-payment-error').addClass('d-flex')
-    // $(".buy-credit-step-result-payment-error").animate({ opacity: 1 }, 500);
-  } else { // شارژ پلاس انتخاب شده است
-    let service = type_operator_parent.find('.form_credit_card_drop_down_service[charge_type="' + charge_type + '"]');
-    let service_value = service.val().trim();
-    if (!service_value) {
-      toastr["error"]('انتخاب سرویس مورد نظر الزامیست', "خطا")
-    }
-    let service_item = service.parent().find('select.form_credit_card_service_type[service_number="' + service_value + '"]')
-    let service_item_value = service_item.val().trim();
-    if (!service_item_value) {
-      toastr["error"]('انتخاب نوع سرویس الزامیست', "خطا")
-      return false;
-    }
-    toastr["success"]('نوع خدمات و سرویس به درستی وارد شده است')
-    //TODO SENT REQUEST TO SERVER
-    // $(".buy-credit-section").removeClass('d-flex')
-    // $(".buy-credit-section").css('opacity', ".3")
-    // $('.buy-credit-step-result-payment-success').addClass('d-flex')
-    // $(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
-  }
+  //  toastr["success"]('نوع شارژ و مبلغ شارژ به درستی وارد شده است')
+  //  //TODO SENT REQUEST TO SERVER
+  //  $(".buy-credit-section").removeClass('d-flex')
+  //  $(".buy-credit-section").css('opacity', ".3")
+  //  $('.buy-credit-step-result-payment-success').addClass('d-flex')
+  //  $(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
+  //  // $('.buy-credit-step-result-payment-error').addClass('d-flex')
+  //  // $(".buy-credit-step-result-payment-error").animate({ opacity: 1 }, 500);
+  //} else { // شارژ پلاس انتخاب شده است
+  //  let service = type_operator_parent.find('.form_credit_card_drop_down_service[charge_type="' + charge_type + '"]');
+  //  let service_value = service.val().trim();
+  //  if (!service_value) {
+  //    toastr["error"]('انتخاب سرویس مورد نظر الزامیست', "خطا")
+  //  }
+  //  let service_item = service.parent().find('select.form_credit_card_service_type[service_number="' + service_value + '"]')
+  //  let service_item_value = service_item.val().trim();
+  //  if (!service_item_value) {
+  //    toastr["error"]('انتخاب نوع سرویس الزامیست', "خطا")
+  //    return false;
+  //  }
+  //  toastr["success"]('نوع خدمات و سرویس به درستی وارد شده است')
+  //  //TODO SENT REQUEST TO SERVER
+  //  // $(".buy-credit-section").removeClass('d-flex')
+  //  // $(".buy-credit-section").css('opacity', ".3")
+  //  // $('.buy-credit-step-result-payment-success').addClass('d-flex')
+  //  // $(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
+  //}
 })
 
 $('.form_credit_card_drop_down_service').change(e => {
