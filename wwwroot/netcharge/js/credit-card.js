@@ -206,6 +206,12 @@ $(".buy-credit-section .form__input__mobile").on("keyup", (e) => {
             $(".buy-credit-step-3").find('.type_operator_parent').find('.credit-type-box-right').css("borderColor", "white");
             $(".buy-credit-step-3").find('.type_operator_parent').find('.credit-type-box-left').css("borderColor", "white");
 
+            $(".buy-credit-step-3").find('.type_operator_parent input').attr('disabled', '');
+            $(".buy-credit-step-3").find('.type_operator_parent select').attr('disabled', '');
+
+
+            $(".buy-credit-step-3").find('.type_operator_parent[type_operator=' + operator + '] input').removeAttr('disabled');
+            $(".buy-credit-step-3").find('.type_operator_parent[type_operator=' + operator + '] select').removeAttr('disabled');
             $(".buy-credit-step-3").find('.type_operator_parent[type_operator=' + operator + ']').addClass('d-block')
             $(".buy-credit-step-3").find('.type_operator_parent[type_operator=' + operator + ']').find('.credit-type-box-right').css("borderColor", "red");
 
@@ -247,8 +253,10 @@ $('.credit_card_amount_drop_down').change(e => {
     let input = $(e.currentTarget).parent('.container').find('.form_desired_amount_input')
     if ($(e.currentTarget).val() == -1) {
         input.show();
+        input.removeAttr('disabled');
         input.next().show();
     } else {
+        input.attr('disabled','');
         input.hide();
         input.next().hide();
     }

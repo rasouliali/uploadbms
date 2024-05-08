@@ -1,0 +1,905 @@
+﻿@{
+	Layout = "~/Views/Shared/_LayoutNetCharge.cshtml";
+}
+	<div id="wrapper-buy-credit">
+	<form class="buy-credit-form" action="/Info/ShoppingData" method="post" onsubmit="return false;" autocomplete="off">
+		@Html.Hidden("WorkFlowId", 2004)
+		@Html.Hidden("ShoppingPageId", 1016)
+			<section class="buy-credit-section buy-credit-step-1 d-flex" style="opacity: 1;">
+
+
+				<main>
+					<div class="modal_mobile_overlay">
+						<div class="modal_mobile_content">
+							<div class="modal_mobile_header">
+								<span class="icon-info"></span>
+							</div>
+
+							<div class="modal_mobile_body">
+								<div class="mb-20px">
+									<span class="icon-sim-card-mobile icon"></span><span class="title">خرید سارژ</span>
+									<p class="mt-5px">
+										در این بخش می توانید برای خودتان یا دیگران بدون توجه به اپراتور و نوع سیم کارت
+										از همه اپراتورهای ایرانسل، همراه اول، تالیا و رایتل شارژ تلفن همراه خریداری
+										نمایید.
+									</p>
+									<ol>
+										<li>
+											شماره موبایلی که میخواهید برای آن شارژ خریداری نمایید را وارد نمایید. (شماره
+											موبایل باید شامل صفر ابتدای شماره و به فرمت 09xxxxxxxxx باشد)
+										</li>
+										<li>
+											دکمه استعلام محصولات را لمس نمایید و به مرحله انتخاب شارژ درخواستی بروید.
+										</li>
+
+									</ol>
+
+								</div>
+								<div class="mb-20px">
+									<span class="icon-users icon"></span>
+									<p>
+										می توانید با لمس این دکمه شماره موبایل را از دفترچه تلفن دستگاه خود انتخاب نمایید
+									</p>
+								</div>
+								<div>
+									<span class="get_my_mobile_number_btn icon"></span>
+									<p>
+										می توانید با لمس این دکمه شماره موبایل خود را به صورت سریع وارد نمایید
+									</p>
+								</div>
+								<div>
+									<span class="clear__input"></span>
+									<p class="mt-15">
+										می توانید با لمس این دکمه شماره موبایل خود را پاک کرده و مجددا وارد نمایید
+									</p>
+								</div>
+								<div class="mt-20px">
+									<span class="icon-description icon"></span>
+									<span class="title">توضیحات</span>
+									<p>
+										- تلفن همراه شما باید به اینترنت متصل باشد
+									</p>
+									<p>
+										- می توانید با لمس محل ورود شماره موبایل ، لیست شماره های پرکاربرد خود را شماهده
+										نمایید و شماره مورد نظر را از میان آنها انتخاب نمایید
+									</p>
+								</div>
+							</div>
+
+							<div class="modal_mobile_footer">
+								<span class="close_modal"></span>
+							</div>
+						</div>
+					</div>
+					<div class="container w-90">
+						<p class="mobile__sharge__title mb-8">
+							شماره مویایل یا کد پرداخت که میخواهید برای آن شارژ خریداری کنید را وارد نمایید و یا آیکون
+							شماره موبایل خود را لمس نمایید
+						</p>
+						<div class="mobile__sharge__form__input__box">
+							<span class="mobile__sharge_input clear__input"></span>
+
+							<span class="get_my_mobile_number_btn"></span>
+
+							<input type="text" placeholder="09112345678" maxlength="11"
+								   class="form__input__mobile only_number" value="" autocomplete="off" />
+
+							<button class="user_search_btn" data-current_url=".mobile__sharge__step_one"
+									data-current_title="خرید شارژ" type="button"></button>
+						</div>
+						<div>
+							<p class="mobile__sharge__title mt-15">
+								اپراتور شماره موبایل وارد شده را انتخاب نمایید
+							</p>
+						</div>
+						<input type="hidden" id="operator" />
+						<div class="swiper mt-30">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide">
+									<div class="swiper-image operator-list-item">
+										<img src="/netcharge/images/img/a.png" class="swiper-img operator-type" data-value="0"
+											 data-src1="/netcharge/images/img/a.png" data-src2="/netcharge/images/img/aa.png" />
+									</div>
+								</div>
+								<div class="swiper-slide">
+									<div class="swiper-image operator-list-item">
+										<img src="/netcharge/images/img/b.png" class="swiper-img operator-type" data-value="1"
+											 data-src1="/netcharge/images/img/b.png" data-src2="/netcharge/images/img/bbb.png" />
+									</div>
+								</div>
+								<div class="swiper-slide">
+									<div class="swiper-image operator-list-item">
+										<img src="/netcharge/images/img/c.jpg" class="swiper-img operator-type" data-value="2"
+											 data-src1="/netcharge/images/img/c.jpg" data-src2="/netcharge/images/img/cc.png" />
+									</div>
+								</div>
+								<div class="swiper-slide">
+									<div class="swiper-image operator-list-item">
+										<img src="/netcharge/images/img/e.png" class="swiper-img operator-type" data-value="3"
+											 data-src1="/netcharge/images/img/e.png" data-src2="/netcharge/images/img/ee.png" />
+									</div>
+								</div>
+								<div class="swiper-slide">
+									<div class="swiper-image operator-list-item">
+										<img src="/netcharge/images/img/f.png" class="swiper-img operator-type" data-value="4"
+											 data-src1="/netcharge/images/img/f.png" data-src2="/netcharge/images/img/ff.png" />
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+					</div>
+				</main>
+
+				<!-- <button class="btn-inquiry app-btn" type="button">استعلام محصولات</button> -->
+			</section>
+
+			<section class="buy-credit-section buy-credit-step-2" data-role="search">
+				<header class="header__mobile__sharge">
+					<div>
+						<a href="#" class="header__btn__move_page btn__move_page btn_back"></a>
+					</div>
+					<div class="header__title">
+						<span class="header__title__text">دفترچه تلفن</span>
+					</div>
+					<div class="header__help">
+						<span class="header__help__icon icon-info"></span>
+					</div>
+				</header>
+				<main>
+					<div class="modal_mobile_overlay">
+						<div class="modal_mobile_content">
+							<div class="modal_mobile_header">
+								<span class="icon-info"></span>
+							</div>
+							<div class="modal_mobile_body">
+								<div class="mt-20px">
+									<span class="icon-description icon"></span>
+									<span class="title">توضیحات</span>
+									<p>
+										در این قسمت می توانید با وارد کردن نام کاربر مورد نظر عمل جستجو کاربر رو انجام
+										دهید.
+									</p>
+								</div>
+							</div>
+							<div class="modal_mobile_footer">
+								<span class="close_modal"></span>
+							</div>
+						</div>
+					</div>
+					<div class="container" id="users">
+						<div class="search_user_box_input icon-search position-relative">
+							<span class="clear__input clear__input_serach_user"></span>
+							<input type="text" class="search_user_input search" />
+						</div>
+						<ul class="search_user_list_ul list">
+							
+						</ul>
+					</div>
+				</main>
+				<div class="search_user_box_footer">
+					<button type="button" class="user_search_list_ok btn_back">
+						<span class="number"></span>
+					</button>
+					<button type="button" class="btn__cancel__user_search btn_back app-btn">
+						لغو
+					</button>
+				</div>
+			</section>
+
+			<section class="buy-credit-section buy-credit-step-3">
+				<header class="header__mobile__sharge">
+					<div>
+						<a href="#" class="header__btn__move_page btn__move_page btn_back"></a>
+					</div>
+					<div class="header__title">
+						<span class="header__title__text">مبلغ شارژ سیم کارت</span>
+					</div>
+					<div class="header__help">
+						<span class="header__help__icon icon-info"></span>
+					</div>
+				</header>
+
+				<main class="container">
+					<div class="modal_mobile_overlay">
+						<div class="modal_mobile_content">
+							<div class="modal_mobile_header">
+								<span class="icon-info"></span>
+							</div>
+							<div class="modal_mobile_body">
+								<div class="mb-20px">
+									<span class="icon-sim-card-mobile icon"></span><span class="title">
+										انتخاب نوع
+										شارژ
+									</span>
+									<p class="mt-5px">
+										در این بخش می توانید نوع شارژ و مبلغ آن را انتخاب نمایید
+									</p>
+									<ol>
+										<li>با لمس یکی از آیکن های بالایی نوع شارژ خود را انتخاب نمایید</li>
+										<li>
+											از لیست پایین میتوانید مبلغ شارژ را انتخاب نمایید یا در صورت تمایل میتوانید
+											مبلغ دلخواه را وارد نمایید
+										</li>
+										<li>دکمه ارسال را لمس نمایید</li>
+									</ol>
+
+								</div>
+								<div class="mt-20px">
+									<span class="icon-description icon"></span>
+									<span class="title">توضیحات</span>
+									<p>
+										- نوع شارژ میتواند یکی از موارد زیر باشد(متناسب با اپراتور و شماره موبایل ممکن
+										است برخی از موارد زیر در دسترس نباشند)
+									</p>
+									<ol>
+										<li>
+											خرید رمز: در این روش رمز شارژ برای شما ارسال میشود و میتوانید با شماره گیری
+											رمز بر روی خط مورد نظر آن را شارژ نمایید
+										</li>
+										<li>
+											شارژ مستقیم : در این روش شماره موبایل وارد شده در مرحله قبل ، به صورت خودکار
+											شارژ خواهد شد
+										</li>
+										<li>
+											شارژ شگفت انگیز: در این روش شماره موبایل وارد شده در مرحله قبل به صورت
+											خودکار شارژ میشود.
+										</li>
+										<li>
+											کلیه مبالغ به صورت ریال می باشد
+										</li>
+									</ol>
+								</div>
+							</div>
+							<div class="modal_mobile_footer">
+								<span class="close_modal"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<input type="hidden" id="type_charge" value="1">
+							<!-- همراه اول  -->
+							<div type_operator="0" class="type_operator_parent d-block">
+								<div class="credit-type-box">
+									<div>
+										<div class="credit-type-box-right">
+											<span class="credit-type-box-right-icon"></span>
+										</div>
+										<h5>شارژ مستقیم</h5>
+									</div>
+									<div>
+										<div class="credit-type-box-left">
+											<span class="credit-type-box-left-icon icon-plus"></span>
+										</div>
+										<h5>شارژ پلاس</h5>
+									</div>
+								</div>
+
+								<div class="direct_charge">
+									<div class="sim_card_charge_text">
+										<div class="sim_card_charge_right_text">
+										</div>
+										<p class="text-center mt-3 f-13">از لیست مبلغ شارژ را انتخاب نمایید</p>
+									</div>
+									<div class="mt-4">
+										<div class="container">
+										<select charge_type="1" name="price" class="wide charge_price_input creidt_card_amount_input credit_card_amount_drop_down mb-15">
+												<option data-display="انتخاب نمایید" value="-1">وارد کردن مبلغ دلخواه به ریال</option>
+												<option value="50000">50,000</option>
+												<option value="100000">100,000</option>
+												<option value="200000">200,000</option>
+												<option value="500000">500,000</option>
+											</select>
+										<input type="text" charge_type="1" name="price" autocomplete="off" maxlength="10" class="form-control only_number text-center form_desired_amount_input">
+											<p class="amount_alpha_number"></p>
+										</div>
+									</div>
+								</div>
+								<div class="password_charge">
+									<div class="sim_card_charge_text">
+										<div class="sim_card_charge_left_text">
+										</div>
+										<p class="text-center mt-3 f-13">از لیست زیر سرویس مورد نظر را انتخاب نمایید</p>
+									</div>
+									<div class="mt-4">
+										<div class="container">
+											<select charge_type="2" class="wide form_credit_card_drop_down_service">
+												<option data-display="انتخاب نمایید" value="">انتخاب نمایید</option>
+												<option value="1">خدمات بیمه</option>
+												<option value="2">خدمات خودرو</option>
+											</select>
+
+											<select service_number="1" class="wide form_credit_card_service_type">
+												<option value="">انتخاب نمایید</option>
+												<option value="1">5,500</option>
+												<option value="2">11,000</option>
+												<option value="3">25,000</option>
+												<option value="3">65,000</option>
+											</select>
+
+											<select service_number="2" class="wide form_credit_card_service_type">
+												<option value="">انتخاب نمایید</option>
+												<option value="1">5,500</option>
+												<option value="2">11,000</option>
+												<option value="3">25,000</option>
+												<option value="3">65,000</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- ایرانسل -->
+							<div type_operator="1" class="type_operator_parent">
+								<div class="credit-type-box">
+									<div>
+										<div class="credit-type-box-right">
+											<span class="credit-type-box-right-icon"></span>
+										</div>
+										<h5>شارژ مستقیم</h5>
+									</div>
+									<div>
+										<div class="credit-type-box-left">
+											<span class="credit-type-box-left-icon icon-plus"></span>
+										</div>
+										<h5>شارژ پلاس</h5>
+									</div>
+								</div>
+
+								<div class="direct_charge">
+									<div class="sim_card_charge_text">
+										<p class="text-center mt-3 f-13">از لیست زیر مبلغ شارژ را انتخاب نمایید</p>
+									</div>
+									<div class="mt-4">
+										<div class="container">
+											<select charge_type="1" class="wide charge_price_input creidt_card_amount_input credit_card_amount_drop_down mb-15">
+												<option data-display="انتخاب نمایید" value="-1">وارد کردن مبلغ دلخواه به ریال</option>
+												<option value="50000">50,000</option>
+												<option value="100000">100,000</option>
+												<option value="200000">200,000</option>
+												<option value="500000">500,000</option>
+											</select>
+											<input type="text" charge_type="1" autocomplete="off" maxlength="10" class="form-control only_number text-center form_desired_amount_input">
+											<p class="amount_alpha_number"></p>
+										</div>
+									</div>
+								</div>
+								<div class="password_charge">
+									<div class="sim_card_charge_text">
+										<p class="text-center mt-3 f-13">از لیست زیر سرویس مورد نظر را انتخاب نمایید</p>
+									</div>
+									<div class="mt-4">
+										<div class="container">
+											<select charge_type="2" class="wide form_credit_card_drop_down_service">
+												<option data-display="انتخاب نمایید" value="">انتخاب نمایید</option>
+												<option value="1">خدمات بیمه</option>
+												<option value="2">خدمات خودرو</option>
+											</select>
+											<select service_number="1" class="form_credit_card_service_type wide">
+												<option value="">انتخاب نمایید</option>
+												<option value="1">5,500</option>
+												<option value="2">11,000</option>
+												<option value="3">25,000</option>
+												<option value="3">65,000</option>
+											</select>
+											<select service_number="2" class="form_credit_card_service_type wide">
+												<option value="">انتخاب نمایید</option>
+												<option value="1">5,500</option>
+												<option value="2">11,000</option>
+												<option value="3">25,000</option>
+												<option value="3">65,000</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- تالیا -->
+							<div type_operator="2" class="type_operator_parent">
+								<div class="credit-type-box">
+									<div>
+										<div class="credit-type-box-right">
+											<span class="credit-type-box-right-icon"></span>
+										</div>
+										<h5>شارژ مستقیم</h5>
+									</div>
+									<div>
+										<div class="credit-type-box-left">
+											<span class="credit-type-box-left-icon icon-plus"></span>
+										</div>
+										<h5>شارژ پلاس</h5>
+									</div>
+								</div>
+
+								<div class="direct_charge">
+									<div class="sim_card_charge_text">
+										<p class="text-center mt-3 f-13">از لیست زیر مبلغ شارژ را انتخاب نمایید</p>
+									</div>
+									<div class="mt-4">
+										<div class="container">
+											<select charge_type="1" class="wide charge_price_input creidt_card_amount_input credit_card_amount_drop_down mb-15">
+												<option data-display="انتخاب نمایید" value="-1">وارد کردن مبلغ دلخواه به ریال</option>
+												<option value="50000">50,000</option>
+												<option value="100000">100,000</option>
+												<option value="200000">200,000</option>
+												<option value="500000">500,000</option>
+											</select>
+											<input type="text" charge_type="1" autocomplete="off" maxlength="10" class="form-control only_number text-center form_desired_amount_input">
+											<p class="amount_alpha_number"></p>
+										</div>
+									</div>
+								</div>
+								<div class="password_charge">
+									<div class="sim_card_charge_text">
+										<p class="text-center mt-3 f-13">از لیست زیر سرویس مورد نظر را انتخاب نمایید</p>
+									</div>
+									<div class="mt-4">
+										<div class="container">
+											<select charge_type="2" class="wide form_credit_card_drop_down_service">
+												<option data-display="انتخاب نمایید" value="">انتخاب نمایید</option>
+												<option value="1">خدمات بیمه</option>
+												<option value="2">خدمات خودرو</option>
+											</select>
+											<select service_number="1" class="form_credit_card_service_type wide">
+												<option value="">انتخاب نمایید</option>
+												<option value="1">5,500</option>
+												<option value="2">11,000</option>
+												<option value="3">25,000</option>
+												<option value="3">65,000</option>
+											</select>
+											<select service_number="2" class="form_credit_card_service_type wide">
+												<option value="">انتخاب نمایید</option>
+												<option value="1">5,500</option>
+												<option value="2">11,000</option>
+												<option value="3">25,000</option>
+												<option value="3">65,000</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- رایتل -->
+							<div type_operator="3" class="type_operator_parent">
+								<div class="credit-type-box">
+									<div>
+										<div class="credit-type-box-right">
+											<span class="credit-type-box-right-icon"></span>
+										</div>
+										<h5>شارژ مستقیم</h5>
+									</div>
+									<div>
+										<div class="credit-type-box-left">
+											<span class="credit-type-box-left-icon icon-plus"></span>
+										</div>
+										<h5>شارژ پلاس</h5>
+									</div>
+								</div>
+
+								<div class="direct_charge">
+									<div class="sim_card_charge_text">
+										<p class="text-center mt-3 f-13">از لیست زیر مبلغ شارژ را انتخاب نمایید</p>
+									</div>
+									<div class="mt-4">
+										<div class="container">
+											<select charge_type="1" class="wide charge_price_input creidt_card_amount_input credit_card_amount_drop_down mb-15">
+												<option data-display="انتخاب نمایید" value="-1">وارد کردن مبلغ دلخواه به ریال</option>
+												<option value="50000">50,000</option>
+												<option value="100000">100,000</option>
+												<option value="200000">200,000</option>
+												<option value="500000">500,000</option>
+											</select>
+											<input type="text" charge_type="1" autocomplete="off" maxlength="10" class="form-control only_number text-center form_desired_amount_input">
+											<p class="amount_alpha_number"></p>
+										</div>
+									</div>
+								</div>
+								<div class="password_charge">
+									<div class="sim_card_charge_text">
+										<p class="text-center mt-3 f-13">از لیست زیر سرویس مورد نظر را انتخاب نمایید</p>
+									</div>
+									<div class="mt-4">
+										<div class="container">
+											<select charge_type="2" class="wide form_credit_card_drop_down_service">
+												<option data-display="انتخاب نمایید" value="">انتخاب نمایید</option>
+												<option value="1">خدمات بیمه</option>
+												<option value="2">خدمات خودرو</option>
+											</select>
+											<select service_number="1" class="form_credit_card_service_type wide">
+												<option value="">انتخاب نمایید</option>
+												<option value="1">5,500</option>
+												<option value="2">11,000</option>
+												<option value="3">25,000</option>
+												<option value="3">65,000</option>
+											</select>
+											<select service_number="2" class="form_credit_card_service_type wide">
+												<option value="">انتخاب نمایید</option>
+												<option value="1">5,500</option>
+												<option value="2">11,000</option>
+												<option value="3">25,000</option>
+												<option value="3">65,000</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- شاتل -->
+							<div type_operator="4" class="type_operator_parent">
+								<div class="credit-type-box">
+									<div>
+										<div class="credit-type-box-right">
+											<span class="credit-type-box-right-icon"></span>
+										</div>
+										<h5>شارژ مستقیم</h5>
+									</div>
+									<div>
+										<div class="credit-type-box-left">
+											<span class="credit-type-box-left-icon icon-plus"></span>
+										</div>
+										<h5>شارژ پلاس</h5>
+									</div>
+								</div>
+
+								<div class="direct_charge">
+									<div class="sim_card_charge_text">
+										<p class="text-center mt-3 f-13">از لیست زیر مبلغ شارژ را انتخاب نمایید</p>
+									</div>
+									<div class="mt-4">
+										<div class="container">
+											<select charge_type="1" class="wide charge_price_input creidt_card_amount_input credit_card_amount_drop_down mb-15">
+												<option data-display="انتخاب نمایید" value="-1">وارد کردن مبلغ دلخواه به ریال</option>
+												<option value="50000">50,000</option>
+												<option value="100000">100,000</option>
+												<option value="200000">200,000</option>
+												<option value="500000">500,000</option>
+											</select>
+											<input type="text" charge_type="1" autocomplete="off" maxlength="10" class="form-control only_number text-center form_desired_amount_input">
+											<p class="amount_alpha_number"></p>
+										</div>
+									</div>
+								</div>
+								<div class="password_charge">
+									<div class="sim_card_charge_text">
+										<p class="text-center mt-3 f-13">از لیست زیر سرویس مورد نظر را انتخاب نمایید</p>
+									</div>
+									<div class="mt-4">
+										<div class="container">
+											<select charge_type="2" class="wide form_credit_card_drop_down_service">
+												<option data-display="انتخاب نمایید" value="">انتخاب نمایید</option>
+												<option value="1">خدمات بیمه</option>
+												<option value="2">خدمات خودرو</option>
+											</select>
+											<select service_number="1" class="form_credit_card_service_type wide">
+												<option value="">انتخاب نمایید</option>
+												<option value="1">5,500</option>
+												<option value="2">11,000</option>
+												<option value="3">25,000</option>
+												<option value="3">65,000</option>
+											</select>
+											<select service_number="2" class="form_credit_card_service_type wide">
+												<option value="">انتخاب نمایید</option>
+												<option value="1">5,500</option>
+												<option value="2">11,000</option>
+												<option value="3">25,000</option>
+												<option value="3">65,000</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</main>
+				<button type="button" class="btn-move-payment-page app-btn">اتصال به درگاه پرداخت</button>
+			</section>
+
+			<section class="buy-credit-section buy-credit-step-result-payment-error">
+				<header class="header__mobile__sharge">
+					<div>
+						<a href="/" class="header__btn__move_page btn__move_page btn_back"></a>
+					</div>
+					<div class="header__title">
+						<span class="header__title__text">تراکنش ناموفق</span>
+					</div>
+					<div class="header__help">
+					</div>
+				</header>
+				<main>
+					<div class="container w-90">
+						<div class="success_box_payment error_payment_box">
+							<div class="error_payment_image">
+								<img src="../images/img/error_icon_payment.png" class="error_payment_img" alt="">
+							</div>
+							<div class="success_image">
+								<img src="/netcharge/images/img/error_payment.jpg" class="success_image" alt="">
+							</div>
+							<p class="alert alert-info">
+								مشتری گرامی با عرض پوزش در روند خرید شما مشکلی پیش آمده و خرید انجام نگرفته در صورت کسر مبلغ از حساب شما حداکثر تا 72 ساعت مبلغ به حساب شما برگشت داده خواهد شد.
+							</p>
+							<div class="return_btn">
+								<button class="btn btn-secondary btn-sm">بازگشت</button>
+							</div>
+						</div>
+
+					</div>
+				</main>
+			</section>
+
+			<section class="buy-credit-section buy-credit-step-result-payment-success">
+				<header class="header__mobile__sharge">
+					<div>
+						<a href="/" class="header__btn__move_page share-icon btn__move_page btn_back"></a>
+					</div>
+					<div class="header__title">
+						<span class="header__title__text">تراکنش موفق</span>
+					</div>
+					<div class="header__help">
+					</div>
+				</header>
+				<main>
+					<div class="container w-90">
+						<div class="success_box_payment">
+							<div class="success_image">
+								<img src="/netcharge/images/img/done2.png" class="success_image" alt="">
+							</div>
+							<p class="thanks_message"><span>از خرید شما سپاس گذاریم</span></p>
+							<p class="tracking_code">کد پیگیری تراکنش : <span>1234567890</span></p>
+						</div>
+
+					</div>
+				</main>
+			</section>
+
+			<section class="buy-credit-section buy-credit-step-4 payment-section">
+				<header class="header__mobile__sharge">
+					<div>
+						<a href="#" class="header__btn__move_page btn__move_page btn_back"></a>
+					</div>
+					<div class="header__title">
+						<span class="header__title__text">پرداخت</span>
+					</div>
+					<div class="header__help">
+						<span class="header__help__icon icon-info"></span>
+					</div>
+				</header>
+				<main class="container">
+					<div class="modal_mobile_overlay">
+						<div class="modal_mobile_content">
+							<div class="modal_mobile_header">
+								<span class="icon-info"></span>
+							</div>
+							<div class="modal_mobile_body">
+								<div class="mb-20px">
+									<span class="icon"></span><span class="title">صفحه پرداخت</span>
+									<p class="mt-5px">
+										در این بخش با ورود اطلاعات کارت، تراکنش انجام میشود
+									</p>
+									<ol>
+										<li>
+											اطلاعات محصول و مبلغ را که در بالای صفحه مشاهده میشود، برسی نمایید صورت عدم
+											صحت میتوانید با لمس دکمه بازگشت به صفحات قبلی رفته و آنها را تصحی نمایید
+										</li>
+										<li>
+											شماره 16 یا 19 رقمی کارت را وارد نماییده. همچنین میتوانید کارت مورد نظر را
+											با لمس نمودن محل ورود شماره کارت از لیست کارت های پرکاربرد انتخاب نمایید
+										</li>
+										<li>رمز دوم (اینترنت) را وارد نمایید</li>
+										<li>جهت انجام تراکنش دکمه ارسال را لمس نمایید</li>
+										<li>نتیجه تراکنش به شما نشاه داده خواهد شد</li>
+									</ol>
+
+								</div>
+								<div class="mt-20px">
+									<span class="icon-description icon"></span>
+									<span class="title">پرداخت از کیف پول</span>
+									<p>
+										تمامی امتیازهای آپ به صورت ریالی به کیف پول شما اضافه میشود. هر امتیاز معادل 10
+										ریال است. شما میتوانید با استفاده ار اعتبار کیف پول خود سریع و آسان پرداخت کنید.
+										همچنین میتوانید اعتبار کیف پول خود را با واریز وجه افزایش دهید تا در خریدهای
+										بعدی بدون نیاز
+										به وارد کردن اطلاعات کارت بانکی پرداخ خود را به آسانی انجام دهید.
+									</p>
+								</div>
+							</div>
+							<div class="modal_mobile_footer">
+								<span class="close_modal"></span>
+							</div>
+						</div>
+					</div>
+
+					<p class="text-center text-white f-13 mb-10">شارژ مستقیم</p>
+					<p class="text-center text-white mb-20 f-13">شماره موبایل : 09114030262</p>
+					<p class="text-center text-white fs-11 payment_price">
+						<span>مبلغ : </span>
+						<span class="number">50,000 ریال</span>
+					</p>
+					<p class="text-center text-white f-13 mb-15">روش پردخت خود را انتخاب کنید</p>
+					<input type="hidden" class="payment_type" value="bank_card">
+					<div class="d-flex justify-content-center choose_payment_method">
+						<div class="bank_card">
+							<div class="box_icon_payment box_icon_is_active" data-value="bank_card"
+								 data-tab="payment_tab_card_bank" data-title="پرداخت با کارت بانکی ">
+								<span class="icon"></span>
+							</div>
+							<span class="fs-11 color-black">کارت بانکی</span>
+						</div>
+						<div class="wallet">
+							<div class="box_icon_payment" data-value="wallet" data-tab="payment_tab_wallet"
+								 data-title="پرداخت با کیف پول">
+								<span class="icon"></span>
+							</div>
+							<span class="fs-11 color-black">کیف پول</span>
+						</div>
+						<div class="direct_payment">
+							<div class="box_icon_payment" data-value="direct_payment" data-tab="direct_tab_payment"
+								 data-title="پرداخت">
+								<span class="icon"></span>
+							</div>
+							<span class="fs-11 color-black">پرداخت مستقیم</span>
+						</div>
+					</div>
+					<div class="info_payment_bank">
+						<div class="payment_tab payment_tab_card_bank">
+							<div class="form-floating mb-3 mt-4 position-relative">
+								<span class="btn_remove_text_input"></span>
+								<input type="text" maxlength="19" class="form-control card_number_input only_number"
+									   name="card_number_input" id="card_number_input" placeholder="شماره کارت بانکی"
+									   autocomplete="new-password">
+								<label class="text-red mt-5px fs-10" for="card_number_input">شماره کارت بانکی</label>
+							</div>
+							<div class="form-floating mb-3 position-relative">
+								<span class="btn_remove_text_input position-left-67"></span>
+								<span class="btn_shwo_hide_password position-left-96"></span>
+								<input type="password" class="form-control card_bank_password only_number"
+									   name="card_bank_password" id="card_bank_password" maxlength="8" placeholder="رمز پویا"
+									   autocomplete="off">
+								<label class="text-red mt-5px fs-10" for="card_bank_password">رمز پویا</label>
+								<button type="button" class="btn_bank_card_code">رمز پویا</button>
+								<span class="bank_code_timer"></span>
+
+							</div>
+							<div class="form-floating mb-3 position-relative">
+								<span class="btn_remove_text_input"></span>
+								<span class="btn_shwo_hide_password position-left-40"></span>
+								<input type="password" class="form-control card_bank_cvv2 only_number"
+									   name="card_bank_cvv2" id="card_bank_cvv2" maxlength="4" placeholder="cvv2"
+									   autocomplete="off">
+								<label class="text-red mt-5px fs-10" for="card_bank_cvv2">cvv2</label>
+							</div>
+							<div class="mb-3 year_month">
+								<div class="form-floating position-relative h-50px">
+									<span class="btn_remove_text_input"></span>
+									<span class="btn_shwo_hide_password "></span>
+									<input type="password" class="form-control year only_number" name="year" id="year"
+										   maxlength="2" placeholder="سال" autocomplete="off">
+									<label class="text-red mt-5px fs-10" for="year">سال انقضا</label>
+								</div>
+
+								<div class="form-floating position-relative h-50px">
+									<span class="btn_remove_text_input"></span>
+									<span class="btn_shwo_hide_password"></span>
+									<input type="password" class="form-control month only_number"
+										   name="month" id="month" maxlength="2" placeholder="ماه" autocomplete="off">
+									<label class="text-red mt-5px fs-10" for="month">ماه انقضا</label>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="payment_tab payment_tab_wallet d-none">
+							<ul class="payment_tab_wallet_ul">
+								<li class="payment_tab_wallet_li payment_tab_wallet_li_is_active">
+									<div class="d-flex align-items-center">
+										<span class="circle_icon"></span>
+										<span class="title">مجموع موجودی</span>
+									</div>
+									<div>
+										<span class="price">1,170</span>
+									</div>
+								</li>
+								<li class="payment_tab_wallet_li ">
+									<div class="d-flex align-items-center">
+										<span class="circle_icon"></span>
+										<span class="title">کیف پول آپ</span>
+									</div>
+									<div>
+										<span class="price">1,170</span>
+										<span class="insufficient_inventory">موجودی ناکافی</span>
+									</div>
+								</li>
+								<li class="payment_tab_wallet_li">
+									<div class="d-flex align-items-center">
+										<span class="circle_icon"></span>
+										<span class="title">کیف پول اوانو</span>
+									</div>
+									<div>
+										<span class="price">1,170</span>
+										<span class="insufficient_inventory">موجودی ناکافی</span>
+									</div>
+								</li>
+							</ul>
+
+						</div>
+
+						<div class="payment_tab direct_tab_payment d-none">
+							<p class="text-center text-white fs-11 mb-15">مانده روزانه</p>
+							<p class="text-center text-white fs-11 mb-15">کاربر قررداد فعال ندارد</p>
+							<div class="div_btn_retry text-center">
+								<button class="fs-11">تلاش مجدد</button>
+							</div>
+						</div>
+					</div>
+				</main>
+
+				<button type="submit" class="app-btn">
+					پرداخت با کارت بانکی
+				</button>
+			</section>
+		</form>
+		<section class="successful-transaction-page">
+			<header class="header__mobile__sharge">
+				<div>
+					<a href="/" class="header__btn__move_page share-icon btn__move_page btn_back"></a>
+				</div>
+				<div class="header__title">
+					<span class="header__title__text">تراکنش موفق</span>
+				</div>
+				<div class="header__help">
+				</div>
+			</header>
+			<main class="container">
+				<div class="successful_transaction_card">
+					<div class="successful_transaction_card_header">
+						<span class="title">تراکنش موفق</span>
+					</div>
+					<div class="successful_transaction_card_body">
+						<h3 class="title">خرید شارژ</h3>
+						<div class="info">
+							<div class="info_row">
+								<div class="title">مبلغ</div>
+								<div><span class="price">50,000</span><span> ریال</span></div>
+							</div>
+							<div class="info_row no-bg-color">
+								<div class="title">تاریخ</div>
+								<div><span class="time">01:39:27</span><span>1402/02/14</span></div>
+							</div>
+							<div class="info_row">
+								<div class="title">کارت</div>
+								<div><span>7481_****_****_****</span></div>
+							</div>
+							<div class="info_row no-bg-color">
+								<div class="title">نوع شارژ</div>
+								<div><span>شارژ مستقیم</span></div>
+							</div>
+							<div class="info_row ">
+								<div class="title">شماره موبایل</div>
+								<div><span>09114030262</span></div>
+							</div>
+							<div class="info_row no-bg-color">
+								<div class="title">شماره ارجاع</div>
+								<div><span>09114030262</span></div>
+							</div>
+						</div>
+						<div class="success_title">
+							<p>عملیات با موفقیت انجام گردید</p>
+						</div>
+					</div>
+				</div>
+				<div class="successful_transaction_card_footer">
+					<div class="save_mobile_number">
+						<label for="ui__checkbox__input">
+							<input type="checkbox" class="ui__checkbox__input"
+								   id="ui__checkbox__input"><span class="ui__checkbox__mark"></span>
+						</label>
+						<p>افزودن موبایل به ورودی های پرکاربرد</p>
+					</div>
+				</div>
+			</main>
+			<div>
+				<a href="/" class="footer-button_return_back"> <span class="chevron-right"></span><span>بازگشت</span></a>
+			</div>
+		</section>
+	</div>
+
+@section Scripts{
+	<script src="/netcharge/js/credit-card.js" asp-append-version="true"></script>
+	}
