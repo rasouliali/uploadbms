@@ -134,6 +134,8 @@ $(".get_my_mobile_number_btn").click((e) => {
     number = number.substring(0, 4);
     autoSelectOperatorType(number)
     parent.find(".clear__input").addClass("d-block");
+    $(".form__input__mobile").trigger("keyup");
+
 });
 
 
