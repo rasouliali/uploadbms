@@ -6,6 +6,7 @@
 		@Html.Hidden("WorkFlowId", 2004)
 		@Html.Hidden("ShoppingPageId", 1016)
 		@Html.Hidden("price", "")
+		@Html.Hidden("mobile", "")
 		@Html.Hidden("operator", "")
 		@Html.Hidden("isAmazingCharge", "")
 			<section class="buy-credit-section buy-credit-step-1 d-flex" style="opacity: 1;">
@@ -288,14 +289,14 @@
 									</div>
 									<div class="mt-4">
 										<div class="container">
-										<select charge_type="1" name="price" class="wide charge_price_input creidt_card_amount_input credit_card_amount_drop_down mb-15">
+										<select charge_type="1"  class="wide charge_price_input creidt_card_amount_input credit_card_amount_drop_down mb-15">
 												<option data-display="انتخاب نمایید" value="-1">وارد کردن مبلغ دلخواه به ریال</option>
 												<option value="50000">50,000</option>
 												<option value="100000">100,000</option>
 												<option value="200000">200,000</option>
 												<option value="500000">500,000</option>
 											</select>
-										<input type="text" charge_type="1" name="price" autocomplete="off" maxlength="10" class="form-control only_number text-center form_desired_amount_input">
+										<input type="text" charge_type="1" autocomplete="off" maxlength="10" class="form-control only_number text-center form_desired_amount_input">
 											<p class="amount_alpha_number"></p>
 										</div>
 									</div>

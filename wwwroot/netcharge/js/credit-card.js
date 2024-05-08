@@ -304,6 +304,7 @@ $('.btn-move-payment-page').click(e => {
         $('#price').val(getPrice());
         $('#operator').val(getOpt());
         $('#isAmazingCharge').val('false');
+        $('#mobile').val(getMobile());
         $('.buy-credit-form').eq(0).submit();
         return true;
 
@@ -325,6 +326,7 @@ $('.btn-move-payment-page').click(e => {
         $('#price').val(getPrice());
         $('#operator').val(getOpt());
         $('#isAmazingCharge').val('true');
+        $('#mobile').val(getMobile());
         //toastr["success"]('نوع خدمات و سرویس به درستی وارد شده است')
         $('.buy-credit-form').eq(0).submit();
         return true;
@@ -336,6 +338,16 @@ $('.btn-move-payment-page').click(e => {
         // $(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
     }
 })
+function getMobile() {
+    var data = $('.form__input__mobile').val();
+    if (data.startsWith("+98"))
+        data = data.substring(3);
+    if (data.startsWith("0098"))
+        data = data.substring(4);
+    if (data.startsWith("98"))
+        data = data.substring(2);
+    return data;
+}
 function getPrice() {
     var data = $('.creidt_card_amount_input:not([disabled])').val();
     if (data == '-1')
