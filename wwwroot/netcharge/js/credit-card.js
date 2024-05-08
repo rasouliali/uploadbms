@@ -295,13 +295,18 @@ $('.btn-move-payment-page').click(e => {
             }
         }
 
-        toastr["success"]('نوع شارژ و مبلغ شارژ به درستی وارد شده است')
+        toastr["success"]('لطفا برای پرداخت شکبیا باشید!');
         //TODO SENT REQUEST TO SERVER
         //$(".buy-credit-section").removeClass('d-flex')
         //$(".buy-credit-section").css('opacity', ".3")
         //$('.buy-credit-step-result-payment-success').addClass('d-flex')
         //$(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
+        $('#price').val(getPrice());
+        $('#operator').val(getOpt());
+        $('#isAmazingCharge').val('false');
         $('.buy-credit-form').eq(0).submit();
+        return true;
+
         // $('.buy-credit-step-result-payment-error').addClass('d-flex')
         // $(".buy-credit-step-result-payment-error").animate({ opacity: 1 }, 500);
     } else { // شارژ پلاس انتخاب شده است
@@ -316,8 +321,13 @@ $('.btn-move-payment-page').click(e => {
             toastr["error"]('انتخاب نوع سرویس الزامیست', "خطا")
             return false;
         }
-        toastr["success"]('نوع خدمات و سرویس به درستی وارد شده است')
+        toastr["success"]('لطفا برای پرداخت شکبیا باشید!');
+        $('#price').val(getPrice());
+        $('#operator').val(getOpt());
+        $('#isAmazingCharge').val('true');
+        //toastr["success"]('نوع خدمات و سرویس به درستی وارد شده است')
         $('.buy-credit-form').eq(0).submit();
+        return true;
 
         //TODO SENT REQUEST TO SERVER
         // $(".buy-credit-section").removeClass('d-flex')
@@ -326,7 +336,17 @@ $('.btn-move-payment-page').click(e => {
         // $(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
     }
 })
-
+function getPrice() {
+    var data = $('.creidt_card_amount_input:not([disabled])').val();
+    if (data == '-1')
+        data = $('.form_desired_amount_input').val() * 10;
+        
+    return data;
+}
+function getOpt() {
+    var opt = $("#operator").val().trim();
+    return opt == 0 ? "mci" : opt == 1 ? "mtn" : opt == 3 ? "rtl" : "mci";
+}
 $('.form_credit_card_drop_down_service').change(e => {
     let _this = $(e.currentTarget);
 
