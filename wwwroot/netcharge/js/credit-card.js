@@ -349,9 +349,11 @@ function getMobile() {
     return data;
 }
 function getPrice() {
-    var data = $('.creidt_card_amount_input:not([disabled])').val();
+    var opt = $("#operator").val().trim();
+    
+    var data = $('[type_operator="' + opt + '"] .creidt_card_amount_input').val();
     if (data == '-1')
-        data = $('.form_desired_amount_input').val() * 10;
+        data = $('[type_operator="' + opt + '"] .form_desired_amount_input').val();
         
     return data;
 }
