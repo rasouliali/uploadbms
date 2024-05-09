@@ -1,0 +1,30 @@
+﻿
+@font-face {
+    font-family: irs-normal;
+    font-style: normal;
+    font-weight: normal;
+    src: url('/netcharge/fonts/iransans/eot/IRANSansWeb\(FaNum\).eot');
+    src: url('/netcharge/fonts/iransans/eot/IRANSansWeb\(FaNum\).eot?#iefix') format('embedded-opentype'), url('/netcharge/fonts/iransans/woff2/IRANSansWeb\(FaNum\).woff2') format('woff2'), url('/netcharge/fonts/iransans/woff/IRANSansWeb\(FaNum\).woff') format('woff'), url('/netcharge/fonts/iransans/ttf/IRANSansWeb\(FaNum\).ttf') format('truetype');
+}
+
+html, body {
+    background-color: #f2f9fd !important;
+}
+
+*, .hamlogo {
+    font-family: irs-normal !important;
+    color: #212529 !important;
+}
+.avatar {
+    margin-top: inherit !important;
+}
+.topover, .top, .topc, .bbar {
+    background-image: inherit !important;
+    background: inherit !important;
+}
+form div.row div, form div.row div button{
+    font-size: 12px !important;
+}
+.icon {
+    font-family: 'simple-line-icons' !important;
+}
