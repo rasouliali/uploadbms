@@ -453,7 +453,7 @@ $('.internet-package-slide-collapse').click(e => {
 })
 function packOnClick() {
     $('.info-internet-package-link:not(.proc)').on('click', e => {
-        let internetPackage = $(e.currentTarget).data('PackageId')
+        let internetPackage = $(e.currentTarget).attr('data-PackageId');
         let mobileNumber = $(".form__input__mobile").val().trim();
         let operator = $("#operator").val().trim();
         let internet_type = $('#internet_type').val()
