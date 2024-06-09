@@ -213,9 +213,26 @@ $(".buy-credit-section .form__input__mobile").on("keyup", (e) => {
             $('a.header__btn__move_page.btn__move_page.btn_back').eq(0).attr('href', window.location.href);
 
         }, 500);
+        packageFiltering('');
     }
 });
+function packageFiltering(query) {
 
+    var opt = $('#operator').val();//0:mci 1:mtn 2:taliya 3:rtl 4:shattle
+    if (opt == 3)
+        opt = 3;
+    else if (opt == 1)
+        opt = 2;
+    else if (opt == 0)
+        opt = 1;
+    $('.info-internet-package-link').removeClass('d-block');
+    $('.info-internet-package-link').addClass('d-none');
+    $('.info-internet-package-link').parent().addClass('d-none');
+    var qs = '.info-internet-package-link[data-opt="' + opt + '  "]' + query;
+    $(qs).parent().removeClass('d-none');
+    $(qs).removeClass('d-none');
+    $(qs).addClass('d-block');
+}
 
 // select payment method
 // $('.box_icon_payment').click(e => {
@@ -379,10 +396,10 @@ $('.btn_remove_text_input').click(e => {
 // })
 
 //  list js for search in list users
-var options = {
-    valueNames: ['search_user_name']
-};
-var userList = new List('users', options);
+//var options = {
+//    valueNames: ['search_user_name']
+//};
+//var userList = new List('users', options);
 
 
 // تبدیل عدد به حروف فارسی
@@ -396,12 +413,18 @@ $('#internet-package-filter-text').click(e => {
     $('.filter-list-ul-type').slideUp('fast')
     $('.filter-list-ul').slideDown('fast');
 })
-$('.internet-package-filter-ul-li').click(e => {
+var QuerySearchDayLength = '';
+$('.internet-package-filter-ul-li').on('click', e => {
     $('.filter-list-ul').slideUp('fast');
     let value = $(e.currentTarget).data('value')
     let text = $(e.currentTarget).text()
-    $('.internet-package-filter-text').text(text)
-})
+    $('.internet-package-filter-text').text(text);
+    QuerySearchDayLength = "";
+    if (value!="-1")
+        QuerySearchDayLength = `[data-day="` + value + `"]`;
+    packageFiltering(QuerySearchDayLength + QuerySearchSimType);
+});
+var QuerySearchSimType = '';
 
 // فیلتر بسته های اینترنتی بر اساس نوع
 $('#internet-package-filter-type').click(e => {
@@ -413,8 +436,11 @@ $('.internet-package-filter-ul-li-type').click(e => {
     $('.filter-list-ul-type').slideUp('fast');
 
     let value = $(e.currentTarget).data('value')
+    if (value != "0")
+        QuerySearchSimType = '[data-sim="' + value +'"]'
     let text = $(e.currentTarget).text()
     $('.internet-package-filter-type').text(text)
+    packageFiltering(QuerySearchDayLength + QuerySearchSimType);
 })
 
 // 
@@ -427,17 +453,30 @@ $('.internet-package-slide-collapse').click(e => {
 })
 
 $('.info-internet-package-link').click(e => {
-    let internetPackage = $(e.currentTarget).data('value')
+    let internetPackage = $(e.currentTarget).data('PackageId')
     let mobileNumber = $(".form__input__mobile").val().trim();
     let operator = $("#operator").val().trim();
     let internet_type = $('#internet_type').val()
-
-
+    var opt = 1;
+    if (operator == "0")
+        opt = 1;
+    else if (operator == "1")
+        opt = 2;
+    else if (operator == "3")
+        opt = 3;
+    else
+        opt = 1;
+    $("#price").val( "")
+    $("#mobile").val(mobileNumber)
+    $("#operator").val(opt)
+    $("#PackageId").val(internetPackage)
+    $("#submitform").submit();
+    //$("#isAmazingCharge").val("")
     //TODO SENT REQUEST TO SERVER
-    $(".buy-credit-section").removeClass('d-flex')
-    $(".buy-credit-section").css('opacity', ".3")
-    $('.buy-credit-step-result-payment-success').addClass('d-flex')
-    $(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
+    //$(".buy-credit-section").removeClass('d-flex')
+    //$(".buy-credit-section").css('opacity', ".3")
+    //$('.buy-credit-step-result-payment-success').addClass('d-flex')
+    //$(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
 })
 
 $(document).scroll(function (e) {
