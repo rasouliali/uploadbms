@@ -457,15 +457,15 @@ function packOnClick() {
         let mobileNumber = $(".form__input__mobile").val().trim();
         let operator = $("#operator").val().trim();
         let internet_type = $('#internet_type').val()
-        var opt = 1;
+        var opt = 'mci';
         if (operator == "0")
-            opt = 1;
+            opt = 'mci';
         else if (operator == "1")
-            opt = 2;
+            opt = 'mtn';
         else if (operator == "3")
-            opt = 3;
+            opt = 'rtl';
         else
-            opt = 1;
+            opt = 'mci';
         $("#submitform #price").val("")
         $("#submitform #mobile").val(mobileNumber)
         $("#submitform #operator").val(opt)
