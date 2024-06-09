@@ -466,10 +466,10 @@ function packOnClick() {
             opt = 3;
         else
             opt = 1;
-        $("#price").val("")
-        $("#mobile").val(mobileNumber)
-        $("#operator").val(opt)
-        $("#PackageId").val(internetPackage)
+        $("#submitform #price").val("")
+        $("#submitform #mobile").val(mobileNumber)
+        $("#submitform #operator").val(opt)
+        $("#submitform #PackageId").val(internetPackage)
         $("#submitform").submit();
         //$("#isAmazingCharge").val("")
         //TODO SENT REQUEST TO SERVER
