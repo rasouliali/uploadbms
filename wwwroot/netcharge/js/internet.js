@@ -451,33 +451,35 @@ $('.internet-package-slide-collapse').click(e => {
     $('#internet_type').val($(e.currentTarget).data('type'))
     $('.internet-page-slide[data-type="' + $(e.currentTarget).data('type') + '"]').addClass('d-block');
 })
-
-$('.info-internet-package-link').click(e => {
-    let internetPackage = $(e.currentTarget).data('PackageId')
-    let mobileNumber = $(".form__input__mobile").val().trim();
-    let operator = $("#operator").val().trim();
-    let internet_type = $('#internet_type').val()
-    var opt = 1;
-    if (operator == "0")
-        opt = 1;
-    else if (operator == "1")
-        opt = 2;
-    else if (operator == "3")
-        opt = 3;
-    else
-        opt = 1;
-    $("#price").val( "")
-    $("#mobile").val(mobileNumber)
-    $("#operator").val(opt)
-    $("#PackageId").val(internetPackage)
-    $("#submitform").submit();
-    //$("#isAmazingCharge").val("")
-    //TODO SENT REQUEST TO SERVER
-    //$(".buy-credit-section").removeClass('d-flex')
-    //$(".buy-credit-section").css('opacity', ".3")
-    //$('.buy-credit-step-result-payment-success').addClass('d-flex')
-    //$(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
-})
+function packOnClick() {
+    $('.info-internet-package-link:not(.proc)').on('click', e => {
+        let internetPackage = $(e.currentTarget).data('PackageId')
+        let mobileNumber = $(".form__input__mobile").val().trim();
+        let operator = $("#operator").val().trim();
+        let internet_type = $('#internet_type').val()
+        var opt = 1;
+        if (operator == "0")
+            opt = 1;
+        else if (operator == "1")
+            opt = 2;
+        else if (operator == "3")
+            opt = 3;
+        else
+            opt = 1;
+        $("#price").val("")
+        $("#mobile").val(mobileNumber)
+        $("#operator").val(opt)
+        $("#PackageId").val(internetPackage)
+        $("#submitform").submit();
+        //$("#isAmazingCharge").val("")
+        //TODO SENT REQUEST TO SERVER
+        //$(".buy-credit-section").removeClass('d-flex')
+        //$(".buy-credit-section").css('opacity', ".3")
+        //$('.buy-credit-step-result-payment-success').addClass('d-flex')
+        //$(".buy-credit-step-result-payment-success").animate({ opacity: 1 }, 500);
+    });
+    $('.info-internet-package-link').addClass('proc');
+}
 
 $(document).scroll(function (e) {
     if ($(document).scrollTop() > 20) {
