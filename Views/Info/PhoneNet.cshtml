@@ -329,6 +329,20 @@
 		}
 
 		</script>
+		
+
+		<script type="text/javascript">
+			$.post('/JsonData/GetData', { typeData: 100102 }, function (data) {
+				debugger;
+				if (data) {
+				var params = JSON.parse(data);
+				var mydate = new Date(params[0].LatestGetToken);
+
+				}
+			if (new Date().getTime() - (24 * 60 * 60 * 1000) > mydate.getTime())
+					$.post('/Info/ShoppingData', { WorkFlowId: 2006 }, function (data2) { });
+			});
+		</script>
 
 	}
 
@@ -342,4 +356,4 @@
 		@Html.Hidden("PackageId", "")
 		@Html.Hidden("isAmazingCharge", "false")
 		@* @Html.Hidden("isAmazingCharge", "") *@
-	</form>
+	</form>				
