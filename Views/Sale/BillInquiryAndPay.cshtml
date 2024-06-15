@@ -1,0 +1,41 @@
+﻿
+@using Microsoft.Data.SqlClient;
+@{
+
+    // var db = new DataAccess();
+    // var usersDt = db.ProccessSelectQuery("sp_newProduct", new SqlParameter[] {
+    //             new SqlParameter("@username",User.Identity.Name),
+    //             }, System.Data.CommandType.StoredProcedure);
+    // var dtList = usersDt.Select().Select(r=>new { code = r["code"], title = r["title"] }).ToList();
+    // var dtSelect = new SelectList(dtList, "code", "title"); //asp-items="@dtSelect"
+    //Water , Gas , Phone , Mobile , Power
+}
+<form action="/Info/ShoppingData" id="frmSendData" method="post">
+    @Html.Hidden("WorkFlowId", 2005)
+    @Html.Hidden("ShoppingPageId", 1017)
+    <div class="form-group">
+        <label for="billtype">نوع قبض</label>
+        <select class="form-control" id="billtype" required name="type">
+            <option value="">لطفا انتخاب کنید</option>
+            <option value="Water">قبض آب</option>
+            <option value="Power">قبض برق</option>
+            <option value="Gas">قبض گاز</option>
+            <option value="Phone">قبض تلفن</option>
+            <option value="Mobile">قبض موبایل</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="bill_id">شماره قبض </label>
+        <input type="text" class="form-control" id="bill_id" name="bill_id" />
+    </div>
+    <div class="form-group for-phone option-param">
+        <label for="midterm">میارن دوره <input type="radio" value="true" id="midterm" name="isMidterm" /> </label>
+        <label for="finalterm">پایان دوره <input type="radio" value="false" id="finalterm" name="isMidterm" /> </label>
+    </div>
+    <div class="form-group for-gas option-param">
+        <label for="customer_id">شماره اشتراک </label>
+        <input type="text" class="form-control" id="customer_id" name="customer_id" />
+    </div>
+    <button class="btn btn-success" type="submit">خرید</button>
+</form>
+
