@@ -85,7 +85,7 @@
 
 							<span class="get_my_mobile_number_btn"></span>
 
-							<input type="text" placeholder="09112345678" maxlength="11"
+							<input type="text" placeholder="0912XXXXXXX" maxlength="11"
 								   class="form__input__mobile only_number" value="" autocomplete="off" />
 
 							<button class="user_search_btn" data-current_url=".mobile__sharge__step_one"
@@ -908,7 +908,6 @@
 	<script src="/netcharge/js/credit-card.js" asp-append-version="true"></script>
 	<script type="text/javascript">
 		$.post('/JsonData/GetData', { typeData: 100102 }, function (data) {
-			debugger;
 			var mydate=new Date();
 			if (data) {
 				var params = JSON.parse(data);
