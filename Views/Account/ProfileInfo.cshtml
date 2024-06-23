@@ -1,0 +1,178 @@
+﻿@using ShppaingPart.Models.AccountViewModels;
+@model RegisterOtherFieldsViewModel
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+    var onBoardPage = false;
+}
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-md-7 regimg">
+        <img src="/new/img/register.png" />
+    </div>
+    <div class="col-md-5 reg-d" dir="rtl">
+        @if (!String.IsNullOrEmpty(ViewBag.myMessege))
+        {
+            var statusMessageClass = ViewBag.myMessege.StartsWith("Error") ? "danger" : "success";
+            <div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                @ViewBag.myMessege
+            </div>
+        }
+                    <form method="post">
+                            @Html.AntiForgeryToken()
+
+                        <input asp-for="Mobile" type="hidden" />
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        
+                    <div class="form-group">
+                        <label asp-for="NationalCode"></label>
+                        <input asp-for="NationalCode" id="NationalCode" type="tel" class="form-control" />
+                        <span asp-validation-for="NationalCode"  class="text-danger"></span>
+                        <span id="NationalCodeErr" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BirthDate"></label>
+                        <input asp-for="BirthDate" class="form-control persian-date" />
+                        <span asp-validation-for="BirthDate" class="text-danger"></span>
+                    </div>
+                    @* <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="IsMan"></label>
+                        <select asp-for="IsMan" class="form-control">
+                            <option value="True">مرد</option>
+                            <option value="False">زن</option>
+                        </select>
+                        <span asp-validation-for="IsMan" class="text-danger"></span>
+                    </div> *@
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+						<button type="submit" class="btn btn-warning col-xs-5 col-md-3 text-start">تایید نهایی</button>
+						<button type="button" class="btn btn-warning col-xs-5 col-md-3 text-end" id="btn-later">بعدا</button>
+                    </div>
+                    </form>
+    </div>
+</div>
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script type="text/javascript">
+        //$('#ruleClick').on('click', function () { window.location.href = "/Home/Rules"; });
+        //var lastAddressId = 'Address';
+        //var adrIndex = 1;
+        //$('#AddNewAddress').on('click', function () {
+        //    debugger;
+        //    var strAdress = $('#' + lastAddressId).html();
+        //    strAdress = strAdress.split('UserAddresses[' + (adrIndex - 1).toString() + ']').join('UserAddresses[' + (adrIndex).toString() + ']');
+        //    strAdress = strAdress.split('UserAddresses_' + (adrIndex - 1).toString() + '_').join('UserAddresses_' + (adrIndex).toString() + '_');
+        //    UserAddresses_0__ZipCode
+        //    strAdress = '<div id="Address' + adrIndex.toString() + '">' + strAdress + '</div>';
+        //    $(strAdress).insertAfter('#' + lastAddressId);
+        //    lastAddressId = 'Address' + adrIndex.toString();
+        //    adrIndex++;
+        //})
+        //$('#DelLastAddress').on('click', function () {
+        //    if (lastAddressId == "Address")
+        //        return;
+        //    $('#' + lastAddressId).remove();
+        //    adrIndex--;
+        //    lastAddressId = 'Address' + (adrIndex - 1).toString();
+        //    lastAddressId = lastAddressId == "Address0" ? "Address" : lastAddressId;
+        //});
+
+        //$('.Province').on('click', function () {
+        //    var thisId = $(this).attr('id');
+        //    thisId = thisId.split('ProvinceId').join('CityId');
+        //    $('#' + thisId).html('');
+        //    var pid = $(this).val();
+
+        //    $.post('/Account/LoadCityByProvinceId', { pid: pid }, function (data, status) {
+        //        var strValue = '<option value="">لطفا انتخاب کنید</option>';
+        //        for (var i = 0; i < data.length; i++) {
+        //            strValue += '<option value="' + data[i].cityId + '">' + data[i].name + '</option>';
+        //        }
+        //        $('#' + thisId).html(strValue);
+        //    })
+        //})
+
+        $('form').submit(function (e) {
+            if (validateNationalCode($('#NationalCode').val()) == false) {
+                e.preventDefault();
+                $('#NationalCodeErr').html('کد ملی وارد شده صحیح نیست. لطفا دوباره بررسی نمایید');
+                $('#NationalCode').focus();
+            }
+        });
+
+        function validateNationalCode(nc) {
+            var sumNaCode = 0;
+            for (var i = 0; i < nc.length - 1; i++) {
+                sumNaCode = sumNaCode + parseInt(nc[i]) * (10 - i);
+            }
+            console.log(sumNaCode);
+            console.log(sumNaCode % 11);
+            if (sumNaCode % 11 < 2) {
+                if ((sumNaCode % 11).toString() == nc[9])
+                    return true;
+            } else {
+                if ((11 - (sumNaCode % 11)).toString() == nc[9])
+                    return true;
+            }
+            return false;
+        }
+    </script>
+    
+        <link rel="stylesheet" href="/new/css/jalaliDatepicker.min.css">
+        <script src="/new/js/jalaliDatepicker.min.js"></script>
+        <script>
+            jalaliDatepicker.startWatch({
+                minDate: "attr",
+                maxDate: "attr"
+            });
+        </script>
+
+        <script type="text/javascript">
+            $('#btn-later').on('click', function () {
+                window.location.href = $('#returnUrl').val() ? $('#returnUrl').val() : "/";
+            });
+
+            try {
+                $('.jalaliDatePicker').remove();
+                $('.persian-date').each(function (index, elem) {
+                    if ($(this).val())
+                        ;
+                    else
+                        $(this).val('1360/06/15');
+                    $(this).ShamsiDatePicker(false);
+                });
+            } catch (e) {
+
+            }
+        </script>
+
+
+    <script type="text/javascript">
+        $.post('/JsonData/GetData', { typeData: 100102 }, function (data) {
+            var mydate = new Date();
+            if (data) {
+                var params = JSON.parse(data);
+                mydate = new Date(params[0].LatestGetToken);
+
+            }
+            if (new Date().getTime() - (24 * 60 * 60 * 1000) > mydate.getTime())
+                $.post('/Info/ShoppingData', { WorkFlowId: 2006 }, function (data2) { });
+        });
+    </script>
+}

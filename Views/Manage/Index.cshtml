@@ -1,0 +1,388 @@
+﻿@model ShppaingPart.Models.ManageViewModels.IndexViewModel
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@using ShppaingPart.Models
+@using Microsoft.Data.SqlClient
+@inject IHttpContextAccessor HttpContextAccessor
+@using System.Security.Claims
+
+@{
+    var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var profilePic="/new/img/profile.png";
+    var db22 = new DataAccess();
+    var dt22 = db22.GetData("[sp_getUserInfo] @userid,@onlyUserid", new Microsoft.Data.SqlClient.SqlParameter[] { new Microsoft.Data.SqlClient.SqlParameter("userid", uid), new Microsoft.Data.SqlClient.SqlParameter("onlyUserid", uid), });
+    if (dt22 != null && dt22.Rows.Count > 0)
+    {
+        try { profilePic = "/Info/DownloadFiles?fileName=Profile/"+dt22.Rows[0]["ProfilePic"].ToString(); } catch { }
+    }
+}
+@{
+    ViewData["Title"] = "مشخصات کاربری";
+    ViewData.AddActivePage(ManageNavPages.Index);
+
+}
+
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+<div class="container">
+    <div class="row" dir="rtl">
+        <div class="col-12" dir="ltr"><h1>اطلاعات کاربری<span class="backb"><a href="javascript:history.back()"><i class="icon-arrow-left"></i> بازگشت</a></span></h1></div>
+        <div class="col-md-6">
+            <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group" style="display:none">
+                    <label asp-for="Username"></label>
+                    <input asp-for="Username" class="form-control" disabled />
+                </div>
+                <a class="btn btn-primary" href="/Account/ProfileInfo"><< تنظیم اطلاعات کاربری >></a>
+                <div class="form-group">
+                    <label for="NationalCode">کد ملی</label>
+                    @if (string.IsNullOrEmpty(Model.NationalCode) == false)
+                    {<input asp-for="NationalCode" class="form-control" disabled />}
+                    else
+                    {<input asp-for="NationalCode" class="form-control" required maxlength="10" />}
+                </div>
+                <div class="form-group">
+                    <label for="birthdate">تاریخ تولد</label>
+
+                    @if (string.IsNullOrEmpty(Model.BirthDate) == false)
+                    {<input asp-for="BirthDate" class="form-control" disabled />}
+                    else
+                    {<input asp-for="BirthDate" class="form-control persian-date" />}
+                </div>
+               @*  <div class="form-group">
+                    <button class="btn btn-default" id="SearchPerson" type="button">دریافت نام از ثبت احوال</button>
+                </div> *@
+                <div class="form-group">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" disabled />
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName"></label>
+                    <input asp-for="LastName" class="form-control" disabled />
+                </div>
+                <div class="form-group">
+                    <label asp-for="IsMan"></label>
+                    <input asp-for="IsMan" type="radio" value="true" id="isMan" /><label for="isMan">مرد</label>
+                    <input asp-for="IsMan" type="radio" value="false" id="IsWoman" /><label for="IsWoman">زن</label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    @if (Model.IsEmailConfirmed)
+                    {
+                    <div class="input-group">
+                        <input asp-for="Email" class="form-control" />
+                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                    </div>
+                    }
+                    else
+                    {
+                    <input asp-for="Email" class="form-control" />
+                    <button asp-action="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                    }
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <a asp-action="ChangePassword" class="btn btn-primary btn-block mt-4"><span class="green">تغییر رمزعبور</span></a>
+                <h4 class="mt-4">آدرس ها <a asp-action="Address" class="btn btn-success"><i class="icon-plus pt-1"></i></a></h4>
+                @foreach (var item in Model.UserAddresses)
+                {
+                <div class="simple-panel">
+                    <div class="row">
+                        <div class="col-xs-9"><span>@item.AllAddress</span></div>
+                        <div class="txt-left"><a asp-action="Address" asp-route-id="@item.UserAddressId"><img src="~/Mobile/ico/edit.png" width="28" /></a><a asp-action="RemoveAddress" asp-route-id="@item.UserAddressId"><img src="~/Mobile/ico/remove.png" width="28" /></a></div>
+                    </div>
+                </div>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                <div>
+                    اطلاعات ادمین
+                </div>
+                <div class="col-sm-6">
+                    <a href="/Manage/UserAccess" class="btn btn-success form-control">مدیریت کاربران</a>
+                </div>
+                <div class="col-sm-6">
+                    <a href="/Manage/B2BUser" class="btn btn-success form-control">ساخت کاربر B2B</a>
+                </div>
+                }
+                @*<div id="Address">
+                        <fieldset>
+                            <legend>آدرس</legend>
+                            <div class="form-group" id="lastItem">
+                                <label asp-for="UserAddresses[0].ProvinceId"></label>
+                                <select asp-for="UserAddresses[0].ProvinceId" class="form-control Province" asp-items="ViewBag.Provinces"><option value="">لطفا انتخاب کنید</option></select>
+                                <span asp-validation-for="UserAddresses[0].ProvinceId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group" id="lastItem">
+                                <label asp-for="UserAddresses[0].CityId"></label>
+                                <select asp-for="UserAddresses[0].CityId" class="form-control">
+                                    @Html.Raw(ViewBag.Cities0)
+                                </select>
+                                <span asp-validation-for="UserAddresses[0].CityId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserAddresses[0].Street"></label>
+                                <input asp-for="UserAddresses[0].Street" class="form-control" />
+                                <span asp-validation-for="UserAddresses[0].Street" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserAddresses[0].SecondStreet"></label>
+                                <input asp-for="UserAddresses[0].SecondStreet" class="form-control" />
+                                <span asp-validation-for="UserAddresses[0].SecondStreet" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserAddresses[0].Alley"></label>
+                                <input asp-for="UserAddresses[0].Alley" class="form-control" />
+                                <span asp-validation-for="UserAddresses[0].Alley" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserAddresses[0].SecondAlley"></label>
+                                <input asp-for="UserAddresses[0].SecondAlley" class="form-control" />
+                                <span asp-validation-for="UserAddresses[0].SecondAlley" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserAddresses[0].Others"></label>
+                                <input asp-for="UserAddresses[0].Others" class="form-control" />
+                                <span asp-validation-for="UserAddresses[0].Others" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserAddresses[0].BoxNO"></label>
+                                <input asp-for="UserAddresses[0].BoxNO" class="form-control" />
+                                <span asp-validation-for="UserAddresses[0].BoxNO" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserAddresses[0].UnitNo"></label>
+                                <input asp-for="UserAddresses[0].UnitNo" class="form-control" />
+                                <span asp-validation-for="UserAddresses[0].UnitNo" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserAddresses[0].Floor"></label>
+                                <input asp-for="UserAddresses[0].Floor" class="form-control" />
+                                <span asp-validation-for="UserAddresses[0].Floor" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="UserAddresses[0].ZipCode"></label>
+                                <input asp-for="UserAddresses[0].ZipCode" class="form-control" />
+                                <span asp-validation-for="UserAddresses[0].ZipCode" class="text-danger"></span>
+                            </div>
+                        </fieldset>
+                    </div>
+                    @for (int i = 1; i < Model.UserAddresses.Count; i++)
+                    {
+                        <div id="Address@(i+1)">
+                            <fieldset>
+                                <legend>آدرس</legend>
+                                <div class="form-group" id="lastItem">
+                                    <label asp-for="UserAddresses[i].ProvinceId"></label>
+                                    <select asp-for="UserAddresses[i].ProvinceId" class="form-control Province" asp-items="ViewBag.Provinces"><option value="">لطفا انتخاب کنید</option></select>
+                                    <span asp-validation-for="UserAddresses[i].ProvinceId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group" id="lastItem">
+                                    <label asp-for="UserAddresses[i].CityId"></label>
+                                    <select asp-for="UserAddresses[i].CityId" class="form-control">
+                                        @if (i == 1)
+                                            @Html.Raw(ViewBag.Cities1)
+                                            else if (i == 2)
+                                                @Html.Raw(ViewBag.Cities2)
+                                                else if (i == 3)
+                                                    @Html.Raw(ViewBag.Cities3)
+                                                    else if (i == 4)
+                                                        @Html.Raw(ViewBag.Cities4)
+                                                        else if (i == 5)
+                                                            @Html.Raw(ViewBag.Cities5)
+                                                            else if (i == 6)
+                                                                @Html.Raw(ViewBag.Cities6)
+                                                                else if (i == 7)
+                                                                    @Html.Raw(ViewBag.Cities7)
+                                                                    else if (i == 8)
+                                                                        @Html.Raw(ViewBag.Cities8)
+                                                                        else if (i == 9)
+                                                                            @Html.Raw(ViewBag.Cities9)
+                                                                            else if (i == 10)
+                                                                                @Html.Raw(ViewBag.Cities10)
+                                                                                else if (i == 11)
+                                                                                    @Html.Raw(ViewBag.Cities11)
+                                                                                    else if (i == 12)
+                                                                                        @Html.Raw(ViewBag.Cities12)
+                                    </select>
+                                    <span asp-validation-for="UserAddresses[i].CityId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].CountryName"></label>
+                                    <input asp-for="UserAddresses[i].CountryName" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].CountryName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].Quarter"></label>
+                                    <input asp-for="UserAddresses[i].Quarter" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].Quarter" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].Street"></label>
+                                    <input asp-for="UserAddresses[i].Street" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].Street" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].SecondStreet"></label>
+                                    <input asp-for="UserAddresses[i].SecondStreet" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].SecondStreet" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].Alley"></label>
+                                    <input asp-for="UserAddresses[i].Alley" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].Alley" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].SecondAlley"></label>
+                                    <input asp-for="UserAddresses[i].SecondAlley" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].SecondAlley" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].Others"></label>
+                                    <input asp-for="UserAddresses[i].Others" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].Others" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].BoxNO"></label>
+                                    <input asp-for="UserAddresses[i].BoxNO" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].BoxNO" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].UnitNo"></label>
+                                    <input asp-for="UserAddresses[i].UnitNo" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].UnitNo" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].Floor"></label>
+                                    <input asp-for="UserAddresses[i].Floor" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].Floor" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="UserAddresses[i].ZipCode"></label>
+                                    <input asp-for="UserAddresses[i].ZipCode" class="form-control" />
+                                    <span asp-validation-for="UserAddresses[i].ZipCode" class="text-danger"></span>
+                                </div>
+                            </fieldset>
+
+                        </div>
+
+                    }
+                    <button type="button" class="btn-success" id="AddNewAddress">افزودن آدرس جدید</button>
+                    <button type="button" class="btn-success" id="DelLastAddress">حذف آخرین آدرس</button>*@
+
+                <div class="form-group text-center mt-4">
+                    <div class="flv file btn btn-primary btn-block">
+                        انتخاب تصویر پروفایل
+                    <input type="file" id="ProfilePic" name="ProfilePic" />
+                    </div>
+                    <img id="blah" src="#" alt="" style="width: 200px; border-radius: 8px; text-align: center; margin-top: 20px;" />
+                </div>
+                <script>
+                    ProfilePic.onchange = evt => {
+                    const [file] = ProfilePic.files
+                    if (file) {
+                        blah.src = URL.createObjectURL(file)
+                    }
+                    }
+                </script>
+                <div>&nbsp;</div>
+                <button type="submit" class="btn btn-warning form-control">ثبت تغییرات</button>
+                <div>&nbsp;</div>
+            </form>
+        </div>
+
+        <div class="col-6 text-center">
+            <img src="@profilePic" class="profimg" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <link id="datepickerTheme" href="~/persiandate/css/persian-datepicker.min.css" rel="stylesheet" />
+    <script src="~/persiandate/js/persian-date.min.js"></script>
+    <script src="~/persiandate/js/persian-datepicker.js"></script>
+    <script type="text/javascript">
+    try {
+    var isMan = '@Model.IsMan' == 'true';
+    if (isMan)
+        $('#isMan').attr('checked', 'checked');
+    } catch (e) {
+
+    }
+    try {
+        var isWoman = '@Model.IsMan' == 'false';
+        if (isWoman)
+            $('#isWoman').attr('checked', 'checked');
+    } catch (e) {
+
+    }
+
+    window.pd = $('.persian-date').each(function (index, elem) {
+        $(this).persianDatepicker({
+            //altField: "#alt" + (index + 1).toString(),
+            altFormat: 'LLLL',
+            initialValue: false,
+            observer: true,
+            format: 'YYYY/MM/DD',
+            //timePicker: {
+            //    enabled: true
+            //}
+        });
+    });
+
+        $('#SearchPerson').on('click', function () {
+            var NationalCode_new = $('#NationalCode').val();
+            var birthdate_new = $('#BirthDate').val();
+            $.post('/Sale/GetCivilRegistryOfficeDataAndSave', { nc: NationalCode_new, bt: birthdate_new }, function (data) {
+                $('#Name').val(data.first_name);
+                $('#LastName').val(data.last_name);
+            });
+        });
+    </script>
+    @*<script type="text/javascript">
+            var lastAddressId = 'Address@(Model.UserAddresses.Count)'.replace('Address1', 'Address');
+            var adrIndex = parseInt('@(Model.UserAddresses.Count)');
+            $('#AddNewAddress').on('click', function () {
+                debugger;
+                var strAdress = $('#' + lastAddressId).html();
+                strAdress = strAdress.split('UserAddresses[' + (adrIndex - 1).toString() + ']').join('UserAddresses[' + (adrIndex).toString() + ']');
+                strAdress = strAdress.split('UserAddresses_' + (adrIndex - 1).toString() + '_').join('UserAddresses_' + (adrIndex).toString() + '_');
+                UserAddresses_0__ZipCode
+                strAdress = '<div id="Address' + adrIndex.toString() + '">' + strAdress + '</div>';
+                $(strAdress).insertAfter('#' + lastAddressId);
+                lastAddressId = 'Address' + adrIndex.toString();
+                $('#' + lastAddressId + ' input').val('');
+                $('#' + lastAddressId + ' select').val('');
+                adrIndex++;
+            })
+            $('#DelLastAddress').on('click', function () {
+                if (lastAddressId == "Address")
+                    return;
+                $('#' + lastAddressId).remove();
+                adrIndex--;
+                lastAddressId = 'Address' + (adrIndex - 1).toString();
+                lastAddressId = lastAddressId == "Address0" ? "Address" : lastAddressId;
+            });
+
+            $('.Province').on('click', function () {
+                var thisId = $(this).attr('id');
+                thisId = thisId.split('ProvinceId').join('CityId');
+                $('#' + thisId).html('');
+                var pid = $(this).val();
+
+                $.post('/Account/LoadCityByProvinceId', { pid: pid }, function (data, status) {
+                    var strValue = '<option value="">لطفا انتخاب کنید</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        strValue += '<option value="' + data[i].cityId + '">' + data[i].name + '</option>';
+                    }
+                    $('#' + thisId).html(strValue);
+                })
+            })
+        </script>*@
+}
