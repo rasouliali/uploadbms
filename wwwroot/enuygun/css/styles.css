@@ -15,14 +15,29 @@
         background-position: center center;
     }
 }
-#__next{
-    direction:rtl;
+.gOPvOg {
+    -webkit-box-pack: end !important;
+    justify-content: flex-end !important;
+    align-items: flex-end !important;
+}
+.Hotel-module_Hotel-suggestion-latest-item__pUtAe {
+    text-align: right;
+}
+#__next {
+    direction: rtl;
 }
 .hhejOv{
     left:unset !important;
     right:20px;
 }
-
+.geYsuI, .iipzvX {
+    right: 12px;
+    left: unset !important;
+}
+.clCjSa {
+    left: 0px;
+    right: unset !important;
+}
 .kPnidx {
     background-color: transparent;
     border-radius: 4px;
