@@ -1,6 +1,9 @@
 .sc-f8b3834a-3.pMBPn, .sc-1719d024-0, .sc-4eac1cce-0, .sc-dgcZxp, .sc-1719d024, .sc-5f135b84-0, #__next footer{
     display: none !important;
 }
+fieldset {
+    direction: rtl;
+}
 .__className_b90e51 > div {
     display: none !important;
 }
