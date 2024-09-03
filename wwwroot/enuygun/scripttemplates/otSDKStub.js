@@ -16,7 +16,7 @@ var OneTrustStub = (function (t) {
                 (this.EUCOUNTRIES = ["BE", "BG", "CZ", "DK", "DE", "EE", "IE", "GR", "ES", "FR", "IT", "CY", "LV", "LT", "LU", "HU", "MT", "NL", "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE", "GB", "HR", "LI", "NO", "IS"]),
                 (this.stubFileName = "otSDKStub"),
                 (this.DATAFILEATTRIBUTE = "data-domain-script"),
-                (this.bannerScriptName = "otBannerSdk.js"),
+                //(this.bannerScriptName = "otBannerSdk.js"),
                 (this.mobileOnlineURL = []),
                 (this.isMigratedURL = !1),
                 (this.migratedCCTID = "[[OldCCTID]]"),
@@ -583,10 +583,10 @@ var OneTrustStub = (function (t) {
                             p.stubScriptElement.cloneNode(!0)),
                     n = "",
                     n = t.UseSDKRefactor
-                        ? (p.isMigratedURL && (i.src = p.storageBaseURL + "/scripttemplates/new/scripttemplates/" + p.stubFileName + ".js"), p.storageBaseURL + "/scripttemplates/new/scripttemplates/" + t.Version + "/" + p.bannerScriptName)
+                        ? (p.isMigratedURL && (i.src = p.storageBaseURL + "/scripttemplates/new/scripttemplates/" + p.stubFileName + ".js"))
                         : "5.11.0" === t.Version
-                            ? (p.isMigratedURL && (i.src = p.storageBaseURL + "/scripttemplates/old/scripttemplates/" + p.stubFileName + ".js"), p.storageBaseURL + "/scripttemplates/old/scripttemplates/5.11.0/" + p.bannerScriptName)
-                            : (p.isMigratedURL && (i.src = p.storageBaseURL + "/scripttemplates/" + p.stubFileName + ".js"), p.storageBaseURL + "/scripttemplates/" + t.Version + "/" + p.bannerScriptName);
+                            ? (p.isMigratedURL && (i.src = p.storageBaseURL + "/scripttemplates/old/scripttemplates/" + p.stubFileName + ".js"))
+                            : (p.isMigratedURL && (i.src = p.storageBaseURL + "/scripttemplates/" + p.stubFileName + ".js"));
                 ["charset", "data-language", "data-document-language", "data-domain-script", "crossorigin", "data-ignore-ga"].forEach(function (t) {
                     p.stubScriptElement.getAttribute(t) && i.setAttribute(t, p.stubScriptElement.getAttribute(t));
                 }),
