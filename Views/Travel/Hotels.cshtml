@@ -21,6 +21,7 @@
 
 	function calcPrice(adultPrice, BabyPrice, adultCount, childsAges) {
 		var childPrice = 0;
+		adultCount = 1;
 		if (childsAges && childsAges.length > 0) {
 			var Frees = childsAges.filter(r => parseInt(r) <= 2);
 			if (Frees && Frees.length > 0) {
