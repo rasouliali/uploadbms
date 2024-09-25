@@ -1,0 +1,1566 @@
+﻿@model Hotel24Dto
+@using Newtonsoft.Json;
+@{
+	ViewData["Title"] = "اطلاعات هتل ها";
+	Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+
+<h1>اطلاعات هتل ها</h1>
+
+<script>
+	function commafy(num) {
+		var str = num.toString().split('.');
+		if (str[0].length >= 5) {
+			str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+		}
+		if (str[1] && str[1].length >= 5) {
+			str[1] = str[1].replace(/(\d{3})/g, '$1 ');
+		}
+		return str.join(',');
+	}
+
+	function calcPrice(adultPrice, BabyPrice, adultCount, childsAges) {
+		var childPrice = 0;
+		if (childsAges && childsAges.length > 0) {
+			var Frees = childsAges.filter(r => parseInt(r) <= 2);
+			if (Frees && Frees.length > 0) {
+				if (Frees.length > 1) {
+					childPrice = (childsAges.length - 1) * adultPrice;
+				}
+
+			} else {
+				var halfPrice = childsAges.filter(r => parseInt(r) <= 7)
+				if (halfPrice && halfPrice.length > 0) {
+					if (halfPrice.length > 1) {
+						childPrice = (childsAges.length - 1) * adultPrice + BabyPrice;
+					} else {
+						childPrice = BabyPrice;
+					}
+				}
+			}
+			var adultsToo = childsAges.filter(r => parseInt(r) > 7).length;
+			adultCount += adultsToo;
+
+		}
+		return " " + commafy(adultPrice * adultCount + childPrice) + " ريال";
+	}
+</script>
+<label class="txt-danger">
+	@ViewBag.Mess
+</label>
+@if (Model == null || Model.Hotels.Count == 0)
+{
+	return;
+}
+<div id="SearchContainer" class="container">
+	<div id="appRoot">
+		<div class="row HotelResult mt-md-3 mt-2">
+			<div class="col">
+				<div class="HotelResult__container">
+					<div id="hotelList">
+						@foreach (var item in Model.Hotels)
+						{
+							<div data-hotel-id="@item.id" class="HotelResult__item false" data-provider="8" data-testid="result-available-hotel">
+								<a class="HotelResult__item__main color-inherit">
+									@if (item.images != null && item.images.Count > 0)
+									{
+										<div class="HotelResult__item__thumbnail" style="direction:ltr">
+											<div class="swiper highlighted-slider highlighted-image-slider-1 false swiper-initialized swiper-horizontal">
+												<div class="swiper-wrapper d-flex">
+													@foreach (var img in item.images)
+													{
+														<div class="room-item__thumbnail h-100 swiper-slide false " style="width: 250px;">
+															<img src="@img" alt="@item.name" class="lazy lazy-loaded">
+														</div>
+													}
+													@* <div class="room-item__thumbnail h-100 swiper-slide false " style="width: 250px;">
+											<img src="https://cdn3.enuygun.com/media/lib/1x400/uploads/image/aquaworld-belek--serik-dis-mekan-76475974.jpg" alt="Aquaworld Belek - All inclusive" class="lazy lazy-loaded" data-src="https://cdn3.enuygun.com/media/lib/1x400/uploads/image/aquaworld-belek--serik-dis-mekan-76475974.jpg" data-slide-index="2" data-was-processed="true">
+											</div>
+											<div class="room-item__thumbnail h-100 swiper-slide false"  style="width: 250px;">
+											<img src="https://cdn3.enuygun.com/media/lib/1x400/uploads/image/aquaworld-belek--serik-dis-mekan-76475967.jpg" alt="Aquaworld Belek - All inclusive" class="lazy lazy-loaded" data-src="" data-slide-index="3" data-was-processed="true">
+											</div> *@
+												</div>
+												<div class="swiper-control-next">
+													<div class="swiper-control-shadow">
+														<div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div>
+													</div>
+												</div>
+												<div class="swiper-control-prev">
+													<div class="swiper-control-shadow">
+														<div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div>
+													</div>
+												</div>
+											</div>
+										</div>
+									}
+									<div class="HotelResult__item__container">
+
+										<div class="campaign-labels d-flex undefined">
+											<div class="result-item-campaign-label discount" style="background-color: rgb(153, 102, 255);">مجموع تخفیف شما از این خرید توسط همپیشه : <span>@((item.DiscountPrices ?? 0).ToString("#,#.##")) ريال</span></div>
+										</div>
+										<div class="HotelResult__item__main_container">
+											<div class="HotelResult__item__main_info">
+												<h4 class="HotelResult__item__name" data-testid="result-title">@item.name</h4>
+												<p class="HotelResult__item__top_info"><div data-testid="result-region-info" id="result-region-info-btn">@item.address</div></p>
+												<div class="HotelResult__item-review">
+													<div class="HotelResult__item-review d-flex align-items-center">
+														<div class="d-flex flex-column">
+															<span class="font-weight-600" data-testid="result-review-text">@item.star ستاره</span>
+															@* <span data-testid="result-review-count" class="font-size-sm">11 yorum</span> *@
+														</div>
+														<span class="HotelResult__item-review-badge" data-testid="result-review-score">@item.score</span>
+													</div>
+												</div>
+												@* <p class="HotelResult__item__top_info">
+											<button class="btn-link btn-show-on-map d-flex align-items-start underline-none" data-testid="result-region-info-button" id="show-on-map-btn">
+											<img class="mr-1" src="https://cdn.enuygun.com/otel/build/images/map-icon.svg" alt="Map Icon" id="show-on-map-icon" />
+											<div data-testid="result-region-info" id="result-region-info-btn">عنوان اتاق: @item.RoomTypeName</div>
+											</button>
+											</p> *@
+												<div class="room-concept " data-testid="result-room-concept">
+													<span class="room-concept__item">
+														<img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg" alt="@(string.Join("، ", item.facilities))"><span title="@(string.Join("، ", item.facilities))"> @(string.Join("، ", item.facilities.Take(3))) @(item.facilities.Count > 3 ? " و..." : "")</span>
+													</span>
+												</div>
+												<div class="room-concept " data-testid="result-room-concept">
+													<span class="room-concept__item">
+														<img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg" alt="@(string.Join("، ", item.rules.Select(r => r.Key)))"><span title="@(string.Join("، ", item.rules.Select(r => r.Key)))">@(string.Join("، ", item.rules.Select(r => r.Key).Take(3))) @(item.rules.Count > 3 ? " و..." : "")</span>
+													</span>
+												</div>
+												@* <div class="room-concept" data-testid="result-room-concept">
+											<span class="room-concept__item"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/AS.svg" />عنوان تعرفه: @item.RatePlansName</span>
+											</div>
+											<div class="room-concept" data-testid="result-room-concept">
+											<span class="room-concept__item">
+											<img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/AS.svg" />به ازای هر فرد بالغ : @((item.Prices ?? 0).ToString("#,#.##")) ريال
+											</span>
+											</div>
+											<div class="room-concept" data-testid="result-room-concept">
+											<span class="room-concept__item">
+											<img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/AS.svg" />به ازای کودک(2 تا7 سال) : @((item.WithBabyPrice ?? 0).ToString("#,#.##")) ريال
+											</span>
+											</div>
+											<div class="room-concept" data-testid="result-room-concept">
+											<span class="room-concept__item">
+											<img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/AS.svg" />هزینه یک تخت اضافه : @((item.WithExtraPrices ?? 0).ToString("#,#.##")) ريال
+											</span>
+											</div>
+											<div class="room-concept" data-testid="result-room-concept">
+											<span class="room-concept__item"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/AS.svg" />به ازای نوزاد(زیر دو سال) : رایگان</span>
+											</div>
+											<div class="room-concept" data-testid="result-room-concept">
+											<span class="room-concept__item"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/AS.svg" />تعرفه نوزاد یا کودک فقط شامل یک نفر می شود</span>
+											</div>
+											<div class="room-concept" data-testid="result-room-concept">
+											<span class="room-concept__item">
+											<img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/AS.svg" />تعداد روز انتخابی: @(item.DayCount.ToString("#,#.##"))
+											</span>
+											</div>
+											<div class="room-concept" data-testid="result-room-concept">
+											<span class="room-concept__item"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/AS.svg" />از روز: @(ShppaingPart.Controllers.SharedLogic.ToShamsi(ViewBag.input.checkInDate)) تا روز @(ShppaingPart.Controllers.SharedLogic.ToShamsi(ViewBag.input.checkOutDate))</span>
+											</div>
+											<div class="room-concept" data-testid="result-room-concept">
+											<span class="room-concept__item"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/AS.svg" />مجموع مبلغ: <script>document.write(calcPrice(@item.Prices, @item.WithBabyPrice, @ViewBag.input.Adult, @(ViewBag.input.Childs != null ? "[" + string.Join(",", ViewBag.input.Childs) + "]" : "[]")))</script></span>
+											</div> *@
+												@* <div class="distance-item mt-2 HotelResult__item__distance-info" data-tesid="result-city-center"><i class="ei-my-location HotelResult__item__distance-info"></i> </div> *@
+												@* <div class="child-item mt-2"><img class="mr-1" src="https://cdn.enuygun.com/otel/build/images/child-icon.svg" /> 0-7 yaş ücretsiz</div> *@
+											</div>
+											<div class="HotelResult__item__review_info">
+												<div class="HotelResult__item__review_price_info">
+													<p class="HotelResult__item__review_price_info_container">
+														<span class="price" data-testid="result-price">
+															<script type="text/javascript">document.write(calcPrice(@item.Prices, @item.WithBabyPrice, @ViewBag.input.Adult, @(ViewBag.input.Childs != null ? "[" + string.Join(",", ViewBag.input.Childs) + "]" : "[]")))</script>
+														</span>
+													</p><div class="select-detail-box"></div>
+												</div>
+												<p class="HotelResult__item__room_info">مجموع مبلغ @(item.DayCount.ToString("#,#.##")) شب</p>
+											</div>
+											@* <div class="HotelResult__item__review_info">
+
+										<div class="select-detail-box mt-0">
+										<button class="btn btn-success select-btn select-btn--inversed mt-2 font-size-sm btn-reserve" data-testid="no-result-button" data-hotelid="@item.HotelId" data-rate-plan-id="@item.RatePlanId" data-roomid="@item.RoomTypeId" data-person-count="@(ViewBag.input.Adult)">
+										<span class="change-date-text">رزرو کن</span> <i class="ei-chevron-right color-black"></i>
+										</button>
+										</div>
+										</div> *@
+										</div>
+										@* <div class="d-flex justify-content-end member-special-offer-area"><span class="text-right text-danger">Seçtiğiniz tarihler için bu seçenek tükendi.</span></div> *@
+									</div>
+								</a>
+							</div>
+						}
+					</div>
+				</div>
+
+				<div class="hotel d-none">
+					@* <div id="stickyDiscountBanner" style="bottom: 75px;">
+					<button class="sticky-banner sticky-banner-bottom" style="background: rgb(3, 135, 255);"><span>İndirim kodu: ENUYGUN</span></button>
+					</div> *@
+					<div id="detail-container" class="mobile-header-spacer">
+						@* <div itemscope="" itemtype="https://schema.org/BreadcrumbList" class="mobile-breadcrumbs d-flex align-items-center mobile-breadcrumbs--box">
+						<div itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem" class="mobile-breadcrumbs__home d-flex align-items-center">
+						<a itemprop="item" title="Enuygun" class="mobile-breadcrumbs__link" href="https://www.enuygun.com/otel/" data-testid="bread-crumb-link">
+						<span itemprop="name" class="d-none">Enuygun</span>
+						<svg class="d-block" xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" width="16" fill="#131717"><path d="M0 0h24v24H0z" fill="none"></path><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+						</a><i class="ei-angle-right ml-1"></i>
+						<meta itemprop="position" content="1">
+						</div>
+						<div class="mobile-breadcrumbs__container">
+						<div class="mobile-breadcrumbs__list d-flex align-items-center">
+						<div itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem" class="mobile-breadcrumbs__item">
+						<a itemprop="item" title="Antalya Otelleri" class="mobile-breadcrumbs__link" href="https://www.enuygun.com/otel/antalya-481/" data-testid="bread-crumb-link"><span itemprop="name">Antalya Otelleri</span></a>
+						<i class="ei-angle-right ml-1"></i>
+						<meta itemprop="position" content="2">
+						</div>
+						<div itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem" class="mobile-breadcrumbs__item">
+						<a itemprop="item" title="Serik Otelleri" href="https://www.enuygun.com/otel/serik-6157082/" data-testid="bread-crumb-link" class="mobile-breadcrumbs__link">
+						<span itemprop="name">Serik Otelleri</span>
+						</a>
+						<i class="ei-angle-right ml-1"></i>
+						<meta itemprop="position" content="3">
+						</div>
+						<div itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem" class="mobile-breadcrumbs__item">
+						<a itemprop="item" title="Aquaworld Belek - All inclusive" class="mobile-breadcrumbs__link" href="https://www.enuygun.com/otel/aquaworld-belek-all-inclusive-528445/" data-testid="bread-crumb-link">
+						<span itemprop="name">Aquaworld Belek - All inclusive</span>
+						</a>
+						<i class="ei-angle-right ml-1"></i>
+						<meta itemprop="position" content="3">
+						</div>
+						</div>
+						</div>
+						</div>
+						<div id="specialOffer">
+						<div data-testid="member-special-offer-banner" class="member-special-offer-banner w-100 d-flex justify-content-between align-items-end mb-2 px-4">
+						<div class="p-3">
+						<h4>
+						Binlerce otelde %15'e varan üyelik indirimleri için <strong>giriş yapın / üye olun</strong>
+						</h4><button class="download-app-btn btn btn-success d-flex justify-around align-items-center" data-testid="special-offer-banner-login-btn">
+						<span data-testid="special-offer-banner-login-btn">Giriş yap / üye ol</span>
+						<i class="ei-chevron-right"></i>
+						</button>
+						</div><div class="member-special-offer-banner__img">
+						<img src="https://cdn.enuygun.com/otel/build/images/special-offer.svg" alt="üyelere özel teklif">
+						</div>
+						</div>
+						</div>*@
+						<div class="hotel-detail-top container">
+							<div class="hotel-detail-top-container justify-content-between">
+								@* <div class="tripadvisor just-rate" data-rate-value="8.78" data-rate-text="Harika" data-rate-localized="8,8"></div>
+								<span class="hotel-detail-top-review">, 15 yorum</span> *@
+								<h1 class="hotel-name font-weight-600 mb-1" data-testid="hotel-name">
+									Aquaworld Belek - All inclusive
+								</h1>
+								<div class="hotel-detail-address">
+									Belek, Serik, Antalya
+								</div>
+							</div>
+							@* <div id="shareButton">
+							<div class="share-button d-flex align-items-end font-weight-600">
+							<img src="https://cdn.enuygun.com/otel/build/images/share-icon.svg" alt="ShareIcon" width="16" height="22">
+							</div>
+							</div> *@
+						</div>
+						<div id="hotelSliderArea" class="hotel-slider-area d-flex">
+							<div class="w-100"><img class="b-r-global" src="https://cdn3.enuygun.com/media/lib/1x400/uploads/image/aquaworld-belek-serik-one-cikan-resim-76475722.webp" alt="Aquaworld Belek - All inclusive Öne Çıkan Resim" data-testid="hotel-slider-first-image" width="100%" height="100%"></div><div class="images-more d-flex align-items-center font-weight-600">
+								<img class="lazy lazy-loaded" src="https://cdn.enuygun.com/otel/v-36263/build/images/images-more.svg" data-src="https://cdn.enuygun.com/otel/v-36263/build/images/images-more.svg" alt="Image More" width="20" height="17" data-was-processed="true">
+								+322 fotoğraf
+							</div>
+						</div>
+						<div class="showMap-wrapper">
+							<div id="showOnMap" class="d-flex align-items-center justify-content-center">
+								<div class="hotel-detail-map hotel-detail-wrapper d-flex align-items-center justify-content-between" data-testid="hotel-address-map-button"><div><div class="distance-item" data-testid="hotel-center-distance"><i class="ei-place mr-1 font-size-md"></i>Belek merkezine 1,1 km</div></div><div class="d-flex align-items-center font-weight-600"><img class="mr-2" src="https://cdn.enuygun.com/otel/build/images/detail-map-icon.svg" alt="Map Icon" width="15" height="15">Harita</div></div>
+							</div>
+						</div>
+						<div id="searchFormDetail" class="">
+							<div class="HSF__detail-summary-mobile-wrapper" style="display:block !important;">
+								<section class="HSF__summary-mobile d-flex align-items-center justify-content-between">
+									<div class="HSF__summary-mobile__info d-flex align-items-center">
+										20 Eyl Cum&nbsp;-&nbsp;23 Eyl Pts&nbsp;|&nbsp;<i class="ei-person font-size-md"></i>&nbsp;1&nbsp;|&nbsp;
+										<i class="ei-night-2"></i>&nbsp;3
+									</div>
+									<button id="summary-change-view-button" class="btn-link p-0 d-flex"><i class="ei-baseline-edit-24px"></i></button>
+								</section>
+							</div>
+						</div>
+						<div style="height: 42px">
+							<div class="hotel-tabs">
+								<ul class="row" role="tablist" id="hotelDetailInformationTabs" aria-owns="information-tab rooms-tab opportunities-tab transportation-tab policies-tab">
+									<li role="tab" aria-controls="information-tab" aria-selected="true" data-testid="information-tab">
+										<a class="scroll-to pl-0" id="information-tab" data-toggle="tab" href="#hotelDetailInformations">
+											Otel Bilgisi
+										</a>
+									</li>
+									<li role="tab" aria-controls="rooms-tab" aria-selected="false" data-testid="rooms-tab">
+										<a class="scroll-to" id="rooms-tab" data-toggle="tab" href="#RoomAvailability">
+											Odalar
+										</a>
+									</li>
+									<li role="tab" aria-controls="opportunities-tab" aria-selected="false" data-testid="opportunities-tab">
+										<a class="scroll-to" id="opportunities-tab" data-toggle="tab" href="#hotel-features">
+											Otel Özellikleri
+										</a>
+									</li>
+									<li role="tab" aria-controls="accessibility-tab" aria-selected="false" data-testid="accessibility-tab">
+										<a class="scroll-to" id="accessibility-tab" data-toggle="tab" href="#accessibility">
+											Erişilebilirlik
+										</a>
+									</li>
+									<li role="tab" aria-controls="transportation-tab" aria-selected="false" data-testid="transportation-tab">
+										<a class="scroll-to" id="transportation-tab" data-toggle="tab" href="#transportation">
+											Ulaşım
+										</a>
+									</li>
+									<li role="tab" aria-controls="hotel-policies" aria-selected="false" data-testid="policies-tab">
+										<a class="scroll-to active" id="policies-tab" data-toggle="tab" href="#hotel-policies">
+											Otel Kuralları
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div><div id="hotelDetailInformations" class="hotel-detail-info d-flex justify-content-between mb-3">
+							<div class="hotel-detail-info__first">
+								<span class="hotel-name font-weight-600" data-testid="hotel-name">
+									Aquaworld Belek - All inclusive
+								</span><span>Kültür ve Turizm Bakanlığı - Turizm İşletmesi Belgesi: 20509</span><div class="hotel-detail-address mt-1">
+									Belek Mah.Iskele cd. 6A Serik, Antalya
+								</div><div class="hotel-detail-info__desc mt-4 mb-2"><p>Konuklarına Akdeniz kıyısında hayallerini süsleyen tatili yaşama olanağı sunan Tui Magic Life Waterworld, her şeyiyle kusursuz bir deneyim vadediyor. 220 bin metrekare alanı kaplayan tesisin kaydıraklı havuzlarında çocuklarla birlikte eğlenceye ortak olabilir, yemyeşil ağaçların arasında dinlenmenin keyfini çıkarabilirsiniz.&nbsp;</p><p>Uzunluğu neredeyse 400 metreye ulaşan plajıyla göz kamaştıran otelde şemsiye, şezlong ve havlular&nbsp;misafirlere ücretsiz sağlanıyor. Tesiste konaklamanız süresince ayrıca deniz bisikleti, sörf ve şnorkelli dalış başta olmak üzere birbirinden cazip aktivitelerle tatilinizi unutulmaz kılabilirsiniz.&nbsp;</p><p>Otelin en beğenilen özellikleri arasında yer alan devasa yüzme havuzları, hem açık hem de kapalı alternatifleri ile tatilcileri bekliyor. Dilerseniz yaz sezonunda havuzun çevresinde düzenlenen animasyon gösterilerine katılabilir, harika anılarla tesisten ayrılabilirsiniz.</p><p>Otel içerisinde bulunan SPA alanında sauna ve Türk hamamından ücretsiz olarak faydalanabilirsiniz. Dinginlik kaynağı masajlar ise tesisin ekstra ücretli hizmetleri arasında sıralanıyor.&nbsp;</p><p>Otelin havadar toplantı salonları, tüm ekipmanları ile organizasyonlar esnasında&nbsp;kolaylık sağlıyor. Üstelik etkinliklerinizde tesisin bol seçenekli ikramlarını da değerlendirebilirsiniz.</p></div><button id="detail-info-more-btn" class="show-more__btn font-weight-600">
+									Devamını oku
+								</button>
+							</div>
+						</div><div id="SearchFormStickyArea" class="search-rooms-area">
+							<div id="RoomAvailability" class="rooms-availability" style="padding: 16px 0">
+								<div id="appRoot">
+									<div style="position: relative;">
+										<div style="display: none;">
+											<div class="react-loader-shadow" style="margin: 0px; background-color: rgb(2, 17, 65);">
+											</div><div class="react-loader d-flex justify-content-start align-items-center">
+												<div class="HotelResult__fetching__loader">
+													<div class="spinner">
+													</div><i class="ei-hotel"></i>
+												</div><span>Yükleniyor, lütfen bekleyin...</span>
+											</div>
+										</div><h3 class="detail-content__title font-weight-600 mb-3">Odalar</h3><div class="room-item" data-room-index="0" data-testid="offer-item offer-first-item">
+											<div class="room-item__name-container ">
+												<button class="room-item__name-btn" data-testid="hotel-room-name">Village Standard Double Room Garden View</button>
+											</div><div class="swiper highlighted-slider highlighted-image-slider-0 detail-search-slider swiper-initialized swiper-horizontal" data-testid="highlighted-image-slider-0">
+												<div class="swiper-wrapper d-flex" style="transition-duration: 0ms; transform: translate3d(-1264px, 0px, 0px); transition-delay: 0ms;">
+													<div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/d773d6ad_z.jpg" alt="Village Standard Double Room Garden View"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/5c3cc588_z.jpg" alt="Village Standard Double Room Garden View" class="lazy lazy-loaded" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/5c3cc588_z.jpg" data-slide-index="1" data-was-processed="true">
+													</div>
+													<div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/ca580537_z.jpg" alt="Village Standard Double Room Garden View" class="lazy lazy-loaded" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/ca580537_z.jpg" data-slide-index="2" data-was-processed="true">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-prev" style="width: 316px;">
+														<img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/53037a9a_z.jpg" alt="Village Standard Double Room Garden View" class="lazy lazy-loaded" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/53037a9a_z.jpg" data-slide-index="3" data-was-processed="true">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-active" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/room-placeholder-desktop.jpg" alt="Village Standard Double Room Garden View" class="lazy lazy-error" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/be171cae_z.jpg" data-slide-index="4" data-was-processed="true">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-next" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/room-placeholder-desktop.jpg" alt="Village Standard Double Room Garden View" class="lazy lazy-error" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/957228cc_z.jpg" data-slide-index="5" data-was-processed="true"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084656.jpg" data-slide-index="6">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084658.jpg" data-slide-index="7">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084659.jpg" data-slide-index="8"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084660.jpg" data-slide-index="9">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084661.jpg" data-slide-index="10">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084662.jpg" data-slide-index="11">
+													</div>
+													<div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725355.jpg" data-slide-index="12"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725356.jpg" data-slide-index="13">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725357.jpg" data-slide-index="14">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725358.jpg" data-slide-index="15">
+													</div>
+													<div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725359.jpg" data-slide-index="16">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725360.jpg" data-slide-index="17"></div>
+												</div>
+												<div class="swiper-control-next"><div class="swiper-control-shadow"><div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div></div></div><div class="swiper-control-prev"><div class="swiper-control-shadow"><div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div></div></div>
+												<div class="slider-count">5/18</div>
+											</div><div class="offer__mobile-item p-2 undefined" data-provider="18" data-testid="offer-item"><div class="offer__item-best-price-badge mb-1 font-weight-600"><span>En uygun fiyat</span></div><div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept"><span class="room-concept__item" style="color: rgb(27, 47, 111);"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg">Her Şey Dahil</span></div><div class="offer__item-cancellation d-flex mb-1 pl-1"><i class="ei-check"></i><div class="ml-1 d-inline-block text-black" data-testid="room-cancellation"><strong class="mr-1">Ücretsiz iptal</strong>(25 Eylül 2024 03:30 tarihine kadar ücretsiz iptal, 25 Eylül 2024 03:30 sonrasında&nbsp;9.203 TL kesinti ile iptal edebilirsiniz.)</div></div><div class="offer__mobile-bottom pt-2"><div class="offer__mobile-bottom-info"></div><div class="offer__mobile-bottom-item"><div><span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>2 gece</strong> toplam</span><div class="offer__mobile-price-container d-flex"><p class="offer__item-price mb-0 null" data-testid="room-offer-price">16.872 <span>TL</span></p></div></div><div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button">Oda ayır <i class="ei-chevron-right font-size-lg"></i></button></div></div></div></div>
+										</div><div class="room-item" data-room-index="1" data-testid="offer-item ">
+											<div class="room-item__name-container "><button class="room-item__name-btn" data-testid="hotel-room-name">Hill Standard Double Room Garden View</button></div><div class="swiper highlighted-slider highlighted-image-slider-1 detail-search-slider swiper-initialized swiper-horizontal" data-testid="highlighted-image-slider-1">
+												<div class="swiper-wrapper d-flex">
+													<div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-active" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/83d29c66_z.jpg" alt="Hill Standard Double Room Garden View"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-next" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/d257d1c8_z.jpg" alt="Hill Standard Double Room Garden View" class="lazy lazy-loaded" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/d257d1c8_z.jpg" data-slide-index="1" data-was-processed="true"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/52251c2a_z.jpg" data-slide-index="2"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/09cfc5a0_z.jpg" data-slide-index="3"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/550fcf4c_z.jpg" data-slide-index="4"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/41930d41_z.jpg" data-slide-index="5"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/8ed67e14_z.jpg" data-slide-index="6"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084634.jpg" data-slide-index="7"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084636.jpg" data-slide-index="8"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084637.jpg" data-slide-index="9"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084638.jpg" data-slide-index="10"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084639.jpg" data-slide-index="11"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084640.jpg" data-slide-index="12"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725361.jpg" data-slide-index="13"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725362.jpg" data-slide-index="14"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;">
+														<img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725363.jpg" data-slide-index="15">
+													</div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725364.jpg" data-slide-index="16"></div>
+												</div><div class="swiper-control-next"><div class="swiper-control-shadow"><div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div></div></div><div class="swiper-control-prev swiper-button-disabled"><div class="swiper-control-shadow"><div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div></div></div><div class="slider-count">1/17</div>
+											</div><div class="offer__mobile-item p-2 undefined" data-provider="18" data-testid="offer-item"><div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept"><span class="room-concept__item" style="color: rgb(27, 47, 111);"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg">Her Şey Dahil</span></div><div class="offer__item-cancellation d-flex mb-1 pl-1"><i class="ei-check"></i><div class="ml-1 d-inline-block text-black" data-testid="room-cancellation"><strong class="mr-1">Ücretsiz iptal</strong>(25 Eylül 2024 03:30 tarihine kadar ücretsiz iptal, 25 Eylül 2024 03:30 sonrasında&nbsp;10.490 TL kesinti ile iptal edebilirsiniz.)</div></div><div class="offer__mobile-bottom pt-2"><div class="offer__mobile-bottom-info"></div><div class="offer__mobile-bottom-item"><div><span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>2 gece</strong> toplam</span><div class="offer__mobile-price-container d-flex"><p class="offer__item-price mb-0 null" data-testid="room-offer-price">19.231 <span>TL</span></p></div></div><div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button">Oda ayır <i class="ei-chevron-right font-size-lg"></i></button></div></div></div></div>
+										</div><div class="room-item" data-room-index="2" data-testid="offer-item "><div class="room-item__name-container "><button class="room-item__name-btn" data-testid="hotel-room-name">Palace Standard Room Sea View</button></div><div class="swiper highlighted-slider highlighted-image-slider-2 detail-search-slider swiper-initialized swiper-horizontal swiper-backface-hidden" data-testid="highlighted-image-slider-2"><div class="swiper-wrapper d-flex"><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-active" style="width: 316px;"><img src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084642.jpg" alt="Palace Standard Room Sea View"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-next" style="width: 316px;"><img src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084644.jpg" alt="Palace Standard Room Sea View" class="lazy lazy-loaded" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084644.jpg" data-slide-index="1" data-was-processed="true"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Standard Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084645.jpg" data-slide-index="2"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Standard Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084646.jpg" data-slide-index="3"></div></div><div class="swiper-control-next"><div class="swiper-control-shadow"><div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div></div></div><div class="swiper-control-prev swiper-button-disabled"><div class="swiper-control-shadow"><div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div></div></div><div class="slider-count">1/4</div></div><div class="offer__mobile-item p-2 undefined" data-provider="18" data-testid="offer-item"><div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept"><span class="room-concept__item" style="color: rgb(27, 47, 111);"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg">Her Şey Dahil</span></div><div class="offer__item-cancellation d-flex mb-1 pl-1"><i class="ei-check"></i><div class="ml-1 d-inline-block text-black" data-testid="room-cancellation"><strong class="mr-1">Ücretsiz iptal</strong>(25 Eylül 2024 03:30 tarihine kadar ücretsiz iptal, 25 Eylül 2024 03:30 sonrasında&nbsp;11.041 TL kesinti ile iptal edebilirsiniz.)</div></div><div class="offer__mobile-bottom pt-2"><div class="offer__mobile-bottom-info"></div><div class="offer__mobile-bottom-item"><div><span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>2 gece</strong> toplam</span><div class="offer__mobile-price-container d-flex"><p class="offer__item-price mb-0 null" data-testid="room-offer-price">20.242 <span>TL</span></p></div></div><div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button">Oda ayır <i class="ei-chevron-right font-size-lg"></i></button></div></div></div></div></div><div class="room-item" data-room-index="3" data-testid="offer-item "><div class="room-item__name-container "><button class="room-item__name-btn" data-testid="hotel-room-name">Hill Standard Double Room Sea View</button></div><div class="swiper highlighted-slider highlighted-image-slider-3 detail-search-slider swiper-initialized swiper-horizontal" data-testid="highlighted-image-slider-3"><div class="swiper-wrapper d-flex"><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-active" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/d257d1c8_z.jpg" alt="Hill Standard Double Room Sea View"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-next" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/83d29c66_z.jpg" alt="Hill Standard Double Room Sea View" class="lazy lazy-loaded" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/83d29c66_z.jpg" data-slide-index="1" data-was-processed="true"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/52251c2a_z.jpg" data-slide-index="2"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/09cfc5a0_z.jpg" data-slide-index="3"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/550fcf4c_z.jpg" data-slide-index="4"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/41930d41_z.jpg" data-slide-index="5"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/8ed67e14_z.jpg" data-slide-index="6"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084628.jpg" data-slide-index="7"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084630.jpg" data-slide-index="8"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084631.jpg" data-slide-index="9"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084632.jpg" data-slide-index="10"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725365.jpg" data-slide-index="11"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725366.jpg" data-slide-index="12"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725367.jpg" data-slide-index="13"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725368.jpg" data-slide-index="14"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Standard Double Room Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725369.jpg" data-slide-index="15"></div></div><div class="swiper-control-next"><div class="swiper-control-shadow"><div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div></div></div><div class="swiper-control-prev swiper-button-disabled"><div class="swiper-control-shadow"><div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div></div></div><div class="slider-count">1/16</div></div><div class="offer__mobile-item p-2 undefined" data-provider="18" data-testid="offer-item"><div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept"><span class="room-concept__item" style="color: rgb(27, 47, 111);"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg">Her Şey Dahil</span></div><div class="offer__item-cancellation d-flex mb-1 pl-1"><i class="ei-check"></i><div class="ml-1 d-inline-block text-black" data-testid="room-cancellation"><strong class="mr-1">Ücretsiz iptal</strong>(25 Eylül 2024 03:30 tarihine kadar ücretsiz iptal, 25 Eylül 2024 03:30 sonrasında&nbsp;11.777 TL kesinti ile iptal edebilirsiniz.)</div></div><div class="offer__mobile-bottom pt-2"><div class="offer__mobile-bottom-info"></div><div class="offer__mobile-bottom-item"><div><span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>2 gece</strong> toplam</span><div class="offer__mobile-price-container d-flex"><p class="offer__item-price mb-0 null" data-testid="room-offer-price">21.591 <span>TL</span></p></div></div><div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button">Oda ayır <i class="ei-chevron-right font-size-lg"></i></button></div></div></div></div></div><div class="room-item" data-room-index="4" data-testid="offer-item "><div class="room-item__name-container "><button class="room-item__name-btn" data-testid="hotel-room-name">Village Family Two Bedroom Garden View</button></div><div class="swiper highlighted-slider highlighted-image-slider-4 detail-search-slider swiper-initialized swiper-horizontal" data-testid="highlighted-image-slider-4"><div class="swiper-wrapper d-flex"><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-active" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/ec14abaa_z.jpg" alt="Village Family Two Bedroom Garden View"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-next" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/97704e21_z.jpg" alt="Village Family Two Bedroom Garden View" class="lazy lazy-loaded" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/97704e21_z.jpg" data-slide-index="1" data-was-processed="true"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/a26aecb9_z.jpg" data-slide-index="2"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/f6aa9c92_z.jpg" data-slide-index="3"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/69415c5b_z.jpg" data-slide-index="4"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/06061be0_z.jpg" data-slide-index="5"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/e9dcd772_z.jpg" data-slide-index="6"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084604.jpg" data-slide-index="7"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084605.jpg" data-slide-index="8"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084606.jpg" data-slide-index="9"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084607.jpg" data-slide-index="10"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084608.jpg" data-slide-index="11"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084609.jpg" data-slide-index="12"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084610.jpg" data-slide-index="13"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084611.jpg" data-slide-index="14"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725375.jpg" data-slide-index="15"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725376.jpg" data-slide-index="16"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725377.jpg" data-slide-index="17"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725378.jpg" data-slide-index="18"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725379.jpg" data-slide-index="19"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725380.jpg" data-slide-index="20"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Two Bedroom Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725381.jpg" data-slide-index="21"></div></div><div class="swiper-control-next"><div class="swiper-control-shadow"><div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div></div></div><div class="swiper-control-prev swiper-button-disabled"><div class="swiper-control-shadow"><div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div></div></div><div class="slider-count">1/22</div></div><div class="offer__mobile-item p-2 undefined" data-provider="18" data-testid="offer-item"><div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept"><span class="room-concept__item" style="color: rgb(27, 47, 111);"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg">Her Şey Dahil</span></div><div class="offer__item-cancellation d-flex mb-1 pl-1"><i class="ei-check"></i><div class="ml-1 d-inline-block text-black" data-testid="room-cancellation"><strong class="mr-1">Ücretsiz iptal</strong>(25 Eylül 2024 03:30 tarihine kadar ücretsiz iptal, 25 Eylül 2024 03:30 sonrasında&nbsp;13.799 TL kesinti ile iptal edebilirsiniz.)</div></div><div class="offer__mobile-bottom pt-2"><div class="offer__mobile-bottom-info"></div><div class="offer__mobile-bottom-item"><div><span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>2 gece</strong> toplam</span><div class="offer__mobile-price-container d-flex"><p class="offer__item-price mb-0 null" data-testid="room-offer-price">25.299 <span>TL</span></p></div></div><div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button">Oda ayır <i class="ei-chevron-right font-size-lg"></i></button></div></div></div></div></div><div class="room-item" data-room-index="5" data-testid="offer-item "><div class="room-item__name-container "><button class="room-item__name-btn" data-testid="hotel-room-name">Village Family Superior Room Garden View</button></div><div class="swiper highlighted-slider highlighted-image-slider-5 detail-search-slider swiper-initialized swiper-horizontal" data-testid="highlighted-image-slider-5"><div class="swiper-wrapper d-flex"><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-active" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/8c855f5f_z.jpg" alt="Village Family Superior Room Garden View"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-next" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/53037a9a_z.jpg" alt="Village Family Superior Room Garden View" class="lazy lazy-loaded" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/53037a9a_z.jpg" data-slide-index="1" data-was-processed="true"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/2b173a37_z.jpg" data-slide-index="2"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/2e94836d_z.jpg" data-slide-index="3"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/be171cae_z.jpg" data-slide-index="4"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/e9dcd772_z.jpg" data-slide-index="5"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084581.jpg" data-slide-index="6"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084582.jpg" data-slide-index="7"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084583.jpg" data-slide-index="8"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084584.jpg" data-slide-index="9"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084585.jpg" data-slide-index="10"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084586.jpg" data-slide-index="11"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725395.jpg" data-slide-index="12"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725396.jpg" data-slide-index="13"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725397.jpg" data-slide-index="14"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725398.jpg" data-slide-index="15"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725399.jpg" data-slide-index="16"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Village Family Superior Room Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725400.jpg" data-slide-index="17"></div></div><div class="swiper-control-next"><div class="swiper-control-shadow"><div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div></div></div><div class="swiper-control-prev swiper-button-disabled"><div class="swiper-control-shadow"><div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div></div></div><div class="slider-count">1/18</div></div><div class="offer__mobile-item p-2 undefined" data-provider="18" data-testid="offer-item"><div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept"><span class="room-concept__item" style="color: rgb(27, 47, 111);"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg">Her Şey Dahil</span></div><div class="offer__item-cancellation d-flex mb-1 pl-1"><i class="ei-check"></i><div class="ml-1 d-inline-block text-black" data-testid="room-cancellation"><strong class="mr-1">Ücretsiz iptal</strong>(25 Eylül 2024 03:30 tarihine kadar ücretsiz iptal, 25 Eylül 2024 03:30 sonrasında&nbsp;16.097 TL kesinti ile iptal edebilirsiniz.)</div></div><div class="offer__mobile-bottom pt-2"><div class="offer__mobile-bottom-info"></div><div class="offer__mobile-bottom-item"><div><span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>2 gece</strong> toplam</span><div class="offer__mobile-price-container d-flex"><p class="offer__item-price mb-0 null" data-testid="room-offer-price">29.512 <span>TL</span></p></div></div><div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button">Oda ayır <i class="ei-chevron-right font-size-lg"></i></button></div></div></div></div></div><div class="room-item" data-room-index="6" data-testid="offer-item "><div class="room-item__name-container "><button class="room-item__name-btn" data-testid="hotel-room-name">Palace Suite Garden View (Main Building)</button></div><div class="swiper highlighted-slider highlighted-image-slider-6 detail-search-slider swiper-initialized swiper-horizontal" data-testid="highlighted-image-slider-6"><div class="swiper-wrapper d-flex"><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-active" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/721cb820_z.jpg" alt="Palace Suite Garden View (Main Building)"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-next" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/9e4c6500_z.jpg" alt="Palace Suite Garden View (Main Building)" class="lazy lazy-loaded" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/9e4c6500_z.jpg" data-slide-index="1" data-was-processed="true"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/fb74d986_z.jpg" data-slide-index="2"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/6de7d872_z.jpg" data-slide-index="3"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/216ce261_z.jpg" data-slide-index="4"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084619.jpg" data-slide-index="5"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084621.jpg" data-slide-index="6"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084622.jpg" data-slide-index="7"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084623.jpg" data-slide-index="8"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084624.jpg" data-slide-index="9"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084625.jpg" data-slide-index="10"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084626.jpg" data-slide-index="11"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725370.jpg" data-slide-index="12"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725371.jpg" data-slide-index="13"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725372.jpg" data-slide-index="14"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725373.jpg" data-slide-index="15"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Garden View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725374.jpg" data-slide-index="16"></div></div><div class="swiper-control-next"><div class="swiper-control-shadow"><div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div></div></div><div class="swiper-control-prev swiper-button-disabled"><div class="swiper-control-shadow"><div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div></div></div><div class="slider-count">1/17</div></div><div class="offer__mobile-item p-2 undefined" data-provider="18" data-testid="offer-item"><div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept"><span class="room-concept__item" style="color: rgb(27, 47, 111);"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg">Her Şey Dahil</span></div><div class="offer__item-cancellation d-flex mb-1 pl-1"><i class="ei-check"></i><div class="ml-1 d-inline-block text-black" data-testid="room-cancellation"><strong class="mr-1">Ücretsiz iptal</strong>(25 Eylül 2024 03:30 tarihine kadar ücretsiz iptal, 25 Eylül 2024 03:30 sonrasında&nbsp;17.292 TL kesinti ile iptal edebilirsiniz.)</div></div><div class="offer__mobile-bottom pt-2"><div class="offer__mobile-bottom-info"></div><div class="offer__mobile-bottom-item"><div><span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>2 gece</strong> toplam</span><div class="offer__mobile-price-container d-flex"><p class="offer__item-price mb-0 null" data-testid="room-offer-price">31.702 <span>TL</span></p></div></div><div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button">Oda ayır <i class="ei-chevron-right font-size-lg"></i></button></div></div></div></div></div><div class="room-item" data-room-index="7" data-testid="offer-item "><div class="room-item__name-container "><button class="room-item__name-btn" data-testid="hotel-room-name">Hill Suite Garden View</button></div><div class="swiper highlighted-slider highlighted-image-slider-7 detail-search-slider swiper-initialized swiper-horizontal" data-testid="highlighted-image-slider-7"><div class="swiper-wrapper d-flex"><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-active" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/64803f8b_z.jpg" alt="Hill Suite Garden View"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-next" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/ce86b7a7_z.jpg" alt="Hill Suite Garden View" class="lazy lazy-loaded" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/ce86b7a7_z.jpg" data-slide-index="1" data-was-processed="true"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/04052f73_z.jpg" data-slide-index="2"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/52251c2a_z.jpg" data-slide-index="3"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/09cfc5a0_z.jpg" data-slide-index="4"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/550fcf4c_z.jpg" data-slide-index="5"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/a5d62b9b_z.jpg" data-slide-index="6"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/3ed92a04_z.jpg" data-slide-index="7"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084595.jpg" data-slide-index="8"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084596.jpg" data-slide-index="9"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084597.jpg" data-slide-index="10"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084598.jpg" data-slide-index="11"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084599.jpg" data-slide-index="12"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084600.jpg" data-slide-index="13"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084601.jpg" data-slide-index="14"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084602.jpg" data-slide-index="15"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725382.jpg" data-slide-index="16"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725383.jpg" data-slide-index="17"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725384.jpg" data-slide-index="18"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725385.jpg" data-slide-index="19"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725386.jpg" data-slide-index="20"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Garden View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725387.jpg" data-slide-index="21"></div></div><div class="swiper-control-next"><div class="swiper-control-shadow"><div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div></div></div><div class="swiper-control-prev swiper-button-disabled"><div class="swiper-control-shadow"><div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div></div></div><div class="slider-count">1/22</div></div><div class="offer__mobile-item p-2 undefined" data-provider="18" data-testid="offer-item"><div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept"><span class="room-concept__item" style="color: rgb(27, 47, 111);"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg">Her Şey Dahil</span></div><div class="offer__item-cancellation d-flex mb-1 pl-1"><i class="ei-check"></i><div class="ml-1 d-inline-block text-black" data-testid="room-cancellation"><strong class="mr-1">Ücretsiz iptal</strong>(25 Eylül 2024 03:30 tarihine kadar ücretsiz iptal, 25 Eylül 2024 03:30 sonrasında&nbsp;18.395 TL kesinti ile iptal edebilirsiniz.)</div></div><div class="offer__mobile-bottom pt-2"><div class="offer__mobile-bottom-info"></div><div class="offer__mobile-bottom-item"><div><span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>2 gece</strong> toplam</span><div class="offer__mobile-price-container d-flex"><p class="offer__item-price mb-0 null" data-testid="room-offer-price">33.723 <span>TL</span></p></div></div><div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button">Oda ayır <i class="ei-chevron-right font-size-lg"></i></button></div></div></div></div></div><div class="room-item" data-room-index="8" data-testid="offer-item "><div class="room-item__name-container "><button class="room-item__name-btn" data-testid="hotel-room-name">Palace Suite Sea View (Main Building)</button></div><div class="swiper highlighted-slider highlighted-image-slider-8 detail-search-slider swiper-initialized swiper-horizontal swiper-backface-hidden" data-testid="highlighted-image-slider-8"><div class="swiper-wrapper d-flex"><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-active" style="width: 316px;"><img src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084612.jpg" alt="Palace Suite Sea View (Main Building)"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-next" style="width: 316px;"><img src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084613.jpg" alt="Palace Suite Sea View (Main Building)" class="lazy lazy-loading" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084613.jpg" data-slide-index="1" data-was-processed="true"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Sea View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084614.jpg" data-slide-index="2"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Sea View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084615.jpg" data-slide-index="3"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Sea View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084616.jpg" data-slide-index="4"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Palace Suite Sea View (Main Building)" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084617.jpg" data-slide-index="5"></div></div><div class="swiper-control-next"><div class="swiper-control-shadow"><div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div></div></div><div class="swiper-control-prev swiper-button-disabled"><div class="swiper-control-shadow"><div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div></div></div><div class="slider-count">1/6</div></div><div class="offer__mobile-item p-2 undefined" data-provider="18" data-testid="offer-item"><div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept"><span class="room-concept__item" style="color: rgb(27, 47, 111);"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg">Her Şey Dahil</span></div><div class="offer__item-cancellation d-flex mb-1 pl-1"><i class="ei-check"></i><div class="ml-1 d-inline-block text-black" data-testid="room-cancellation"><strong class="mr-1">Ücretsiz iptal</strong>(25 Eylül 2024 03:30 tarihine kadar ücretsiz iptal, 25 Eylül 2024 03:30 sonrasında&nbsp;19.500 TL kesinti ile iptal edebilirsiniz.)</div></div><div class="offer__mobile-bottom pt-2"><div class="offer__mobile-bottom-info"></div><div class="offer__mobile-bottom-item"><div><span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>2 gece</strong> toplam</span><div class="offer__mobile-price-container d-flex"><p class="offer__item-price mb-0 null" data-testid="room-offer-price">35.749 <span>TL</span></p></div></div><div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button">Oda ayır <i class="ei-chevron-right font-size-lg"></i></button></div></div></div></div></div><div class="room-item" data-room-index="9" data-testid="offer-item ">
+											<div class="room-item__name-container "><button class="room-item__name-btn" data-testid="hotel-room-name">Hill Suite Sea View</button></div><div class="swiper highlighted-slider highlighted-image-slider-9 detail-search-slider swiper-initialized swiper-horizontal" data-testid="highlighted-image-slider-9"><div class="swiper-wrapper d-flex"><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-active" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/64803f8b_z.jpg" alt="Hill Suite Sea View"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3 swiper-slide-next" style="width: 316px;"><img src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/ce86b7a7_z.jpg" alt="Hill Suite Sea View" class="lazy lazy-loaded" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/ce86b7a7_z.jpg" data-slide-index="1" data-was-processed="true"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/8e86c49f_z.jpg" data-slide-index="2"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/7a50bf82_z.jpg" data-slide-index="3"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/04052f73_z.jpg" data-slide-index="4"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/52251c2a_z.jpg" data-slide-index="5"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/09cfc5a0_z.jpg" data-slide-index="6"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/550fcf4c_z.jpg" data-slide-index="7"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/a5d62b9b_z.jpg" data-slide-index="8"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://i.travelapi.com/lodging/12000000/11550000/11541800/11541708/3ed92a04_z.jpg" data-slide-index="9"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084588.jpg" data-slide-index="10"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084589.jpg" data-slide-index="11"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084590.jpg" data-slide-index="12"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084591.jpg" data-slide-index="13"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084592.jpg" data-slide-index="14"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11084593.jpg" data-slide-index="15"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725388.jpg" data-slide-index="16"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725389.jpg" data-slide-index="17"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725390.jpg" data-slide-index="18"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725391.jpg" data-slide-index="19"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725392.jpg" data-slide-index="20"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725393.jpg" data-slide-index="21"></div><div class="room-item__thumbnail h-100 swiper-slide mb-3" style="width: 316px;"><img src="https://cdn.enuygun.com/otel/build/images/loading-spinner.svg" alt="Hill Suite Sea View" class="lazy" data-src="https://cdn3.enuygun.com/r/media/lib/343x234/uploads/image/aquaworld-belek--serik-oda-11725394.jpg" data-slide-index="22"></div></div><div class="swiper-control-next"><div class="swiper-control-shadow"><div class="swiper-control-next-icon" id="swiper-control" data-testid="swiper-control-next"></div></div></div><div class="swiper-control-prev swiper-button-disabled"><div class="swiper-control-shadow"><div class="swiper-control-prev-icon" id="swiper-control" data-testid="swiper-control-prev"></div></div></div><div class="slider-count">1/23</div></div><div class="offer__mobile-item p-2 undefined" data-provider="18" data-testid="offer-item">
+												<div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept"><span class="room-concept__item" style="color: rgb(27, 47, 111);"><img class="room-concept__icon" src="https://cdn.enuygun.com/otel/static/images/concept-icons/RO.svg">Her Şey Dahil</span></div><div class="offer__item-cancellation d-flex mb-1 pl-1"><i class="ei-check"></i><div class="ml-1 d-inline-block text-black" data-testid="room-cancellation"><strong class="mr-1">Ücretsiz iptal</strong>(25 Eylül 2024 03:30 tarihine kadar ücretsiz iptal, 25 Eylül 2024 03:30 sonrasında&nbsp;20.326 TL kesinti ile iptal edebilirsiniz.)</div></div><div class="offer__mobile-bottom pt-2">
+													<div class="offer__mobile-bottom-info"></div><div class="offer__mobile-bottom-item">
+														<div><span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>2 gece</strong> toplam</span><div class="offer__mobile-price-container d-flex"><p class="offer__item-price mb-0 null" data-testid="room-offer-price">37.265 <span>TL</span></p></div></div><div class="offer__mobile-button-area offer__item-content--booking">
+															<button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button">
+																Oda ayır <i class="ei-chevron-right font-size-lg"></i>
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<section id="tourism-facilities" class="detail-content d-flex justify-content-between align-items-start"><h2 class="detail-content__title font-weight-600">Turizm Bakanlığı Tesis Bilgileri</h2><div class="detail-content__info d-flex tourism-facilities"><div class="d-flex flex-column mr-2 font-weight-bold"><span>Belge No</span><span>Belge Türü</span><span>Tesis Türü</span><span>Sınıfı</span></div><div class="d-flex flex-column"><span>: 20509</span><span>: Turizm İşletmesi Belgesi</span><span>: Otel</span><span>: 5 Yıldızlı</span></div></div></section><section id="hotel-features" class="detail-content d-flex justify-content-between align-items-start">
+								<h2 class="detail-content__title font-weight-600">Otel Özellikleri</h2><div class="detail-content__info">
+									<div class="show-more__text"> Konuklarına Akdeniz kıyısında hayallerini süsleyen tatili yaşama olanağı sunan Tui Magic Life Waterworld, her şeyiyle kusursuz bir deneyim vadediyor. 220 bin metrekare alanı kaplayan tesisin kaydıraklı havuzlarında çocuklarla birlikte eğlenceye ortak olabilir, yemyeşil ağaçların arasında din...</div><button id="hotel-desc-btn" class="show-more__text-btn show-more__btn show-more__btn--bordered font-weight-600" data-testid="show-more-hotel-desc">Devamını oku</button><div class="facilityContainer">
+										<div class="facility-item" data-index="1">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy lazy-loaded" src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/genel.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/genel.svg" alt="Genel" width="32" height="32" data-was-processed="true">
+												Genel
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Danışma
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde alışveriş
+												</li>
+												<li class="d-flex justify-content-between ">
+													Çamaşırhane
+												</li>
+												<li class="d-flex justify-content-between ">
+													Bahçe
+												</li>
+												<li class="d-flex justify-content-between ">
+													Resepsiyonda emanet kasası
+												</li>
+												<li class="d-flex justify-content-between ">
+													24 saat açık resepsiyon
+												</li>
+												<li class="d-flex justify-content-between ">
+													Oda hizmetçisi/belboy
+												</li>
+												<li class="d-flex justify-content-between ">
+													Kuru temizleme/çamaşırhane
+												</li>
+												<li class="d-flex justify-content-between ">
+													Sigara içmek için özel alanlar
+												</li>
+												<li class="d-flex justify-content-between ">
+													Market
+												</li>
+												<li class="d-flex justify-content-between ">
+													Valiz dolabı
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde otopark
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Araba Kiralama
+												</li>
+												<li class="d-flex justify-content-between ">
+													Fotoğrafçı
+												</li>
+												<li class="d-flex justify-content-between ">
+													Tesis Kapasitesi
+													<span>770</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Kurulu Alan
+													<span>220000 m2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Enerji tasarruflu düğmeler
+												</li>
+												<li class="d-flex justify-content-between ">
+													Kapsamlı geri dönüşüm politikası
+												</li>
+												<li class="d-flex justify-content-between ">
+													Tüm aydınlatmanın en az %80'i LED lambalarla sağlanmaktadır
+												</li>
+												<li class="d-flex justify-content-between ">
+													Yalnızca suyu verimli kullanan duşlar
+												</li>
+												<li class="d-flex justify-content-between ">
+													Yalnızca su tasarruflu tuvaletler
+												</li>
+												<li class="d-flex justify-content-between ">
+													Sürdürülebilirlik/topluluğa yeniden yatırım (gelirin %10'u veya daha fazlası)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Gri su geri dönüşüm sistemi
+												</li>
+												<li class="d-flex justify-content-between ">
+													Yıllık karbon dengeleyici unsurlar
+												</li>
+												<li class="d-flex justify-content-between ">
+													Canlı bitki duvarı
+												</li>
+												<li class="d-flex justify-content-between ">
+													Hayvanlara insancıl muamele
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="2" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/spor.svg" alt="Spor" width="32" height="32">
+												Spor
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Spor salonu
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde tenis
+												</li>
+												<li class="d-flex justify-content-between ">
+													Açık tenis kortları
+													<span> 6</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Jetski (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Yelken (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Katamaran Yolculuğu (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Kano (Ücretli)
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Fitnes
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Masa Tenisi
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Bisiklet / Dağ Bisikleti
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Basketbol
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Voleybol
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Plaj Voleybolu
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Sörf (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Tenis
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Futbol
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Mini Futbol
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde rüzgar sörfü
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde fitness sınıfları
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde basketbol
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="3" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/aktivite.svg" alt="Aktivite" width="32" height="32">
+												Aktivite
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Atari salonu/oyun odası (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Tiyatro Salonu
+												</li>
+												<li class="d-flex justify-content-between ">
+													Dart
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Bilardo (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Animasyon
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Banana (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Canlı Eğlence
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Dalgıçlık Okulu (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Deniz Bisikleti (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Disco
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Paraşüt (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Sinema
+													<span>2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Yerel halka ait ve yerel halk tarafından düzenlenen turlar ile etkinlikler
+												</li>
+												<li class="d-flex justify-content-between ">
+													Yerel sanatçılar için sergi
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde pilates sınıfları
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde yoga sınıfları/eğitimi
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde plaj voleybolu
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde su kayağı
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde tüplü dalış
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="4" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/yeme-ve-icme.svg" alt="Yeme ve içme" width="32" height="32">
+												Yeme ve içme
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Restoran sayısı
+													<span> 6</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Snack bar/büfe
+												</li>
+												<li class="d-flex justify-content-between ">
+													Bar/lounge sayısı
+													<span> 8</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Havuz kenarı barı sayısı
+													<span> 3</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Plaj barı sayısı
+													<span> 1</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Kahve dükkanı/kafe sayısı
+													<span> 1</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Bar
+												</li>
+												<li class="d-flex justify-content-between ">
+													Açık Restoran
+												</li>
+												<li class="d-flex justify-content-between ">
+													Kapalı Restoran
+												</li>
+												<li class="d-flex justify-content-between ">
+													Alakart Restorant Sayısı
+													<span>1</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Açık Restorant Sayısı
+													<span>5</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Kapalı Restorant Sayısı
+													<span>4</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Vejetaryen kahvaltı sunulmaktadır
+												</li>
+												<li class="d-flex justify-content-between ">
+													Vegan menü seçenekleri bulunmaktadır
+												</li>
+												<li class="d-flex justify-content-between ">
+													Vejeteryan menü seçenekleri bulunmaktadır
+												</li>
+												<li class="d-flex justify-content-between ">
+													Konaklama yerinde yerel kaynaklı gıda (%80 veya daha fazla)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Organik yiyecek
+												</li>
+												<li class="d-flex justify-content-between ">
+													Kapsamlı yemek israfı politikası
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="5" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/havuz-ve-plaj.svg" alt="Havuz ve Plaj" width="32" height="32">
+												Havuz ve Plaj
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Kapalı havuz
+												</li>
+												<li class="d-flex justify-content-between ">
+													Açık havuz
+												</li>
+												<li class="d-flex justify-content-between ">
+													Çocuk havuzu
+												</li>
+												<li class="d-flex justify-content-between ">
+													Özel plajda
+												</li>
+												<li class="d-flex justify-content-between ">
+													Havuz şemsiyeleri
+												</li>
+												<li class="d-flex justify-content-between ">
+													Su kaydırağı
+												</li>
+												<li class="d-flex justify-content-between ">
+													Su parkı
+												</li>
+												<li class="d-flex justify-content-between ">
+													Kapalı havuz sayısı
+													<span> 2</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Açık havuz sayısı
+													<span> 11</span>
+												</li>
+												<li class="d-flex justify-content-between ">
+													Plaj şemsiyesi
+												</li>
+												<li class="d-flex justify-content-between ">
+													Plaj şezlongları
+												</li>
+												<li class="d-flex justify-content-between ">
+													Havuz şezlongları
+												</li>
+												<li class="d-flex justify-content-between ">
+													Plaj havlusu
+												</li>
+												<li class="d-flex justify-content-between ">
+													Su Kaydırak Sayısı
+													<span>7</span>
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="6" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/saglik-ve-spa.svg" alt="Sağlık ve SPA" width="32" height="32">
+												Sağlık ve SPA
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Kuaför salonu
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde Spa hizmetleri
+												</li>
+												<li class="d-flex justify-content-between ">
+													Tam donanımlı spa
+												</li>
+												<li class="d-flex justify-content-between ">
+													Spa terapi odası/odaları
+												</li>
+												<li class="d-flex justify-content-between ">
+													Buhar odası
+												</li>
+												<li class="d-flex justify-content-between ">
+													Sauna
+												</li>
+												<li class="d-flex justify-content-between ">
+													Hamam
+												</li>
+												<li class="d-flex justify-content-between ">
+													Masaj (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Güzellik Salonu
+												</li>
+												<li class="d-flex justify-content-between ">
+													Spa Merkezi (ücretli)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Doktor
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="7" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/oda.svg" alt="Oda" width="32" height="32">
+												Oda
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Çevre dostu temizlik ürünleri sağlanır
+												</li>
+												<li class="d-flex justify-content-between ">
+													Çevre dostu banyo/kozmetik ürünleri
+												</li>
+												<li class="d-flex justify-content-between ">
+													LED ampuller
+												</li>
+												<li class="d-flex justify-content-between ">
+													Geri Dönüşüm
+												</li>
+												<li class="d-flex justify-content-between ">
+													Çatı bahçesi
+												</li>
+												<li class="d-flex justify-content-between ">
+													Yerel ekosistemler ve kültür üzerine misafir eğitimi
+												</li>
+												<li class="d-flex justify-content-between ">
+													Tüm pencereler çift camlıdır
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="8" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/konusulan-diller.svg" alt="Konuşulan Diller" width="32" height="32">
+												Konuşulan Diller
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Birden fazla dil bilen personel
+												</li>
+												<li class="d-flex justify-content-between ">
+													İngilizce
+												</li>
+												<li class="d-flex justify-content-between ">
+													Rusça
+												</li>
+												<li class="d-flex justify-content-between ">
+													Almanca
+												</li>
+												<li class="d-flex justify-content-between ">
+													Türkçe
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="11" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/is-business.svg" alt="İş / Business" width="32" height="32">
+												İş / Business
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Konferans alanı
+												</li>
+												<li class="d-flex justify-content-between ">
+													Çevre dostu temizlik ürünleri kullanılır
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="12" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/internet.svg" alt="İnternet" width="32" height="32">
+												İnternet
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Ücretsiz kablosuz internet
+												</li>
+												<li class="d-flex justify-content-between ">
+													İnternet Cafe
+													<span>2</span>
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="13" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/otopark-ve-transfer.svg" alt="Otopark ve Transfer" width="32" height="32">
+												Otopark ve Transfer
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Ücretsiz valesiz otopark
+												</li>
+												<li class="d-flex justify-content-between ">
+													Elektrikli otomobil şarj istasyonu
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="14" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/cocuklara-ozel.svg" alt="Çocuklara Özel" width="32" height="32">
+												Çocuklara Özel
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Çocuk kulübü (ücretsiz)
+												</li>
+												<li class="d-flex justify-content-between ">
+													Otelde oyun alanı
+												</li>
+											</ul>
+										</div><div class="facility-item" data-index="15" style="display: none;">
+											<h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
+												<img class="mr-1 lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn.enuygun.com/otel/v-36263/static/images/opportunity-icons/evcil-hayvan.svg" alt="Evcil hayvan" width="32" height="32">
+												Evcil hayvan
+											</h3><ul class="list list-unstyled opportunities-list opportunities-list--flex">
+												<li class="d-flex justify-content-between ">
+													Yemek ve su kapları
+												</li>
+												<li class="d-flex justify-content-between ">
+													Kedi kumluğu
+												</li>
+											</ul>
+										</div>
+									</div><button id="show-all-facility" class="btn btn-transparent mt-3 w-100 py-3 font-weight-600 font-size-md">Tümünü Göster</button>
+								</div>
+							</section><section id="accessibility" class="d-flex justify-content-between detail-content">
+								<h2 class="detail-content__title font-weight-600">
+									Erişilebilirlik
+								</h2><div class="detail-content__info transport">
+									<ul class="list list-unstyled opportunities-list opportunities-list--flex accessibility-list">
+										<li class="d-flex justify-content-between ">
+											Asansör
+										</li>
+										<li class="d-flex justify-content-between ">
+											Tekerlekli sandalye kullanımına uygun geçiş yolu
+										</li>
+									</ul>
+								</div>
+							</section><section id="poi-list" class="detail-content d-flex justify-content-between align-items-start">
+								<h2 class="detail-content__title font-weight-600">Tesis Çevresindeki Yerler</h2><div class="detail-content__info">
+									<div class="poi-tabs hotel-tabs">
+										<ul class="row" role="tablist" id="poi-list-tabs" aria-owns="information-tab rooms-tab opportunities-tab transportation-tab policies-tab">
+											<li role="tab" aria-controls="poi-list-tabs" aria-selected="true">
+												<a class="pl-0  active" id="information-tab-1" data-toggle="tab" data-index="1" href="#NearPlaces">
+													Yakında neler var?
+												</a>
+											</li>
+											<li role="tab" aria-controls="poi-list-tabs" aria-selected="true">
+												<a class="pl-0 " id="information-tab-2" data-toggle="tab" data-index="2" href="#Naturalbeauties">
+													Doğal güzellikler
+												</a>
+											</li>
+											<li role="tab" aria-controls="poi-list-tabs" aria-selected="true">
+												<a class="pl-0 " id="information-tab-3" data-toggle="tab" data-index="3" href="#HistoricalAndTouristicPlaces">
+													Tarihi ve turistik yerler
+												</a>
+											</li>
+											<li role="tab" aria-controls="poi-list-tabs" aria-selected="true">
+												<a class="pl-0 " id="information-tab-4" data-toggle="tab" data-index="4" href="#Beach">
+													Sahil ve plajlar
+												</a>
+											</li>
+											<li role="tab" aria-controls="poi-list-tabs" aria-selected="true">
+												<a class="pl-0 " id="information-tab-5" data-toggle="tab" data-index="5" href="#AirPorts">
+													En yakın havalimanları
+												</a>
+											</li>
+										</ul>
+									</div><div class="facilityContainer poi-container">
+										<ul id="poi-item" class="poi-item " data-index="1" data-total="10">
+											<li class="d-flex justify-content-between">
+												Cornelia Golf Club <span>0,5 km</span>
+											</li>
+											<li class="d-flex justify-content-between">
+												Tat Golf Belek <span>1,8 km</span>
+											</li>
+											<li class="d-flex justify-content-between">
+												Montgomerie Golf Sahası <span>2,1 km</span>
+											</li>
+											<li class="d-flex justify-content-between">
+												Carya Golf Club <span>3,2 km</span>
+											</li>
+											<li class="d-flex justify-content-between">
+												Belka Golf Club <span>3,8 km</span>
+											</li>
+											<li class="d-none justify-content-between">
+												Kaya Eagles Golf Club <span>4,3 km</span>
+											</li>
+											<li class="d-none justify-content-between">
+												Gloria Golf Club <span>4,3 km</span>
+											</li>
+											<li class="d-none justify-content-between">
+												Troy Aqua and Dolphinarium <span>4,5 km</span>
+											</li>
+											<li class="d-none justify-content-between">
+												Kelebek Park Antalya <span>17,2 km</span>
+											</li>
+											<li class="d-none justify-content-between">
+												Axion Gokart Karting <span>19,4 km</span>
+											</li>
+											<button id="show-all-poi-1" class="btn btn-transparent mt-3 w-100 py-3 font-weight-600 font-size-md" aria-labelledby="poi-item">
+												Tümünü Göster
+											</button>
+										</ul><ul id="poi-item" class="poi-item  d-none" data-index="2" data-total="3">
+											<li class="d-flex justify-content-between">
+												Kurşunlu Şelalesi <span>26,1 km</span>
+											</li>
+											<li class="d-flex justify-content-between">
+												Karnaval Parkı <span>28,3 km</span>
+											</li>
+											<li class="d-flex justify-content-between">
+												Doğal Havuzlar <span>29,8 km</span>
+											</li>
+										</ul><ul id="poi-item" class="poi-item  d-none" data-index="3" data-total="1">
+											<li class="d-flex justify-content-between">
+												Aspendos Tiyatrosu <span>14,6 km</span>
+											</li>
+										</ul><ul id="poi-item" class="poi-item  d-none" data-index="4" data-total="3">
+											<li class="d-flex justify-content-between">
+												Lara Plajı <span>17,5 km</span>
+											</li>
+											<li class="d-flex justify-content-between">
+												BLM Plajı <span>27,4 km</span>
+											</li>
+											<li class="d-flex justify-content-between">
+												Side Batı Plajı <span>28,5 km</span>
+											</li>
+										</ul><ul id="poi-item" class="poi-item  d-none" data-index="5" data-total="1">
+											<li class="d-flex justify-content-between">
+												Antalya Havalimanı <span>22,5 km</span>
+											</li>
+										</ul>
+									</div>
+								</div><p class="mb-0 mt-3 font-size-sm">* Noktalar arası mesafeler kuş uçuşu ölçümlerle belirleniyor.</p>
+							</section><section id="transportation" class="d-flex justify-content-between detail-content">
+								<h2 class="detail-content__title font-weight-600 mb-0">
+									Ulaşım
+								</h2><div class="detail-content__info transport">
+									<div id="hotelAddressMap" class="detail-map"><div class="show-hotels-map-wrapper d-flex align-items-center justify-content-center mt-3"><button class="btn-primary btn d-flex align-items-center justify-content-center" data-testid="hotel-address-map-button"><img class="mr-1" src="https://cdn.enuygun.com/otel/build/images/map-icon-white.svg" width="20" height="20" alt="Show Map Icon">Haritada göster</button></div></div><div class="transport__address mt-3">
+										Belek Mah.Iskele cd. 6A Serik, Antalya
+									</div><div class="transport__location" data-testid="hotel-location-info">
+										<h3 class="font-weight-600 mb-0 mt-5 font-size-lg">
+											Konum Bilgileri
+										</h3><table class="w-100"><tbody class="flex-column"><tr><td>Şehir Merkezine Uzaklık</td><td>Belek 2 Km, Antalya 45 Km</td></tr><tr><td>Plaj</td><td>Mavi Bayraklı Plaj</td></tr><tr><td>Denize Uzaklığı</td><td>Denize Sıfır</td></tr><tr><td>İskele</td><td></td></tr><tr><td>Sahil Uzunluğu</td><td>390,0 m</td></tr></tbody></table>
+									</div>
+								</div>
+							</section><section id="hotel-concepts" class="d-flex justify-content-between detail-content">
+								<h2 class="detail-content__title font-weight-600">
+									Tesis Konaklama Özellikleri
+								</h2><div id="accommodation-list" class="detail-content__info accommodation show-more">
+									<div class="show-more__content d-flex flex-wrap"><div><h3 class="accommodation__title font-size-lg font-weight-600">Her Şey Dahil</h3><ul class="accommodation__item"><li class="accommodation__item-el"><p>Kahvaltı: 07:00-10:00</p></li><li class="accommodation__item-el">Geç Kahvaltı: 10:00-11:00</li><li class="accommodation__item-el">Öğle Yemeği: 12:30-14:30</li><li class="accommodation__item-el">Snack: 12:30-16:00</li><li class="accommodation__item-el">Snack Dürüm House: 12:30-17:00</li><li class="accommodation__item-el">Snack Pasta: 12:30-16:00</li><li class="accommodation__item-el">Akşam Yemeği: 19:00-21:30</li><li class="accommodation__item-el">Gece Snack: 00:00-01:00</li><li class="accommodation__item-el">A la Carte Restoran: 19:00-21:30</li><li class="accommodation__item-el">Wunderbar: 24 Saat</li><li class="accommodation__item-el">Pool Bar: 10:00-18:00</li><li class="accommodation__item-el">Beach Bar: 10:00-18:00</li><li class="accommodation__item-el">Aqua Bar: 10:00-18:00</li><li class="accommodation__item-el">Coffee House: 10:00-23:00</li><li class="accommodation__item-el">Disco Bar: 23:00-02:00</li><li class="accommodation__item-el">Steakhouse ala carte restoran ücretlidir. Sofra, The Flavour, Downtown, Fish A la Carte restoranlar haftada 1 defa ücretsiz olarak kullanılabilir. (rezervasyonlu ve müsaitlik durumuna göre) 2. kez rezervasyon yaptırmak isteyen misafirler ücret karşılığı hizmet alabilir.</li><li class="accommodation__item-el">Tüm ithal içecekler ücretlidir. <p></p></li></ul></div></div><button id="more-accomodition-btn" class="show-more__btn show-more__btn--bordered font-weight-600" data-testid="show-more-accomodition" style="display: block;">
+										Devamını oku
+									</button>
+								</div>
+							</section><section id="hotel-policies" class="d-flex justify-content-between detail-content">
+								<h2 class="detail-content__title font-weight-600">
+									Otel Kuralları
+								</h2><div class="detail-content__info hotel-policies show-more">
+									<div class="show-more__content">
+										<div class="d-flex justify-around policies-hours">
+											<p>
+												<strong>Check-in Başlangıç ve Bitiş</strong>
+												15:00 - 12:00
+											</p><p>
+												<strong>Check-out</strong>
+												12:00
+											</p>
+										</div><strong>Talimatlar</strong><p></p><ul><li>İlave yatak ücreti alınabilir ve bu ücret, konaklama yeri politikasına göre değişiklik gösterebilir</li><li>Olası ekstra harcamalar için otele girişte, resmi kurumlarca düzenlenmiş fotoğraflı kimlik ve kredi kartı, banka kartı veya nakit depozito gerekebilir</li><li>Özel talepler, otele giriş sırasında müsaitlik durumuna bağlıdır ve ek ödeme gerektirebilir. Özel talepler garanti edilemez</li><li>Bu konaklama yerinde kredi kartları, banka kartları ve nakit kabul edilmektedir</li><li>Bu konaklama yeri, gri su yeniden kazanım sistemi ve çevre dostu temizlik ürünleri kullanmaktadır</li><li>Bu konaklama yerindeki güvenlik özellikleri arasında yangın söndürücü, güvenlik sistemi, ilk yardım çantası ve pencere korkulukları yer almaktadır</li></ul><p></p><strong>Özel Talimatlar</strong><p>Resepsiyon çalışanları varışta misafirleri karşılayacaktır.</p><strong>Minimum Check-in Yaşı</strong><p>18</p><strong>İsteğe Bağlı</strong><p></p><ul><li>Evcil hayvan ücreti: evcil hayvan başına, gecelik 35 EUR. </li><li>Rehber hayvanlar ücretten muaftır</li></ul><p>Yukarıdaki liste tüm bilgileri içermeyebilir. Ücretlere ve depozitolara vergi dâhil olmayabilir, ayrıca ücretler ve depozitolar değişebilir. </p><p></p><strong>Tesise Gitmeden Önce Bilmeniz Gerekenler</strong><p></p><ul><li>Misafirlerin masaj hizmeti ve spa seansı için rezervasyon yaptırması gereklidir. Misafirler otele varmadan önce, rezervasyon onayındaki iletişim bilgilerini kullanarak konaklama yeri ile görüşebilir ve rezervasyon yaptırılabilir. </li><li>Konaklama yerinde evcil hayvanlar sadece belirli odalara alınır ve evcil hayvanlara yönelik başka kısıtlamalar vardır (ek ücretler uygulanır, bu konuda bilgi Ücretler bölümünde bulunabilir). Misafirler, rezervasyon onayındaki iletişim bilgileri yoluyla doğrudan konaklama yeri ile iletişime geçerek evcil hayvanlarını getirmek üzere ayarlama yapabilir. </li><li>Temassız giriş imkânı ve temassız çıkış imkânı sunulur.</li></ul><p></p>
+									</div><button id="policies-more-btn" class="show-more__btn show-more__btn--bordered font-weight-600" data-testid="show-more-hotel-policies" style="display: block;">
+										Devamını oku
+									</button>
+								</div>
+							</section><div class="general-notice"><div class="general-notice__content d-flex justify-content-start align-items-start"><img src="https://cdn.enuygun.com/otel/v-36263/static/images/alert-feedback.svg" class="mr-3" width="46px" height="46px" alt="Önemli Uyarılar"><div><span class="general-notice__title">Önemli Uyarılar</span><p>Tesis bay konaklama kabul etmemektedir.</p><p>Otel girişlerinde tatil köyü ücretleri, şehir vergileri ve ülke düzenlemelerinden kaynaklanan ek ücretler doğrudan otele ödenir. ENUYGUN ek otel ücretlerinden sorumlu değildir.</p></div></div></div><section class="detail-content nearby-hotels">
+								<div class="d-flex justify-content-between align-items-center nearby-head"><h2 class="detail-content__title font-weight-600">Yakınındaki Oteller</h2></div>
+								<div class="detail-content__info swiper widget-slider swiper-initialized swiper-horizontal swiper-backface-hidden" data-total-count="6" data-view-count="auto" id="widgetSlider-0">
+									<div class="swiper-wrapper" style="transform: translate3d(0px, 0px, 0px);">
+										<div class="swiper-slide card card-vertical swiper-slide-active" data-id="427375" data-url="/otel/belconti-resort-hotel-427375/" data-position="1" data-testid="near-hotel" data-swiper-slide-index="0" style="margin-right: 16px;">
+											<a href="/otel/belconti-resort-hotel-427375/" target="_blank"><div class="card-img-top"><img class="lazy lazy-loaded" src="https://cdn3.enuygun.com/media/lib/365x200/uploads/image/belconti-resort-serik-76546697.webp" data-src="https://cdn3.enuygun.com/media/lib/365x200/uploads/image/belconti-resort-serik-76546697.webp" alt="Aquaworld Belek - All inclusive (Serik, Antalya) En Uygun Fiyatlı Rezervasyon | ENUYGUN" data-testid="featured-hotel-image" data-was-processed="true"></div></a><div class="card-body d-flex flex-column justify-content-between">
+												<a href="/otel/belconti-resort-hotel-427375/" target="_blank">
+													<div>
+														<span class="card-title">Belconti Resort Hotel - All Inclusive</span><p class="card-text">
+															Belek,
+															Serik,
+															Serik
+														</p>
+													</div><div class="tripadvisor just-rate" data-rate-text="Olağanüstü" data-rate-value="10" data-rate-localized="10,0"></div>
+												</a><a href="/otel/belconti-resort-hotel-427375/" target="_blank" class="btn btn-success btn-lg d-flex justify-content-center align-items-center">
+													Seç <span class="ei-chevron-right"></span>
+												</a>
+											</div>
+										</div><div class="swiper-slide card card-vertical swiper-slide-next" data-id="232670" data-url="/otel/sherwood-dreams-resort-232670/" data-position="2" data-testid="near-hotel" data-swiper-slide-index="1" style="margin-right: 16px;">
+											<a href="/otel/sherwood-dreams-resort-232670/" target="_blank"><div class="card-img-top"><img class="lazy lazy-loaded" src="https://cdn3.enuygun.com/media/lib/365x200/uploads/image/sherwood-dreams-resort-serik-ana-resim-76540900.webp" data-src="https://cdn3.enuygun.com/media/lib/365x200/uploads/image/sherwood-dreams-resort-serik-ana-resim-76540900.webp" alt="Aquaworld Belek - All inclusive (Serik, Antalya) En Uygun Fiyatlı Rezervasyon | ENUYGUN" data-testid="featured-hotel-image" data-was-processed="true"></div></a><div class="card-body d-flex flex-column justify-content-between">
+												<a href="/otel/sherwood-dreams-resort-232670/" target="_blank">
+													<div>
+														<span class="card-title">Sherwood Dreams Resort</span><p class="card-text">
+															Belek,
+															Serik,
+															Serik
+														</p>
+													</div><div class="tripadvisor just-rate" data-rate-text="İyi" data-rate-value="7.5" data-rate-localized="7,5"></div>
+												</a><a href="/otel/sherwood-dreams-resort-232670/" target="_blank" class="btn btn-success btn-lg d-flex justify-content-center align-items-center">
+													Seç <span class="ei-chevron-right"></span>
+												</a>
+											</div>
+										</div><div class="swiper-slide card card-vertical" data-id="22494" data-url="/otel/ela-excellence-resort-belek-all-inclusive-22494/" data-position="3" data-testid="near-hotel" data-swiper-slide-index="2" style="margin-right: 16px;">
+											<a href="/otel/ela-excellence-resort-belek-all-inclusive-22494/" target="_blank"><div class="card-img-top"><img class="lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn3.enuygun.com/media/lib/365x200/uploads/image/ela-excellence-resort-belek-antalya-ana-resim-76465043.webp" alt="Aquaworld Belek - All inclusive (Serik, Antalya) En Uygun Fiyatlı Rezervasyon | ENUYGUN" data-testid="featured-hotel-image"></div></a><div class="card-body d-flex flex-column justify-content-between">
+												<a href="/otel/ela-excellence-resort-belek-all-inclusive-22494/" target="_blank">
+													<div>
+														<span class="card-title">ELA Excellence Resort Belek - All Inclusive</span><p class="card-text">
+															Serik,
+															Serik,
+															Antalya
+														</p>
+													</div><div class="tripadvisor just-rate" data-rate-text="Olağanüstü" data-rate-value="10" data-rate-localized="10,0"></div>
+												</a><a href="/otel/ela-excellence-resort-belek-all-inclusive-22494/" target="_blank" class="btn btn-success btn-lg d-flex justify-content-center align-items-center">
+													Seç <span class="ei-chevron-right"></span>
+												</a>
+											</div>
+										</div><div class="swiper-slide card card-vertical" data-id="232575" data-url="/otel/limak-arcadia-sport-resort-all-inclusive-232575/" data-position="4" data-testid="near-hotel" data-swiper-slide-index="3" style="margin-right: 16px;">
+											<a href="/otel/limak-arcadia-sport-resort-all-inclusive-232575/" target="_blank"><div class="card-img-top"><img class="lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn3.enuygun.com/media/lib/365x200/uploads/image/limak-arcadia-sport-resort-serik-76492615.webp" alt="Aquaworld Belek - All inclusive (Serik, Antalya) En Uygun Fiyatlı Rezervasyon | ENUYGUN" data-testid="featured-hotel-image"></div></a><div class="card-body d-flex flex-column justify-content-between">
+												<a href="/otel/limak-arcadia-sport-resort-all-inclusive-232575/" target="_blank">
+													<div>
+														<span class="card-title">Limak Arcadia Sport Resort - All Inclusive</span><p class="card-text">
+															Belek,
+															Serik,
+															Serik
+														</p>
+													</div><div class="tripadvisor just-rate" data-rate-text="Olağanüstü" data-rate-value="10" data-rate-localized="10,0"></div>
+												</a><a href="/otel/limak-arcadia-sport-resort-all-inclusive-232575/" target="_blank" class="btn btn-success btn-lg d-flex justify-content-center align-items-center">
+													Seç <span class="ei-chevron-right"></span>
+												</a>
+											</div>
+										</div><div class="swiper-slide card card-vertical" data-id="107536" data-url="/otel/susesi-luxury-resort-all-inclusive-107536/" data-position="5" data-testid="near-hotel" data-swiper-slide-index="4" style="margin-right: 16px;">
+											<a href="/otel/susesi-luxury-resort-all-inclusive-107536/" target="_blank"><div class="card-img-top"><img class="lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn3.enuygun.com/media/lib/365x200/uploads/image/susesi-luxury-resort-serik-76467752.webp" alt="Aquaworld Belek - All inclusive (Serik, Antalya) En Uygun Fiyatlı Rezervasyon | ENUYGUN" data-testid="featured-hotel-image"></div></a><div class="card-body d-flex flex-column justify-content-between">
+												<a href="/otel/susesi-luxury-resort-all-inclusive-107536/" target="_blank">
+													<div>
+														<span class="card-title">Susesi Luxury Resort - All Inclusive</span><p class="card-text">
+															Belek,
+															Serik,
+															Serik
+														</p>
+													</div><div class="tripadvisor just-rate" data-rate-text="Olağanüstü" data-rate-value="10" data-rate-localized="10,0"></div>
+												</a><a href="/otel/susesi-luxury-resort-all-inclusive-107536/" target="_blank" class="btn btn-success btn-lg d-flex justify-content-center align-items-center">
+													Seç <span class="ei-chevron-right"></span>
+												</a>
+											</div>
+										</div><div class="swiper-slide card card-vertical" data-id="745706" data-url="/otel/paloma-hotels-grida/" data-position="6" data-testid="near-hotel" data-swiper-slide-index="5" style="margin-right: 16px;">
+											<a href="/otel/paloma-hotels-grida/" target="_blank"><div class="card-img-top"><img class="lazy" src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" data-src="https://cdn3.enuygun.com/media/lib/365x200/uploads/image/paloma-hotels-grida-antalya-40738793.webp" alt="Aquaworld Belek - All inclusive (Serik, Antalya) En Uygun Fiyatlı Rezervasyon | ENUYGUN" data-testid="featured-hotel-image"></div></a><div class="card-body d-flex flex-column justify-content-between">
+												<a href="/otel/paloma-hotels-grida/" target="_blank">
+													<div>
+														<span class="card-title">Paloma Hotels Grida</span><p class="card-text">
+															Serik,
+															Antalya
+														</p>
+													</div><div class="tripadvisor just-rate" data-rate-text="" data-rate-value="0" data-rate-localized="0,0"></div>
+												</a><a href="/otel/paloma-hotels-grida/" target="_blank" class="btn btn-success btn-lg d-flex justify-content-center align-items-center">
+													Seç <span class="ei-chevron-right"></span>
+												</a>
+											</div>
+										</div>
+									</div><div class="swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal"><span class="swiper-pagination-bullet swiper-pagination-bullet-active" data-testid="pagination-bullet"></span><span class="swiper-pagination-bullet" data-testid="pagination-bullet"></span><span class="swiper-pagination-bullet" data-testid="pagination-bullet"></span><span class="swiper-pagination-bullet" data-testid="pagination-bullet"></span><span class="swiper-pagination-bullet" data-testid="pagination-bullet"></span><span class="swiper-pagination-bullet" data-testid="pagination-bullet"></span></div>
+								</div>
+							</section>
+							@* <section class="detail-faq">
+								<h2 class="detail-content__title font-weight-600 mb-4" data-testid="faq-title">
+									Sıkça Sorulan Sorular
+								</h2><div class="accordion" itemscope="" itemtype="https://schema.org/FAQPage" data-testid="faq-info">
+									<div class="accordion__item" itemscope="" itemprop="mainEntity" itemtype="https://schema.org/Question" data-testid="faq-question">
+										<div class="accordion__item-header"><h3 class="accordion__item-title" itemprop="name">Tesiste misafirler hangi konseptlerle konaklayabilir?</h3><i class="ei-keyboard_arrow_down"></i></div><div class="accordion__item-content" itemscope="" itemprop="acceptedAnswer" itemtype="https://schema.org/Answer" data-testid="faq-answer">
+											<div itemprop="text">
+												<ul><li>Her Şey Dahil</li></ul><p>
+													Tesiste bulunan konseptlerde sunulan hizmetleri incelemek için <a class="js-sss-scroll-link" href="#accommodation-list">tıklayın</a>
+												</p>
+											</div>
+										</div>
+									</div><div class="accordion__item" itemscope="" itemprop="mainEntity" itemtype="https://schema.org/Question" data-testid="faq-question"><div class="accordion__item-header"><h3 class="accordion__item-title" itemprop="name">Tesis havalimanı ve şehir merkezine ne kadar uzaklıkta?</h3><i class="ei-keyboard_arrow_down"></i></div><div class="accordion__item-content" itemscope="" itemprop="acceptedAnswer" itemtype="https://schema.org/Answer" data-testid="faq-answer"><div itemprop="text"><p>Aquaworld Belek - All inclusive otelin havalimanı ve şehir merkezine olan uzaklığı;</p><ul><li>Antalya (37 km)</li><li>Suleyman Demirel (182 km)</li></ul></div></div></div><div class="accordion__item" itemscope="" itemprop="mainEntity" itemtype="https://schema.org/Question" data-testid="faq-question"><div class="accordion__item-header"><h3 class="accordion__item-title" itemprop="name">Tesisin ücretli ve ücretsiz sunduğu olanaklar hangileridir?</h3><i class="ei-keyboard_arrow_down"></i></div><div class="accordion__item-content" itemscope="" itemprop="acceptedAnswer" itemtype="https://schema.org/Answer" data-testid="faq-answer"><div itemprop="text"><p>Tesisin sunduğu olanaklar;</p><p>Ücretsiz olanaklar</p><ul><li>Kapalı havuz</li><li>Açık havuz</li><li>Kuaför salonu</li><li>Sauna</li><li>Su kaydırağı</li></ul><p>Ücretli olanaklar</p><ul><li>Atari salonu/oyun odası(ücretli)</li><li>Jetski(ücretli)</li><li>Katamaran Yolculuğu(ücretli)</li><li>Bilardo(ücretli)</li><li>Masaj(ücretli)</li></ul></div></div></div><div class="accordion__item" itemscope="" itemprop="mainEntity" itemtype="https://schema.org/Question" data-testid="faq-question">
+										<div class="accordion__item-header"><h3 class="accordion__item-title" itemprop="name">Tesiste hangi tip odalar bulunuyor?</h3><i class="ei-keyboard_arrow_down"></i></div><div class="accordion__item-content" itemscope="" itemprop="acceptedAnswer" itemtype="https://schema.org/Answer" data-testid="faq-answer">
+											<div itemprop="text">
+												<ul><li>Standart 1 Çift Kişilik Yatak</li><li>Standart Çift Kişilik Tek Kişi Kullanım</li><li>Village Aile Odası</li><li>Palace Kara Manzaralı Oda</li><li>Village Standart Oda Villa</li></ul><p>
+													Bu odalardan birine rezervasyon yaptırmak için hemen <a class="js-sss-scroll-link" href="#RoomAvailability">tıklayın</a>
+												</p>
+											</div>
+										</div>
+									</div><div class="accordion__item" itemscope="" itemprop="mainEntity" itemtype="https://schema.org/Question" data-testid="faq-question">
+										<div class="accordion__item-header"><h3 class="accordion__item-title" itemprop="name">Tesiste kaç adet oda bulunuyor?</h3><i class="ei-keyboard_arrow_down"></i></div><div class="accordion__item-content" itemscope="" itemprop="acceptedAnswer" itemtype="https://schema.org/Answer" data-testid="faq-answer">
+											<div itemprop="text">
+												<p>Tesiste konaklayabileceğiniz toplam 16 oda bulunuyor.</p><p>
+													Rezervasyon yapmak için hemen <a class="js-sss-scroll-link" href="#RoomAvailability">tıklayın</a>
+												</p>
+											</div>
+										</div>
+									</div><div class="accordion__item" itemscope="" itemprop="mainEntity" itemtype="https://schema.org/Question" data-testid="faq-question"><div class="accordion__item-header"><h3 class="accordion__item-title" itemprop="name">Tesis için giriş ve çıkış saatleri nelerdir?</h3><i class="ei-keyboard_arrow_down"></i></div><div class="accordion__item-content" itemscope="" itemprop="acceptedAnswer" itemtype="https://schema.org/Answer" data-testid="faq-answer"><div itemprop="text"><p>Otel için check-in saati 14:00'dan sonra başlar. Checkout işlemlerini ise 12:00 kadar yapabilirsiniz.</p></div></div></div>
+								</div>
+							</section> *@
+						</div><div id="MobileButtonBooking" style="display: flex;" class="mobile-btn-booking-wrapper flex-row mobile-booking-border">
+							<div class="w-100 h-5 d-flex justify-content-between">
+								<div id="stickyOfferSummary"><div class="d-flex flex-column"><span class="price-range-label pb-1">Toplam oda fiyatı</span></div></div><button class="btn btn-success btn-lg jsGotoRoom ml-3 select-room-button" data-testid="hotel-room-focus" style="display:block !important">
+									Oda seç
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="persons d-none">
+					<div>
+						<div class="person person0">
+							<fieldset>
+								<legend></legend>
+								<div class="row">
+									<div class="col-xl-3 col-lg-4 col-sm-6">
+										<label>
+											<div>نام</div>
+											<input type="text" id="person0name" class="form-control" />
+										</label>
+									</div>
+									<div class="col-xl-3 col-lg-4 col-sm-6">
+										<label>
+											<div>نام خانوادگی</div>
+											<input type="text" id="person0lname" class="form-control" />
+										</label>
+									</div>
+									<div class="col-xl-3 col-lg-4 col-sm-6">
+										<label>
+											<div>کد ملی</div>
+											<input type="text" id="person0nationalcode" class="form-control" />
+										</label>
+									</div>
+									<div class="col-xl-3 col-lg-4 col-sm-6">
+										<label>
+											<div>موبایل</div>
+											<input type="text" id="person0mobile" class="form-control" />
+										</label>
+									</div>
+									<div class="col-xl-3 col-lg-4 col-sm-6">
+										<label>
+											<div>ایمیل</div>
+											<input type="text" id="person0email" class="form-control" />
+										</label>
+									</div>
+									<div class="col-xl-3 col-lg-4 col-sm-6">
+										<label>
+											<div>شماره پاسپورت</div>
+											<input type="text" id="person0PassaportNo" class="form-control" />
+										</label>
+									</div>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+					<div class="col-xl-3 col-lg-4 col-sm-6">
+						<button id="savePersonInfoButton" class="btn btn-primary">تایید و ارسال</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+@section headerupper {
+	@* <link rel="preload" href="https://cdn2.enuygun.com/media/lib/uploads/image/homepages-summer-bg-59600.webp" as="image" /> *@
+	<script>
+		function handleOneTrustLoad() {
+			if (typeof window === "undefined" || !("OneTrust" in window)) return;
+
+			const $ot = window.OneTrust;
+
+			if (!$ot?.IsAlertBoxClosedAndValid()) {
+				const $ot_c00002 = document.getElementById("ot-group-id-C0002");
+				const $ot_c00004 = document.getElementById("ot-group-id-C0004");
+
+				if ($ot_c00002.checked) {
+					$ot_c00002.click();
+				}
+				if ($ot_c00004.checked) {
+					$ot_c00004.click();
+				}
+			}
+		}
+	</script>
+	<link rel="preload" as="script" href="/enuygun/consent/OtAutoBlock.js" />
+	<link rel="preload" as="script" href="/enuygun/scripttemplates/otSDKStub.js" data-document-language="true" charset="UTF-8" data-domain-script="09f1c894-2c3f-4626-977c-910163434b5b" />
+	@* <script type="text/javascript" src="/enuygun/consent/OtAutoBlock.js"></script> *@
+	@* <script type="text/javascript" src="/enuygun/chunks/search.js"></script> *@
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+	@* <link href="/netcharge/css/swiper-bundle.min.css" rel="stylesheet" /> *@
+
+	<script src="/enuygun/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8"></script>
+	<script id="optanon-wrapper" type="text/javascript">
+		{
+			function OptanonWrapper() {
+				handleOneTrustLoad();
+			}
+		}
+	</script>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+	<script type="text/javascript" src="/enuygun/chunks/hotel.js">
+
+	</script>
+	<link href="/enuygun/css/hotel-sp.css" rel="stylesheet" />
+	<meta name="theme-color" content="#2dc44d" />
+	<meta name="description" content="2 Eylül Tarihli Antalya Otel Arama Sonuçları listeleniyor." />
+	<meta name="keywords" content="" />
+	<meta property="fb:app_id" content="166275857694" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="2 Eylül Tarihli Antalya Otel Arama Sonuçları | ENUYGUN" />
+	<meta property="og:description" content="2 Eylül Tarihli Antalya Otel Arama Sonuçları listeleniyor." />
+	<meta property="og:image" content="https://cdn.enuygun.com/otel/v-26128/static/images/og-image.jpg" />
+	<meta property="og:locale" content="fa_IR" />
+	<meta name="apple-itunes-app" content="app-id=669210250" app-argument=" https://apps.apple.com/tr/app/id669210250" />
+	<meta name="google-play-app" content="app-id=com.mobilatolye.android.enuygun" />
+	<meta http-equiv="content-language" content="fa" />
+
+	<meta name="robots" content="noindex" />
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" type="text/css" media="print" onload="this.media='all'" />
+	<link rel="shortcut icon" href="https://cdn.enuygun.com/bundles/enuygunwebui/img/favicon.ico?v=3" />
+	<link rel="apple-touch-icon" href="https://cdn.enuygun.com/otel/static/images/touch-icon-iphone.png" />
+	<script>
+		var loadJS = function (src, done) {
+			var script = document.createElement("script");
+			script.src = src;
+			script.onload = function () {
+				done && done();
+			};
+			script.onerror = function () {
+				done && done();
+			};
+			document.head.appendChild(script);
+		};
+	</script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+	</script>
+	<script>
+		window.addEventListener("load", function () {
+			loadJS("https://cdn.enuygun.com/otel/v-26128/build/sentry.js");
+		});
+	</script>
+	<link rel="stylesheet" href="/enuygun/css/hotel.css" />
+	<link rel="stylesheet" href="/enuygun/css/hotel-room.css" />
+}
+
+
+@section Scripts {
+	<script>
+		(function () {
+			function c() {
+				var b = a.contentDocument || a.contentWindow.document;
+				if (b) {
+					// var d = b.createElement('script');
+					// d.innerHTML = "window.__CF$cv$params={r:'8b5b06e0b8b165e0',t:'MTcyNDA3OTc2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+					// b.getElementsByTagName('head')[0].appendChild(d)
+				}
+			}
+			if (document.body) {
+				var a = document.createElement('iframe');
+				a.height = 1;
+				a.width = 1;
+				a.style.position = 'absolute';
+				a.style.top = 0;
+				a.style.left = 0;
+				a.style.border = 'none';
+				a.style.visibility = 'hidden';
+				document.body.appendChild(a);
+				if ('loading' !== document.readyState) c();
+				else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c);
+				else {
+					var e = document.onreadystatechange || function () { };
+					document.onreadystatechange = function (b) {
+						e(b);
+						'loading' !== document.readyState && (document.onreadystatechange = e, c())
+					}
+				}
+			}
+		})();
+	</script>
+	<script defer src="/enuygun/chunks/vcd15cbe7772f49c399c6a5babf22c1241717689176015.js" data-cf-beacon='{"rayId":"8b5b06e0b8b165e0","serverTiming":{"name":{"cfL4":true}},"version":"2024.7.0","token":"6651ec1d9c3a41999fc99682236c8d1b"}'></script>
+
+	<form enctype="multipart/form-data" action="/Travel/SendToBMS" id="frm_SendToBMS" method="post">
+		<input type="hidden" name="property_id" id="property_id" />
+		<input type="hidden" name="room_type_id" id="room_type_id" />
+		<input type="hidden" name="check_in" value="@ViewBag.input.checkInDate" />
+		<input type="hidden" name="check_out" value="@ViewBag.input.checkOutDate" />
+
+		@*
+	<input type="hidden" name="booker_first_name" id="booker_first_name" value="" />
+	<input type="hidden" name="booker_last_name" id="booker_last_name" value="" />
+	<input type="hidden" name="booker_phone" id="booker_phone" value="" />
+	<input type="hidden" name="booker_email" id="booker_email" value="" /> *@
+
+		<input type="hidden" name="rate_plan_id" id="rate_plan_id" value="" />
+		<input type="hidden" name="count" id="count" value="1" />
+		<input type="hidden" name="guest_city_id" id="guest_city_id" value="@ViewBag.input.city" />
+		<input type="hidden" name="adult_count" id="adult_count" value="@ViewBag.input.Adult" />
+		@for (var i = 0; ViewBag.input.Childs != null && i < ViewBag.input.Childs.Length; i++)
+		{
+			<input type="hidden" name="children[@i]" value="@ViewBag.input.Childs[i]" />
+		}
+		<input type="hidden" name="webserviceRunDatailLogId" id="webserviceRunDatailLogId" value="@Model.Hotel24WorkflowDataRes.webserviceRunDatailLogId" />
+		<input type="hidden" name="WorkFlowRunLogDetailId" id="WorkFlowRunLogDetailId" value="@Model.Hotel24WorkflowDataRes.WorkFlowRunLogDetailId" />
+		<input type="hidden" name="workflowrunid" id="workflowrunid" value="@Model.Hotel24WorkflowDataRes.workflowrunid" />
+		<input type="hidden" name="WorkFlowDetailsId" id="WorkFlowDetailsId" value="@Model.Hotel24WorkflowDataRes.WorkFlowDetailsId" />
+
+		@*
+	public string checkInDate { get; set; }
+	public string checkOutDate { get; set; }
+	public int? city { get; set; }
+	public string roomDetail { get; set; }
+	public int Adult { get; set; }
+	public int[] Childs { get; set; } = null;
+
+
+	public int adult_count { get; set; }
+	public int[] children { get; set; }
+	public string guest_first_name { get; set; }
+	public string guest_last_name { get; set; }
+	public string guest_phone { get; set; }
+	public string guest_email { get; set; }
+	public string guest_national_code { get; set; }
+	public string guest_passport_number { get; set; }
+	public int guest_country_id { get; set; } = 222;
+	public int guest_city_id { get; set; } *@
+	</form>
+	<script>
+		var hotelid;
+		var roomid;
+		var personcount;
+		var datarateplanid;
+		$('.btn-reserve').on('click', function () {
+			//data-hotelid="@@item.HotelId" data-roomid="@@item.RoomTypeId" data-person-count
+			hotelid = $(this).attr('data-hotelid');
+			$('#property_id').val(hotelid);
+			roomid = $(this).attr('data-roomid');
+			$('#room_type_id').val(roomid);
+			datarateplanid = $(this).attr('data-rate-plan-id');
+			$('#rate_plan_id').val(datarateplanid);
+			personcount = $(this).attr('data-person-count');
+			$('#adult_count').val(personcount);
+			$('.HotelResult__container').addClass('d-none');
+			$('.persons').removeClass('d-none');
+			$('.persons .person:not(.person0)').remove();
+			$('fieldset').eq(0).find('legend').html('مشخصات نفر 1 :');
+			for (var i = 0; i < personcount; i++) {
+				if (i > 0) {
+					var newPerson = $('.person0').parent().html();
+					newPerson = newPerson.split('id="person0').join('id="person' + i);
+					$('.person0').parent().append(newPerson);
+
+					$('fieldset').eq(i).find('legend').html('مشخصات نفر ' + (i + 1).toString() + ' :');
+				}
+				$('#frm_SendToBMS').append('<input type="hidden" name="guests[' + i + '].first_name" id="guests' + i + '_first_name" value="" />');
+				$('#frm_SendToBMS').append('<input type="hidden" name="guests[' + i + '].last_name" id="guests' + i + '_last_name" value="" />');
+				$('#frm_SendToBMS').append('<input type="hidden" name="guests[' + i + '].phone" id="guests' + i + '_phone" value="" />');
+				$('#frm_SendToBMS').append('<input type="hidden" name="guests[' + i + '].email" id="guests' + i + '_email" value="" />');
+				$('#frm_SendToBMS').append('<input type="hidden" name="guests[' + i + '].national_code" id="guests' + i + '_national_code" value="" />');
+				$('#frm_SendToBMS').append('<input type="hidden" name="guests[' + i + '].passport_number" id="guests' + i + '_passport_number" value="" />');
+			}
+		});
+		$('#savePersonInfoButton').on('click', function () {
+			for (var i = 0; i < personcount; i++) {
+				$('#guests' + i + '_first_name').val($('#person' + i + 'name').val());
+				$('#guests' + i + '_last_name').val($('#person' + i + 'lname').val());
+				$('#guests' + i + '_phone').val($('#person' + i + 'mobile').val());
+				$('#guests' + i + '_email').val($('#person' + i + 'email').val());
+				$('#guests' + i + '_national_code').val($('#person' + i + 'nationalcode').val());
+				$('#guests' + i + '_passport_number').val($('#person' + i + 'PassaportNo').val());
+			}
+			$('#frm_SendToBMS').submit();
+		})
+	</script>
+	@* <script src="/netcharge/js/swiper-bundle.min.js"></script> *@
+	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+	<script type="text/javascript">
+
+		var swiper = new Swiper(".highlighted-slider", {
+			navigation: {
+				nextEl: ".swiper-control-next",
+				prevEl: ".swiper-control-prev",
+			},
+		});
+	</script>
+	<script type="text/javascript">
+
+		var swiper = new Swiper(".detail-content__info.swiper", {
+			navigation: {
+				nextEl: ".swiper-control-next",
+				prevEl: ".swiper-control-prev",
+			},
+		});
+	</script>
+
+	<script type="text/javascript">
+		var Hotels = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model.Hotels))');
+		var Rooms = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model.Rooms))');
+	</script>
+	<script type="text/javascript">
+		$('.HotelResult__item').on('click', function () {
+			var hotelId = $(this).attr('data-hotel-id');
+			window.location.href = window.location.href.replace("Hotels", "Hotel")+"&hotelId="+hotelId;
+			// $('.HotelResult__container').addClass('d-none');
+			// $('.hotel').removeClass('d-none');
+			// $('#hotelModalShower').trigger('click');
+		})
+	</script>
+	<button type="button" class="btn btn-info btn-lg" id="hotelModalShower" data-toggle="modal" data-target="#hotelModal" style="display:none">Open Modal</button>
+
+	<!-- Modal -->
+	<div id="hotelModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="body-content">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">بازگشت</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<script>
+		var beforeTop = 0;
+		$(document).on('scroll', function () {
+			if(beforeTop<$(document).scrollTop()){
+				
+				if ($(document).scrollTop() > $('.hotel-tabs').eq(0).parent()[0].offsetTop + 230) {
+					$('.hotel-tabs').eq(0).addClass('sticky-tab')
+				} else {
+					$('.hotel-tabs').eq(0).removeClass('sticky-tab')
+				}
+				setTabScrollTo($(document).scrollTop());
+			} 
+			
+			else {
+				$('.hotel-tabs').eq(0).removeClass('sticky-tab')
+			}
+			beforeTop = $(document).scrollTop();
+		});
+
+		function setTabScrollTo(scrollTop) {
+			for (var i = 0; i < $('.scroll-to').length; i++) {
+				try {
+
+					var elemQuery = $('.scroll-to').eq(i).attr('href');
+					var hasActive = $('.scroll-to').eq(i).hasClass('active');
+					var nextElemOffsetTop = 0;
+					if (i + 1 < $('.scroll-to').length) {
+
+						var nextElemQuery = $('.scroll-to').eq(i + 1).attr('href');
+						nextElemOffsetTop = $(nextElemQuery)[0].offsetTop + 230;
+					}
+					else
+						nextElemQuery = 999999999999;
+					if (scrollTop > $(elemQuery)[0].offsetTop + 230 && scrollTop <= nextElemOffsetTop && hasActive == false) {
+						$('.scroll-to').removeClass('active');
+						$('.scroll-to').eq(i).addClass('active');
+						$('.scroll-to').eq(i).addClass('active');
+					}
+
+				} catch (err) {
+					console.log("error in setTabScrollTo i:" + i + " ,$('.scroll-to').length:" + $('.scroll-to').length + " , err:" + err)
+				}
+
+			}
+		}
+		$('.scroll-to').on('click',function(){
+			$('.scroll-to').removeClass('active');
+			$(this).addClass('active');
+			$(this).addClass('active');
+			var elemQuery=$(this).attr('href');
+			$(document).scrollTop($(elemQuery)[0].offsetTop + 180);
+		})
+	</script>
+
+}

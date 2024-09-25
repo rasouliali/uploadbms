@@ -221,7 +221,7 @@
                                 country: "multi-destination" === R ? e.multi[0].destination.country_code : e.destination.country_code,
                                 p: "search"
                             }),
-                            c = "/Travel/Hotel/?".concat(s);
+                            c = "/Travel/Hotels/?".concat(s);
                         window.open("".concat(Y, "/").concat(z, "/").concat(C), "_blank"), window.location.href = c
                     }
                     A || (window.location.href = "".concat(Y, "/").concat(z, "/").concat(C))
@@ -242,20 +242,20 @@
                         checkInDate: n,
                         checkOutDate: t
                     };
-                    return "konumum" === a.slug && l ? "/Travel/Hotel/?".concat(new URLSearchParams({
+                    return "konumum" === a.slug && l ? "/Travel/Hotels/?".concat(new URLSearchParams({
                         ...r,
                         city: a.id,
                         roomDetail: p(o),
                         lat: l.latitude.toString(),
                         lon: l.longitude.toString(),
-                    })) : i.id ? "/Travel/Hotel/?".concat(new URLSearchParams({
+                    })) : i.id ? "/Travel/Hotels/?".concat(new URLSearchParams({
                         ...r,
                         city: i.id,
                         rooms: p(o),
                         autoRequest: "1",
                         country: a.countryCode,
                         p: "hotel_detail"
-                    })) : "/Travel/Hotel/?".concat(new URLSearchParams({
+                    })) : "/Travel/Hotels/?".concat(new URLSearchParams({
                         ...r,
                         city: a.id,
                         roomDetail: p(o),
