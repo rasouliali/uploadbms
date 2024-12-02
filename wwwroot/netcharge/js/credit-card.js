@@ -360,7 +360,8 @@ function getPrice() {
 }
 function getOpt() {
     var opt = $("#operator").val().trim();
-    return opt == 0 ? "mci" : opt == 1 ? "mtn" : opt == 3 ? "rtl" : "mci";
+    //return opt == 0 ? "mci" : opt == 1 ? "mtn" : opt == 3 ? "rtl" : "mci";//for satpay
+    return opt == 0 ? "Mci" : opt == 1 ? "Mtn" : opt == 3 ? "Rightel" : "Mci";//for api24
 }
 $('.form_credit_card_drop_down_service').change(e => {
     let _this = $(e.currentTarget);
