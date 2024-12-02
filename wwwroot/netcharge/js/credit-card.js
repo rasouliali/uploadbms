@@ -548,7 +548,7 @@ $('.btn_remove_text_input').click(e => {
 var options = {
     valueNames: ['search_user_name']
 };
-var userList = new List('users', options);
+//var userList = new List('users', options);
 
 
 // تبدیل عدد به حروف فارسی
