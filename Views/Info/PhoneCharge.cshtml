@@ -2,13 +2,6 @@
 	Layout = "~/Views/Shared/_LayoutNetCharge.cshtml";
 }
 	<div id="wrapper-buy-credit">
-	<form class="buy-credit-form" action="/Info/ShoppingData" method="post"  autocomplete="off">
-		@Html.Hidden("WorkFlowId", 2009)
-		@Html.Hidden("ShoppingPageId", 1016)
-		@Html.Hidden("price", "")
-		@Html.Hidden("mobile", "")
-		@Html.Hidden("operator", "")
-		@Html.Hidden("isAmazingCharge", "")
 			<section class="buy-credit-section buy-credit-step-1 d-flex" style="opacity: 1;">
 
 
@@ -838,7 +831,6 @@
 					پرداخت با کارت بانکی
 				</button>
 			</section>
-		</form>
 		<section class="successful-transaction-page">
 			<header class="header__mobile__sharge">
 				<div>
@@ -904,6 +896,15 @@
 		</section>
 	</div>
 
+	
+	<form class="buy-credit-form" action="/Info/ShoppingData" method="post"  autocomplete="off">
+		@Html.Hidden("WorkFlowId", 2009)
+		@Html.Hidden("ShoppingPageId", 1016)
+		@Html.Hidden("price", "")
+		@Html.Hidden("mobile", "")
+		@Html.Hidden("operator", "")
+		@Html.Hidden("isAmazingCharge", "")
+		</form>
 @section Scripts{
 	<script src="/netcharge/js/credit-card.js" asp-append-version="true"></script>
 	<script type="text/javascript">
