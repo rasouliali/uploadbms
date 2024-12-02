@@ -3,7 +3,7 @@
 }
 	<div id="wrapper-buy-credit">
 	<form class="buy-credit-form" action="/Info/ShoppingData" method="post"  autocomplete="off">
-		@Html.Hidden("WorkFlowId", 2004)
+		@Html.Hidden("WorkFlowId", 2009)
 		@Html.Hidden("ShoppingPageId", 1016)
 		@Html.Hidden("price", "")
 		@Html.Hidden("mobile", "")
@@ -907,14 +907,14 @@
 @section Scripts{
 	<script src="/netcharge/js/credit-card.js" asp-append-version="true"></script>
 	<script type="text/javascript">
-		$.post('/JsonData/GetData', { typeData: 100102 }, function (data) {
+		$.post('/JsonData/GetData', { typeData: 100103 }, function (data) {
 			var mydate=new Date();
 			if (data) {
 				var params = JSON.parse(data);
 				mydate = new Date(params[0].LatestGetToken);
 			}
 			if (new Date().getTime() - (24 * 60 * 60 * 1000) > mydate.getTime())
-				$.post('/Info/ShoppingData', { WorkFlowId: 2006 }, function (data2) { });
+				$.post('/Info/ShoppingData', { WorkFlowId: 2008 }, function (data2) { });
 		});
 	</script>
 }
