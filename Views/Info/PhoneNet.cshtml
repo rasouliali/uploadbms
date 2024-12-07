@@ -190,12 +190,11 @@
 							<div x-data class="filter-list-ul">
 								<ul @@click.outside="$('.filter-list-ul').slideUp('fast');">
 									<li class="internet-package-filter-ul-li" data-value="-1">مدت</li>
-									<li class="internet-package-filter-ul-li" data-value="0">ساعتی</li>
 									<li class="internet-package-filter-ul-li" data-value="1">روزانه</li>
-									<li class="internet-package-filter-ul-li" data-value="7">هفتگی</li>
-									<li class="internet-package-filter-ul-li" data-value="30">ماهانه</li>
-									<li class="internet-package-filter-ul-li" data-value="60">دو ماهه</li>
-									<li class="internet-package-filter-ul-li" data-value="120">چهار ماهه</li>
+									<li class="internet-package-filter-ul-li" data-value="2">هفتگی</li>
+									<li class="internet-package-filter-ul-li" data-value="3">ماهانه</li>
+									<li class="internet-package-filter-ul-li" data-value="4">بلند مدت</li>
+									<li class="internet-package-filter-ul-li" id="deka" data-value="5">دکا</li>
 								</ul>
 							</div>
 							<div x-data class="filter-list-ul-type">
@@ -332,7 +331,7 @@
 		
 
 		<script type="text/javascript">
-			$.post('/JsonData/GetData', { typeData: 100102 }, function (data) {
+			$.post('/JsonData/GetData', { typeData: 100103 }, function (data) {
 				var mydate = new Date();
 				if (data) {
 					var params = JSON.parse(data);
@@ -340,7 +339,7 @@
 
 				}
 			if (new Date().getTime() - (24 * 60 * 60 * 1000) > mydate.getTime())
-					$.post('/Info/ShoppingData', { WorkFlowId: 2006 }, function (data2) { });
+				$.post('/Info/ShoppingData', { WorkFlowId: 2008 }, function (data2) { });
 			});
 		</script>
 
