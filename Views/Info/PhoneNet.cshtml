@@ -309,7 +309,7 @@
 							</p>
 							<p>
 								<span class="data-time-icon __icon"></span>
-								<span class="text">`+ data.PeriodDay + ` روزه</span>
+								<span class="text">`+ (data.PeriodDay==1?"1 روزه":data.PeriodDay==2?"7 روزه":data.PeriodDay==3?"30 روزه":data.PeriodDay==4?"بلند مدت":data.PeriodDay==5?"دکا":"") + ` </span>
 							</p>
 									<p class="m-0 fs-11">مبلغ با احتساب مالیات `+ numberWithCommas(data.AmountWithVat) + ` ریال</p>
 							<div class="amount-package">
