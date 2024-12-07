@@ -137,7 +137,14 @@ function autoSelectOperatorType(number) {
       el.prop('src', el.data('src2'))
       $('#operator').val(i)
     }
-  }
+    }
+    if ($('#operator').val() != '' && $('#deka').length > 0) {
+        if ($('#operator').val() == '3')
+            $('#deka').show();
+        else
+            $('#deka').hide();
+    }
+        
 }
 
 
