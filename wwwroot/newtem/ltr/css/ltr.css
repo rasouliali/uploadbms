@@ -1,0 +1,99 @@
+
+.top-center-title {
+    font-family: fontbold;
+    font-size: 35px;
+    text-align: center;
+    padding-top: 30px;
+    color: #FFF;
+  }
+
+/************** SELECT BOX **************/
+
+.select-group img {
+    left: calc(50% - 11px);
+}
+
+@media(min-width: 768px) {
+    .select-group, .sng {
+      float: left;
+    }
+    .select-hotel {
+        text-align: left;
+    }
+    .select-group img {
+        display: none;
+    }
+}
+
+
+.select-box {
+    float: left;
+}
+
+.modal-header .btn-close {
+    margin: -.5rem -.5rem -.5rem auto;
+}
+
+.search-item i {
+    margin-right: 10px;
+}
+
+.box-4-text {
+  float: left;
+}
+
+.box-4-icon {
+    float: left;
+}
+
+.bnav .menu {
+    float: left;
+}
+
+.profile-list i {
+    padding-right: 15px;
+}
+  
+.box-big-icon .text {
+  float: left;
+}
+
+.box-big-icon .icon {
+    float: right;
+    margin-right: 20px;
+}
+
+.search-top .icon-left,
+.search-top .icon-right,
+.search-top .search-detail {
+    float: left !important;
+    padding: 5px;
+}
+
+.search-menu-3 .menu-3 {
+    float: left;
+}
+
+.hotel-list .hotel-img,
+.hotel-list .hotel-detail {
+    float: left;
+}
+
+.hotel-list .hotel-img {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.hotel-thumb, .hotel-info i {
+    margin-right: 10px;
+}
+
+.accordion-button::after {
+    position: absolute;
+    right: 15px;
+}
+
+.reserve-price, .reserve-button {
+float: left;
+width: 50%;
+}

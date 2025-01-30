@@ -1,0 +1,6 @@
+[
+    {"id": "1", "city": "Istanbul", "country": "Turkiye", "hotel": "Santa Sophia Hotel"},
+    {"id": "1", "city": "Istanbul", "country": "Turkiye", "hotel": "Primero Hotel"},
+    {"id": "2", "city": "Tehran", "country": "Iran", "hotel": "Atana Hotel"},
+    {"id": "3", "city": "Tehran", "country": "Iran", "hotel": "Espinas Palas Hotel"}
+]

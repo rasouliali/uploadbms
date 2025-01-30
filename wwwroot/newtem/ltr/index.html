@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-icons.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/ltr.css?" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/lightpick.css">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div class="top">
+        <div class="logo">
+            <h1>Hampisheh</h1>
+        </div>
+        <div class="menu-icon">
+            <i class="bi bi-list"></i>
+        </div>
+
+        <div class="top-center-title d-none d-lg-block">
+          Sample Title
+        </div>
+    </div>
+
+    <div class="page">
+
+
+      <div id="tabscroll">
+        <div class="out-wrap">
+        <ul id="tabs" class="nav nav-tabs" role="tablist" dir="ltr">
+          <li role="presentation" class="nav-item"><a class="nav-link" data-bs-target="#tab1" data-id="1" aria-controls="tab1" role="tab" data-bs-toggle="tab"><i class="bi bi-airplane"></i> menu  1</a></li>
+          <li role="presentation" class="nav-item"><a class="nav-link active" data-bs-target="#tab2" data-id="2" aria-controls="tab2" role="tab" data-bs-toggle="tab"><i class="bi bi-car-front"></i> Hotel</a></li>
+          <li role="presentation" class="nav-item"><a class="nav-link" data-bs-target="#tab3" data-id="3" aria-controls="tab3" role="tab" data-bs-toggle="tab"><i class="bi bi-bus-front"></i> menu  3</a></li>
+          <li role="presentation" class="nav-item"><a class="nav-link" data-bs-target="#tab4" data-id="4" aria-controls="tab4" role="tab" data-bs-toggle="tab"><i class="bi bi-buildings"></i> menu  4</a></li>
+          <li role="presentation" class="nav-item"><a class="nav-link" data-bs-target="#tab5" data-id="5" aria-controls="tab5" role="tab" data-bs-toggle="tab"><i class="bi bi-people"></i> menu  5</a></li>
+          <li role="presentation" class="nav-item"><a class="nav-link" data-bs-target="#tab6" data-id="6" aria-controls="tab6" role="tab" data-bs-toggle="tab"><i class="bi bi-cash-coin"></i> menu 6</a></li>
+        </ul>
+      
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane fade" data-index="1" id="tab1"></div>
+          <div role="tabpanel" class="tab-pane active" data-index="2" id="tab2">
+            
+            <div class="select-group pt-3 pb-1">
+              <div class="select-hotel" data-bs-toggle="modal" data-bs-target="#Select_hotel">
+                <span class="">Select hotel</span>
+                <div class="hotel-name" id="hotel-name">hotel name</div>
+              </div>
+            </div>
+
+            <input type="hidden" id="search-id" name="search-id" value="" />
+
+            <div class="clearfix d-block d-md-none"></div>
+
+
+            <div class="select-group mt-2">
+              <div class="select-box" data-bs-toggle="modal" data-bs-target="#Select_date">
+                <div class="">start date</div>
+                <div class="day text-start" id="sday">01</div>
+                <div class="myear">
+                  <div class="year zz text-end" id="syear">year</div>
+                  <div class="month text-end" id="smonth">month</div>
+                </div>
+              </div>
+
+              <img src="img/calender.jpg" alt="" />
+
+              <div class="select-box" data-bs-toggle="modal" data-bs-target="#Select_date">
+                <div class="">end date</div>
+                <div class="day text-start" id="eday">02</div>
+                <div class="myear">
+                  <div class="year zz text-end" id="eyear">year</div>
+                  <div class="month text-end" id="emonth">month</div>
+                </div>
+                
+              </div>
+            </div>
+
+            <input type="hidden" id="go" name="go" value="" />
+
+            <div class="clearfix d-block d-md-none"></div>
+
+            <div class="select-group mt-2">
+              <div class="select-box-2" data-bs-toggle="modal" data-bs-target="#Select_person">
+                <div class="row">
+                  <div class="col">
+                    <strong>0 person </strong>/ economy
+                  </div>
+                  <div class="col">
+                    <strong>+</strong> add
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix d-block d-md-none"></div>
+
+            <div class="sng pt-3">
+              <form action="search-result.html">
+                <input type="submit" class="submit-button search-submit" value="Search" />
+              </form>
+            </div>
+
+          </div>
+          <div role="tabpanel" class="tab-pane fade" data-index="3" id="tab3"></div>
+          <div role="tabpanel" class="tab-pane fade" data-index="4" id="tab4"></div>
+          <div role="tabpanel" class="tab-pane fade" data-index="5" id="tab5"></div>
+          <div role="tabpanel" class="tab-pane fade" data-index="6" id="tab6"></div>
+        </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="content slidebox">
+      <h2 class="pb-3">Title</h2>
+      <button class="sp-btn" onClick="goPrecious()"><i class="bi bi-chevron-right"></i></button>
+      <button class="sn-btn" onClick="goNext()"><i class="bi bi-chevron-left"></i></button>
+      <div class="scroll-snap" id="scroll-snap">
+        
+
+        <div class="snap-box">
+          <div class="snap-title set-bg" data-bg="img/ber-1.jpg">
+            <h3>Instanbul</h3>
+          </div>
+          <div class="snap-detail">
+            <div class="row">
+              <div class="col-8 text-start"><span class="date-text">sample text</span></div>
+              <div class="col-4 text-end"><span class="percent">%30</span></div>
+              <div class="col-8 text-start"><span class="small-text">sample text for test</span></div>
+              <div class="col-4 text-end"><span class="price">2700 $</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="snap-box">
+          <div class="snap-title set-bg" data-bg="img/mad-1.jpg">
+            <h3>madrid</h3>
+          </div>
+          <div class="snap-detail">
+            <div class="row">
+              <div class="col-8 text-start"><span class="date-text">sample text</span></div>
+              <div class="col-4 text-end"><span class="percent">%30</span></div>
+              <div class="col-8 text-start"><span class="small-text">sample text for test</span></div>
+              <div class="col-4 text-end"><span class="price">2700 $</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="snap-box">
+          <div class="snap-title set-bg" data-bg="img/lon-1.jpg">
+            <h3>Instanbul</h3>
+          </div>
+          <div class="snap-detail">
+            <div class="row">
+              <div class="col-8 text-start"><span class="date-text">sample text</span></div>
+              <div class="col-4 text-end"><span class="percent">%30</span></div>
+              <div class="col-8 text-start"><span class="small-text">sample text for test</span></div>
+              <div class="col-4 text-end"><span class="price">2700 $</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="snap-box">
+          <div class="snap-title set-bg" data-bg="img/bus-1.jpg">
+            <h3>madrid</h3>
+          </div>
+          <div class="snap-detail">
+            <div class="row">
+              <div class="col-8 text-start"><span class="date-text">sample text</span></div>
+              <div class="col-4 text-end"><span class="percent">%30</span></div>
+              <div class="col-8 text-start"><span class="small-text">sample text for test</span></div>
+              <div class="col-4 text-end"><span class="price">2700 $</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+      <h2 class="pt-4 mt-4 pb-3">Title</h2>
+      <div class="row">
+        
+      <div class="col-12 col-lg-4">
+        <div class="box-4 clearfix">
+          <div class="box-4-icon blue-icon">
+            <i class="bi bi-ticket-perforated-fill"></i>
+          </div>
+          <div class="box-4-text">
+            <strong>Title 2</strong>
+            <br />
+            sample text for test
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="box-4 clearfix">
+          <div class="box-4-icon violet-icon">
+            <i class="bi bi-ticket-perforated-fill"></i>
+          </div>
+          <div class="box-4-text">
+            <strong>Title 3</strong>
+            <br />
+             sample text for test
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="box-4 clearfix">
+          <div class="box-4-icon red-icon">
+            <i class="bi bi-ticket-perforated-fill"></i>
+          </div>
+          <div class="box-4-text">
+            <strong>Title 4</strong>
+            <br />
+             sample text for test  
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <div class="bg-box set-bg" data-bg="img/50286.png">
+        <strong>Title</strong><br />
+         sample text for test 
+      </div>
+
+      <div class="bg-box set-bg" data-bg="img/50286.png">
+        <strong>Title</strong><br />
+         sample text for test 
+      </div>
+
+
+    </div>
+
+
+      <div class="modal fade" id="Select_hotel" tabindex="-1" aria-labelledby="Select_hotel_Label" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Select_hotel_Label">Please Select hotel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-search-box">
+                      <input type="text" id="search_hotel" class="form-control modal-input" placeholder="search hotel name" />
+                    </div>
+
+                    <div id="results1"></div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+
+
+
+      <div class="modal fade" id="Select_date" tabindex="-1" aria-labelledby="date_picker_Label" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen wdate">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="date_picker_Label">Select date</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" dir="ltr">
+                  <div id="date_result" class="text-success text-center"></div>
+                    <input type="text" class="datep" id="datepicker" />
+                </div>
+
+                <button data-bs-dismiss="modal" aria-label="Close" class="submit-button fix-bottom">close </button>
+            </div>
+        </div>
+      </div>
+
+
+
+      <div class="modal fade" id="Select_person" tabindex="-1" aria-labelledby="Select_person_Label" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Select_person_Label">add person</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                      <div class="col-8">
+                      text 1
+                      </div>
+                      <div class="col-4">
+                        <div class="counter">
+                            <button class="button" id="minus">-</button>
+                            <span class="number" id="number">0</span>
+                            <button class="button" id="plus">+</button>
+                        </div>
+                      </div>
+
+                      <div class="col-8 mt-3">
+                        text 2
+                      </div>
+                      <div class="col-4 mt-3">
+                        <div class="counter">
+                            <button class="button" id="minus2">-</button>
+                            <span class="number" id="number2">0</span>
+                            <button class="button" id="plus2">+</button>
+                        </div>
+                      </div>
+
+                      <hr class="mt-3" />
+
+                      <div id="options"></div>
+
+                      <button data-bs-dismiss="modal" aria-label="Close" class="submit-button fix-bottom">close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="bnav-space"></div>
+      <div class="bnav">
+
+          <div class="menu active">
+            <a href="hotel.html">
+              <i class="bi bi-search"></i>search
+            </a>
+          </div>
+          <div class="menu">
+            <a href="menu-2.html">
+              <i class="bi bi-2-circle"></i>menu 2
+            </a>
+          </div>
+          <div class="menu">
+            <a href="menu-3.html">
+              <i class="bi bi-3-circle"></i>menu 3
+            </a>
+          </div>
+          <div class="menu">
+            <a href="menu-4.html">
+              <i class="bi bi-4-circle"></i>menu 4
+            </a>
+          </div>
+          <div class="menu">
+            <a href="menu-5.html">
+              <i class="bi bi-person-circle"></i>menu 5
+            </a>
+          </div>
+
+      </div>
+
+
+      <script src="js/jquery.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+      <script src="js/bootstrap.js"></script>
+      <script src="js/moment.min.js"></script>
+      <script src="js/lightpick.js"></script>
+      <script src="js/script.js?????"></script>
+      <script>
+        function goPrecious() { document.getElementById('scroll-snap').scrollBy({ left: -20, behavior: 'smooth' }); }
+        function goNext() { document.getElementById('scroll-snap').scrollBy({ left: 20, behavior: 'smooth' }); }
+      </script>
+</body>
+</html>
