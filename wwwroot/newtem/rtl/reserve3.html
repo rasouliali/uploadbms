@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-icons.css" rel="stylesheet" />
+    <link href="css/style.css??" rel="stylesheet" />
+    <link href="css/rtl.css?" rel="stylesheet" />
+    <title>Document</title>
+</head>
+<body dir="rtl">
+  <div class="d-none d-lg-block desk-search">
+    <div class="container">
+      <div class="row">
+        <div class="col-3">
+          <h2>Hampisheh</h2>
+        </div>
+        <div class="col-9">
+          <div class="desk-search-links">
+            <a href="#">لینک 1</a>
+            <a href="#">لینک 2</a>
+            <a href="#">لینک 3</a>
+            <a href="#">لینک 4</a>
+            <a href="#">لینک 5</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <div class="search-top clearfix d-block d-lg-none">
+        <div class="icon-left">
+            <a href="#"><i class="bi bi-arrow-left-short"></i></a>
+        </div>
+        <div class="search-detail">
+            <h3>متن آزمایشی</h3>
+        </div>
+        <div class="icon-right">
+            <a href="#"><i class="bi bi-telephone-outbound-fill"></i></a>
+        </div>
+
+        
+    </div>
+
+    <div class="reserve">
+      <div class="form-box pb-2" data-bs-toggle="modal" data-bs-target="#Select_modal">
+        <i class="bi bi-airplane-fill rotate"></i>
+        <strong>تهران - استانبول</strong>
+        <br />
+        20 jun mon - 26 jun sun
+          
+      </div>
+    </div>
+
+    <div class="reserve">
+        <div class="form-box">
+          <h3>اطلاعات تماس</h3>
+            <div class="floating-label-content">
+                <input class="floating-input" type="email" placeholder=" ">
+                <label class="floating-label">ایمیل</label>
+            </div>
+
+            <div class="floating-label-content">
+                <input class="floating-input" type="tel" placeholder="">
+                <label class="floating-label">موبایل</label>
+            </div>
+      </div>
+
+    </div>
+
+
+
+
+    <div class="accordion acc-reserve" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              عنوان
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <div>
+                <a href="#" class="btn btn-outline-success">مسافر جدید</a>  
+
+                <div class="row ff pt-3">
+                  <div class="col-6">
+                    <div class="floating-label-content">
+                      <input class="floating-input" type="text" placeholder=" ">
+                      <label class="floating-label">نام </label>
+                  </div>
+                  </div>
+
+                  <div class="col-6">
+                    <div class="floating-label-content">
+                      <input class="floating-input" type="text" placeholder=" ">
+                      <label class="floating-label">نام خانوادگی</label>
+                  </div>
+                  </div>
+
+                  <div class="col-12 py-3">
+                    <select name="birth" placeholder="Date of bird" class="floating-input">
+                      <option>تولد</option>
+                    </select>
+                  </div>
+
+                  <div class="col-6">
+                    <label class="radio-box">مرد
+                        <input type="radio" checked="checked" name="radio1">
+                        <span class="checkmark"></span>
+                    </label>
+                  </div>
+                  <div class="col-6">
+                    <label class="radio-box">زن
+                        <input type="radio" name="radio1">
+                        <span class="checkmark"></span>
+                    </label>
+                  </div>
+
+
+                  <div class="col-12">
+                    انتخاب پاسپورت
+                  </div>
+                  <div class="col-12 py-3">
+                    <a href="#" class="btn btn-outline-success">پاسپورت جدید </a>  
+                  </div>
+
+                  <div class="col-12">
+                    <div class="floating-label-content">
+                      <input class="floating-input" type="text" placeholder=" ">
+                      <label class="floating-label">نام</label>
+                    </div>
+                  </div>
+                  <div class="col-12 pt-3">
+                    <select name="nationality" class="floating-input">
+                      <option>ملیت</option>
+                    </select>
+                  </div>
+                  <div class="col-12 py-3">
+                    <select name="expire" class="floating-input">
+                      <option>انقضا </option>
+                    </select>
+                  </div>
+                  
+
+
+                  <br /><br /><Br /><br /><br /><Br /><br /><br /><Br />
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        
+
+
+      <div class="reserve-bottom">
+        <div class="clearfix">
+            <div class="reserve-price">
+                <span>مبلغ</span>
+                <h2>120,00 $</h2>
+            </div>
+            <div class="reserve-button">
+                <button class="submit-button">رزرو</button>
+            </div>
+        </div>
+        <div class="reserve-text">متن تست متن تست متن تست</div>
+      </div>
+
+
+
+      <div class="modal fade" id="Select_modal" tabindex="-1" aria-labelledby="Select_modal_Label" aria-hidden="true">
+        <div class="modal-dialog modal-bottom">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Select_modal_Label">عنوان </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+
+                  <div class="reserve">
+                    <div class="form-box">
+
+                      <div class="row">
+                        <div class="col-3"><br />
+                          <br />
+                          <br />
+                          <div class="border-left-blue">
+                            متن
+                            <br />
+                            <br />
+                            <br />
+                            متن
+                          </div>
+                        </div>
+                        <div class="col-9">
+                          <h4>عنوان تست</h4>
+                          <p>ایران ایر</p>
+                          <a href="#" class="btn btn-primary btn-sm">18:00</a>
+                          <br />
+                          20 Jun mon
+                          <br />
+                          تهران، ایران
+                          <br />
+                          <a href="#" class="btn btn-secondary btn-sm">23:15</a>
+                          <br />
+                          20 Jun mon
+                          <br />
+                          استانبول
+                        </div>
+                      </div>
+
+                      <a href="#" class="btn btn-warning btn-sm mb-2">متن تست</a>
+                      <br />
+                      متن تست متن تست متن تست
+                      <br />
+                      
+                  </div>
+            
+                </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    
+
+
+      <script src="js/jquery.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+      <script src="js/bootstrap.js"></script>
+      <script src="js/script.js?"></script>
+      
+</body>
+</html>
