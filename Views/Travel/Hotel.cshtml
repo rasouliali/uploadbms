@@ -1,1072 +1,333 @@
-﻿@model Hotel24Dto
+﻿@model ShppaingPart.Models.Hotel24Dto
 @using Newtonsoft.Json;
 @{
-	ViewData["Title"] = "اطلاعات هتل ها";
-	Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+    ViewData["Title"] = "اطلاعات هتل ها";
+    Layout = "~/Views/Shared/_LayoutTravel.cshtml";
 }
 
-<h1>اطلاعات هتل</h1>
 
-<script>
-	function commafy(num) {
-		var str = num.toString().split('.');
-		if (str[0].length >= 5) {
-			str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-		}
-		if (str[1] && str[1].length >= 5) {
-			str[1] = str[1].replace(/(\d{3})/g, '$1 ');
-		}
-		return str.join(',');
-	}
 
-	function calcPrice(adultPrice, BabyPrice, adultCount, childsAges) {
-		var childPrice = 0;
-        adultCount = 1;
-		if (childsAges && childsAges.length > 0) {
-			var Frees = childsAges.filter(r => parseInt(r) <= 2);
-			if (Frees && Frees.length > 0) {
-				if (Frees.length > 1) {
-					childPrice = (childsAges.length - 1) * adultPrice;
-				}
+<div class="d-none d-lg-block desk-search">
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <h2>Hampisheh</h2>
+            </div>
+            <div class="col-9">
+                <div class="desk-search-links">
+                    <a href="#">لینک 1</a>
+                    <a href="#">لینک 2</a>
+                    <a href="#">لینک 3</a>
+                    <a href="#">لینک 4</a>
+                    <a href="#">لینک 5</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-			} else {
-				var halfPrice = childsAges.filter(r => parseInt(r) <= 7)
-				if (halfPrice && halfPrice.length > 0) {
-					if (halfPrice.length > 1) {
-						childPrice = (childsAges.length - 1) * adultPrice + BabyPrice;
-					} else {
-						childPrice = BabyPrice;
-					}
-				}
-			}
-			var adultsToo = childsAges.filter(r => parseInt(r) > 7).length;
-			adultCount += adultsToo;
+<div class="hotel-images set-bg d-block d-lg-none" data-bg="img/hotel1.jpg" data-bs-toggle="modal" data-bs-target="#hotel_img">
+    <div class="hotel-top-icons clearfix">
+        <div class="icon-left float-end">
+            <a href="#"><i class="bi bi-arrow-left-short"></i></a>
+        </div>
+        <div class="icon-right float-start">
+            <a href="#"><i class="bi bi-heart"></i></a>
+        </div>
+        <div class="icon-right float-start">
+            <a href="#"><i class="bi bi-box-arrow-up"></i></a>
+        </div>
+    </div>
+</div>
 
-		}
-		return " " + commafy(adultPrice * adultCount + childPrice) + " ريال";
-	}
-</script>
-<label class="txt-danger">
-	@ViewBag.Mess
-</label>
 @if (Model == null || Model.Hotels.Count == 0)
 {
-	return;
+    return;
 }
-<div id="stickyDiscountBanner"></div>
-<div id="detail-container" class="container">
-
-    <div id="specialOffer"></div>
-    <div class="hotel-detail-top ">
-        <div class="hotel-detail-top-container justify-content-between">
-            <div class="tripadvisor just-rate mt-3" data-rate-value="9.57" data-rate-text="فوق العاده" data-rate-localized="@Model.Hotel.score"></div>
-            <h1 class="hotel-name font-weight-600 mb-1 mt-4" data-testid="hotel-name">
-                @(Model.Hotel.name)
-
-                <div class="star-rating" title="@Model.Hotel.star ستاره">
-                    @{
-                        int star=0;
-                        if (int.TryParse(Model.Hotel.star, out star))
-                        {
-                            var i=1;
-                            for(;i<star;i++){
-                                                                                            <i class="ei-star"></i>
-                            }
-                            for(;i<=5;i++){
-                                                                                            <i class="ei-star-border" style="font-size: 22px;"></i>
+<div class="hotel-page-detail">
+    <div class="container">
+        <div class="row">
+            <div class="col-9">
+                <h1>@(Model.Hotel.name)</h1>
+                <div class="hotel-score">
+                    <div class="navy-bg float-start score rounded text-white px-2">@Model.Hotel.star</div>
+                    <span class="px-2">ستاره</span>
+                    <div class="float-end stars">
+                        @{
+                            int star = 0;
+                            if (int.TryParse(Model.Hotel.star, out star))
+                            {
+                                var i = 0;
+                                for (; i < star; i++)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
                             }
                         }
-                    }
-                </div>
-            </h1>
-            <div class="hotel-detail-address">
-                @(Model.Hotel.address)
-            </div>
-        </div>
-        <div id="shareButton">
-            <div class="share-button d-flex align-items-end font-weight-600"><img src="https://cdn.enuygun.com/otel/static/images/placeholder.svg" alt="Share Icon" width="16" height="22" /> به اشتراک بگذار </div>
-        </div><button class="btn btn-success btn-lg btn-booking jsGotoRoom ml-3 disabled-button" data-testid="hotel-room-focus">رزرو کن</button>
-    </div>
-    <div id="hotelSliderArea" class="hotel-slider-area d-flex">
-        @if (Model.Hotel.images != null && Model.Hotel.images.Count > 0)
-        {
-            <div class="flex-basis-5">
-                <img class="b-r-left-top-bottom" src="@Model.Hotel.images[0]" alt="@(Model.Hotel.name)" data-testid="hotel-slider-first-image" width="100%"
-                height="100%" />
-            </div>
-        }
-        <div class="d-flex flex-column flex-basis-5 hotel-slider-area__second">
-            <div class="h-5 d-flex">
-        @if (Model.Hotel.images != null && Model.Hotel.images.Count > 1){
-
-                <div class="w-100 h-100">
-                        <img class="" src="@Model.Hotel.images[1]" alt="@(Model.Hotel.name)" data-testid="hotel-slider-second-image" width="100%" height="100%" />
-                </div>}
-        @if (Model.Hotel.images != null && Model.Hotel.images.Count > 2){
-
-                <div class="w-100 h-100 hotel-slider-area__second">
-                        <img class="b-r-right-top" src="@Model.Hotel.images[2]" alt="@(Model.Hotel.name)" data-testid="hotel-slider-third-image" width="100%" height="100%" />
-                </div>
-        }
-            </div>
-            <div class="hotel-slider-area__forth h-5 d-flex">
-                
-        @if (Model.Hotel.images != null && Model.Hotel.images.Count > 3){
-                <div class="w-100 h-100"><img src="@Model.Hotel.images[3]" alt="@(Model.Hotel.name)" data-testid="hotel-slider-fourth-image" width="100%" height="100%" /></div>
-        }
-                <div class="hotel-slider-area__second hotel-slider-area__last w-100 h-100" data-more-images="true">
-        @if (Model.Hotel.images != null && Model.Hotel.images.Count > 4){
-                <img class="b-r-right-bottom" src="@Model.Hotel.images[4]" alt="@(Model.Hotel.name)" data-testid="hotel-slider-fifth-image" width="100%"
-                    height="100%" />
-        }
-                    <div class="images-more d-flex align-items-center font-weight-600">
-                        <img class="lazy" src="/enuygun/hotel/images/placeholder.svg" data-src="/enuygun/hotel/images/images-more.svg" alt="Image More" width="20" height="17" /> +@(Model.Hotel.images.Count) عکس
                     </div>
                 </div>
             </div>
+            <div class="col-3 d-none d-lg-block">
+                <a href="#" class="submit-menu">منو</a>
+            </div>
         </div>
     </div>
-    <div>
-        <div class="hotel-tabs">
-            <ul class="row" role="tablist" id="hotelDetailInformationTabs" aria-owns="information-tab rooms-tab comments-tab opportunities-tab transportation-tab policies-tab">
-                <li role="tab" aria-controls="information-tab" aria-selected="true" data-testid="information-tab">
-                    <a class="scroll-to pl-0" id="information-tab" data-toggle="tab" href="#hotelDetailInformations">
-                        اطلاعات هتل
-                    </a>
-                </li>
-                <li role="tab" aria-controls="rooms-tab" aria-selected="false" data-testid="rooms-tab">
-                    <a class="scroll-to" id="rooms-tab" data-toggle="tab" href="#RoomAvailability">
-                        اتاق ها
-                    </a>
-                </li>
 
-                <li role="tab" aria-controls="opportunities-tab" aria-selected="false" data-testid="opportunities-tab">
-                    <a class="scroll-to" id="opportunities-tab" data-toggle="tab" href="#hotel-features">
-                        امکانات هتل
-                    </a>
-                </li>
 
-                <li role="tab" aria-controls="hotel-policies" aria-selected="false" data-testid="policies-tab">
-                    <a class="scroll-to" id="policies-tab" data-toggle="tab" href="#hotel-policies">
-                        قوانین هتل
-                    </a>
-                </li>
-            </ul>
+    <div class="container pt-3">
+        <div class="row">
+            <div class="pic-list">
+                @if (Model.Hotel.images != null && Model.Hotel.images.Count > 0)
+                {
+                    var index = 0;
+                    @foreach (var item in Model.Hotel.images)
+                    {
+                        index++;
+                        <div class="div@(index)"><img src="@item" alt="" /></div>
+
+                    }
+                }
+            </div>
         </div>
     </div>
-    <div id="hotelDetailInformations" class="hotel-detail-info d-flex justify-content-between ">
-        <div class="hotel-detail-info__first">
-            <span class="hotel-name font-weight-600" data-testid="hotel-name">
-                @Model.Hotel.name
-            </span><span></span>
-            <div class="hotel-detail-address mt-1">
-                @Model.Hotel.address
-            </div>
-            <div class="hotel-detail-info__desc mt-3 mb-2">
-                <p style="text-align:justify">
-                    @Model.Hotel.description
-                </p>
-            </div><button id="detail-info-more-btn" style="display:block" class="show-more__btn font-weight-600">
-                ادامه اش را بخوان
-            </button>
-        </div>
-        <div class="hotel-detail-info__second">
-            <div id="showOnMap" class="show-hotels-map-wrapper d-flex align-items-center justify-content-center">
-                <button class="btn-primary btn d-flex align-items-center justify-content-center">
-                    <img class="mr-1"
-                         src=https://cdn.enuygun.com/otel/static/images/placeholder.svg
-                         width="20"
-                         height="20"
-                         alt="Show Map Icon" />
-                    در نقشه نشان بده
-                </button>
-            </div>
-            <div class="show-on-map-content d-flex align-items-center mt-2" data-testid="hotel-center-distance">
-                <i class="ei-place mx-1"></i> @Model.Hotel.address
-            </div>
-            <div id="hotelDetailSide"></div>
-        </div>
+
+
+    <div class="map set-bg mt-3 d-block d-lg-none" data-bg="/newtem/rtl/img/loc.jpg">
+        <div><i class="bi bi-geo-alt"></i> @Model.Hotel.address</div>
+        <div><i class="bi bi-compass"></i> @Model.Hotel.longitude , @Model.Hotel.latitude</div>
+        <div class="loca"><i class="bi bi-map"></i> نقشه</div>
     </div>
-    <div id="SearchFormStickyArea">
-        <div id="RoomAvailability">
-            <h3 id="rooms-title" class='detail-content__title font-weight-600 mb-3'>اتاق ها</h3>
-            <div id="searchFormDetail"></div>
-            <div id="appRoot">
+@* 
+    <div class="rounded px-2 py-2 border mt-3  d-block d-lg-none">
+        <div class="float-end"><i class="bi bi-pencil-square"></i></div>
+        متن تست 1 | متن تست 2
+    </div> *@
+
+    <div class="pt-3  d-block d-lg-none">
+            <input type="submit" class="submit-button selectroom" value="ارسال فرم" />
+    </div>
+
+    <div class="hotel-detail-links pt-3 sticky-top bg-white">
+        <a href="#link1">لینک 1</a>
+        <a href="#link2">لینک 2</a>
+        <a href="#link3">لینک 3</a>
+        <a href="#link4">لینک 4</a>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-3 d-none d-lg-block pt-2">
+                <div class="filter-map">
+                    <a href="#">لینک نقشه</a>
+                </div>
             </div>
-            <div id="appRoot-ras" class="mt-55">
-                <section class="rooms-placeholder p-3">
-                    <h2 class='rooms-placeholder__title'>اطلاعات اتاق ها</h2>
-                    
+
+            <div class="col-9">
+
+                <div class="hotel-page-descript mt-2" id="link1">
                     @foreach (var item in Model.Hotel.Rooms)
                     {
-                        <div class="offer__mobile-item p-2 undefined" data-provider="11" data-testid="offer-item">
-                            <div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept">
-                                <span class="room-concept__item" style="color: rgb(27, 47, 111);">
-                                    <img class="room-concept__icon" src="/enuygun/hotel/images/ro.svg">
-                                    @item.RoomTypeName
-                                </span>
-                                </div>
-                           @*  <ul class="offer__item-cancellation mb-2 pl-3 ml-1">
-                                <li data-testid="room-cancellation"><strong>@item.</strong></li>
-                            </ul> *@
-                            <div class="offer__mobile-bottom pt-2">
-                                <div class="offer__mobile-bottom-info"></div>
-                                <div class="offer__mobile-bottom-item">
-                                    <div>
-                                        <span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>@Model.Hotel.DayCount شب</strong> در مجموع</span>
-                                        <div class="offer__mobile-price-container d-flex">
-                                            <p class="offer__item-price mb-0 null" data-testid="room-offer-price"><script>document.write(calcPrice(@item.Prices, @item.WithBabyPrice, @ViewBag.input.Adult, @(ViewBag.input.Childs != null ? "[" + string.Join(",", ViewBag.input.Childs) + "]" : "[]")))</script></p>
-                                        </div>
-                                    </div>
-                                    <div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button" data-checkInDate="@ViewBag.input.checkInDate" data-checkOutDate="@ViewBag.input.checkOutDate" data-adultCnt="@ViewBag.input.Adult" data-childAges="@(ViewBag.input.Childs != null ? "[" + string.Join(",", ViewBag.input.Childs) + "]" : "[]")">رزرو کن <i class="ei-chevron-right font-size-lg"></i></button></div>
-                                </div>
-                            </div>
+
+                        <div class="clearfix">
+                            <h5>@item.RatePlansName</h5>
+                            <span>@item.RoomTypeName</span>
+                        </div>
+                        <h6 class="pt-2">جزئیات</h6>
+                        <div class="descript-box bg-white p-2 mb-2">
+                            @* <div><i class="bi bi-geo-alt"></i>@item.BoardType </div> *@
+                            <div><i class="bi bi-geo-alt"></i>@(item.Cancelable ? "قابلیت کنسل" : "") </div>
+                            <div><i class="bi bi-geo-alt"></i>ظرفیت @item.RoomTypeCapacity نفر</div>
+							<div><i class="bi bi-geo-alt"></i>بالغ: @(((double)item.Prices).ToString("N0")) ريال </div>
+							<div><i class="bi bi-compass"></i> کودک: @(((double)item.WithBabyPrice).ToString("N0")) ريال</div>
+							<div class="float-end"><h3>@(((double)item.Prices).ToString("N0")) ريال</h3></div>
+                            <div><i class="bi bi-compass"></i> یک نفر اضافه: @(((double)item.WithExtraPrices).ToString("N0")) ريال</div>
+                            <a role="button" class="select-room" data-typeid="@item.RoomTypeId" data-planid="@item.RatePlanId" >رزرو اتاق</a>
                         </div>
                     }
-                </section>
-            </div>
-        </div>
-        <section id="hotelReviewsArea"></section>
-        <section id="tourism-facilities" class="detail-content d-flex justify-content-between align-items-start">
-            <h2 class="detail-content__title font-weight-600">اطلاعات هتل</h2>
-            <div class="detail-content__info d-flex tourism-facilities">
-                <div class="d-flex flex-column mr-2 font-weight-bold"><span>Belge No</span><span>Belge Türü</span><span>Tesis Türü</span><span>Sınıfı</span></div>
-                <div class="d-flex flex-column"><span>: 9903</span><span>: Turizm İşletmesi Belgesi</span><span>: Otel</span><span>: 5 Yıldızlı</span></div>
-            </div>
-        </section>
-        <section id="hotel-features" class="detail-content d-flex justify-content-between align-items-start">
-            <h2 class="detail-content__title font-weight-600">امکانات هتل</h2>
-            <div class="detail-content__info">
-                <div class="show-more__text">
-                    <p style="text-align:justify">
-                        @if (Model.Hotel.services != null && Model.Hotel.services.Count > 0)
+                </div>
+
+                <div class="hotel-info mt-4" id="link2">
+                    <h3>اطلاعات هتل</h3>
+                    <span>
+                        @(Model.Hotel.description)
+                    </span>
+
+                    <h5 class="text-primary pt-3">امکانات</h5>
+                    <hr />
+                    @* <h5><i class="bi bi-chat-left-text"></i> Title</h5> *@
+                    <ul>
+                        @foreach (var item in Model.Hotel.facilities)
                         {
-                            @(string.Join("، ", Model.Hotel.services.Select(r => r.Key + ": " + r.Value).ToList()))
+                            <li>@item </li>
                         }
-                    </p>
-                </div><button id="hotel-desc-btn" style="display:block" class="show-more__text-btn show-more__btn show-more__btn--bordered font-weight-600" data-testid="show-more-hotel-desc">ادامه...</button>
-                <div class="row justify-content-between">
-                    <div class="col-md-5">
-                        <div class="facilityContainer">
-                            <div class="facility-item ">
-                                <h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
-                                    <img class="mr-1 lazy" src="/enuygun/hotel/images/placeholder.svg" data-src="/enuygun/hotel/images/genel.svg" alt="Genel" width="32" height="32" /> امکانات اساسی
-                                </h3>
-                                <ul class="list list-unstyled opportunities-list opportunities-list--flex">
-                                    @if (Model.Hotel.services != null)
-                                    {
-                                    @foreach(var service in Model.Hotel.services){
-                                        <li class="d-flex justify-content-between ">
-                                            @service.Key
-                                        </li>
-                                    }
-                                    }
-                                </ul>
+                    </ul>
+                    <hr />
+                    <h5 class="text-primary pt-3">قوانین</h5>
+                    <hr />
+                    @* <h5><i class="bi bi-chat-left-text"></i> Title</h5> *@
+                    <ul>
+                        @foreach (var item in Model.Hotel.rules)
+                        {
+                            <li><b>@item.Key :</b> @item.Value</li>
+                        }
+                    </ul>
+                    @* <a href="#">منوی تست</a> *@
+                </div>
+
+@* 
+                <div class="hotel-info-score mt-4" id="link3">
+                    <h4>عنوان</h4>
+                    <div class="score-box">
+                        <h1 class="float-end">9.5</h1><span>امتیاز</span>
+                        <div class="block pt-3">متن تست متن تست متن تست متن تست</div>
+
+                        <div class="score-bar">
+                            <div class="clearfix pt-2">
+                                <strong class="float-end">8.5</strong>
+                                <div>عنوان 1</div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-green" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
                             </div>
-                            <div class="facility-item ">
-                                <h3 class="d-flex align-items-center font-weight-600" style="font-size: 20px">
-                                    <img class="mr-1 lazy" src="/enuygun/hotel/images/placeholder.svg" data-src="/enuygun/hotel/images/saglik-ve-spa.svg" alt="سلامتی و آب درمانی" width="32" height="32" /> سلامتی و آب درمانی
-                                </h3>
-                                <ul class="list list-unstyled opportunities-list opportunities-list--flex">
-                                    @if(Model.Hotel.facilities!=null){
-                                    @foreach(var facility in Model.Hotel.facilities){
-                                        <li class="d-flex justify-content-between ">
-                                            @facility
-                                        </li>
-                                    }
-                                    }
-                                </ul>
+                            <div class="clearfix pt-2">
+                                <strong class="float-end">6.5</strong>
+                                <div>عنوان 1</div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-green" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix pt-2">
+                                <strong class="float-end">7.3</strong>
+                                <div>عنوان 1</div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-green" role="progressbar" style="width: 73%;" aria-valuenow="73" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix pt-2">
+                                <strong class="float-end">9.5</strong>
+                                <div>عنوان 1</div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-green" role="progressbar" style="width: 95%;" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix pt-2">
+                                <strong class="float-end">9.2</strong>
+                                <div>عنوان 1</div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-green" role="progressbar" style="width: 92%;" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix pt-2">
+                                <strong class="float-end">9.0</strong>
+                                <div>عنوان 1</div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-green" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-      </div>
+                </div>
+ *@
             </div>
-        </section>
-        <section id="hotel-policies" class="d-flex justify-content-between detail-content">
-            <h2 class="detail-content__title font-weight-600">
-                قوانین هتل
-            </h2>
-            <div class="detail-content__info hotel-policies show-more">
-                <div class="show-more__content">
-
-                    <strong>دستورات</strong>
-                    <p>
-                        <ul>
-                            @foreach(var item in Model.Hotel.rules){
-                            <li>@item.Key: @item.Value</li>
-                            }
-
-                        </ul>
-                    </p>
-                </div><button id="policies-more-btn" style="display:block" class="show-more__btn show-more__btn--bordered font-weight-600" data-testid="show-more-hotel-policies">
-                    ادامه اش را بخوان
-                </button> 
-            </div>
-        </section>
-    </div>
-    <div id="scrollToTop"></div>
-</div>
-<div style="height:400px;width:100vw"></div>
-@section headerupper {
-        <script>
-            function handleOneTrustLoad() {
-                if (typeof window === 'undefined' || !('OneTrust' in window)) return
-
-                const $ot = window.OneTrust;
-                try{
-                    if (!$ot ? .IsAlertBoxClosedAndValid()) {
-                        const $ot_c00002 = document.getElementById('ot-group-id-C0002')
-                        const $ot_c00004 = document.getElementById('ot-group-id-C0004')
-
-                        if ($ot_c00002.checked) {
-                            $ot_c00002.click()
-                        }
-                        if ($ot_c00004.checked) {
-                            $ot_c00004.click()
-                        }
-                    }
-                
-                }catch(err){
-
-                }
-            }
-        </script>
-        <link rel="preload" as="script" href="/enuygun/consent/OtAutoBlock.js">
-        <link rel="preload" as="script" href="/enuygun/scripttemplates/otSDKStub.js" data-document-language="true" charset="UTF-8" data-domain-script="09f1c894-2c3f-4626-977c-910163434b5b">
-        <script type="text/javascript" src="/enuygun/consent/OtAutoBlock.js"></script>
-        <script src="/enuygun/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="09f1c894-2c3f-4626-977c-910163434b5b"></script>
-        <script id="optanon-wrapper" type="text/javascript">
-            {
-                function OptanonWrapper() {
-                    handleOneTrustLoad()
-                }
-            }
-        </script>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <script type="text/javascript" src="/enuygun/chunks/hotel-sp.js">
-        </script>
-        <meta http-equiv="content-language" content="tr">
-        <link rel="dns-prefetch" href="//www.enuygun.com/">
-        <link rel="dns-prefetch" href="//cdn.enuygun.com/">
-        <link rel="dns-prefetch" href="//cdn2.enuygun.com/">
-        <link rel="dns-prefetch" href="//cdn3.enuygun.com/">
-        <link rel="dns-prefetch" href="//assets.enuygun.com/">
-        <link rel="dns-prefetch" href="//assets-otel.enuygun.com/">
-        <link rel="dns-prefetch" href="//t.enuygun.com/">
-        <link rel="dns-prefetch" href="//www.googletagmanager.com/">
-        <link rel="dns-prefetch" href="//www.google.com/">
-        <link rel="dns-prefetch" href="//www.google.com.tr/">
-        <link rel="dns-prefetch" href="//www.google-analytics.com/">
-        <link rel="dns-prefetch" href="//www.googleadservices.com/">
-        <link rel="dns-prefetch" href="//googleads.g.doubleclick.net/">
-        <link rel="dns-prefetch" href="//connect.facebook.net/">
-        <link rel="dns-prefetch" href="//www.facebook.com/">
-        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        <link rel="preconnect" href="//www.enuygun.com/">
-        <link rel="preconnect" href="//cdn.enuygun.com/" crossorigin>
-        <link rel="preconnect" href="//cdn2.enuygun.com/" crossorigin>
-        <link rel="preconnect" href="//cdn3.enuygun.com/" crossorigin>
-        <link rel="preconnect" href="//assets.enuygun.com/" crossorigin>
-        <link rel="preconnect" href="//assets-otel.enuygun.com/" crossorigin>
-        <link rel="preconnect" href="//t.enuygun.com/" crossorigin>
-        <link rel="preconnect" href="//www.googletagmanager.com/" crossorigin>
-        <link rel="preconnect" href="//www.google.com/" crossorigin>
-        <link rel="preconnect" href="//www.google.com.tr/" crossorigin>
-        <link rel="preconnect" href="//www.google-analytics.com/" crossorigin>
-        <link rel="preconnect" href="//www.googleadservices.com/" crossorigin>
-        <link rel="preconnect" href="//googleads.g.doubleclick.net/" crossorigin>
-        <link rel="preconnect" href="//connect.facebook.net/" crossorigin>
-        <link rel="preconnect" href="//www.facebook.com/" crossorigin>
-        <link rel="preconnect" href="//fonts.gstatic.com" crossorigin />
-        <link rel="preconnect" href="//fonts.googleapis.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" type="text/css" media="print" onload="this.media='all'" />
-
-        <link rel="stylesheet" href="/enuygun/css/hotel-sp.css" />
-        <script>
-            var loadJS = function (src, done) {
-                var script = document.createElement('script');
-                script.src = src;
-                script.onload = function () {
-                    done && done()
-                };
-                script.onerror = function () {
-                    done && done()
-                };
-                document.head.appendChild(script);
-            };
-        </script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-        </script>
-        <script>
-            window.dataLayer.push({
-                'dimension39': 'detay'
-            })
-        </script>
-        <script>
-            (function (w, d, s, l, i) {
-                w[l] = w[l] || [];
-                w[l].push({
-                    'gtm.start': new Date().getTime(),
-                    event: 'gtm.js'
-                });
-                var f, j = d.createElement(s),
-                    dl = l != 'dataLayer' ? '&l=' + l : '';
-                j.async = true;
-                j.setAttributeNode(d.createAttribute('data-ot-ignore'));
-                j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-                f = d.getElementById('optanon-wrapper');
-                f.insertAdjacentElement('afterend', j);
-            })(window, document, 'script', 'dataLayer', 'GTM-PPNXR7C');
-        </script>
-        <script>
-            window.addEventListener('load', function () {
-                loadJS("./hotel/sentry.js")
-            })
-        </script>
-        @*<script type="text/javascript" defer>
-            var googletag = googletag || {};
-            googletag.cmd = googletag.cmd || [];
-            (function () {
-                var gads = document.createElement('script');
-                gads.async = true;
-                gads.type = 'text/javascript';
-                var useSSL = 'https:' == document.location.protocol;
-                gads.src = (useSSL ? 'https:' : 'http:') +
-                    '//www.googletagservices.com/tag/js/gpt.js';
-                var node = document.getElementsByTagName('script')[0];
-                node.parentNode.insertBefore(gads, node);
-            })();
-        </script>
-        <script type="text/javascript" defer>
-            googletag.cmd.push(function () {
-                var ds = '/',
-                    key = ds + '4519939' + ds;
-                googletag.defineSlot(key + 'EnuygunCom_300x100_scrolldown', [300, 100], 'dfp-0000000051b4535e000000003c97c56d').setCollapseEmptyDiv(true, true).addService(googletag.pubads());
-                googletag.pubads().setTargeting('modul', 'otel');
-                googletag.pubads().setTargeting('sub_modul', 'karsilastir');
-                googletag.pubads().enableSingleRequest();
-                googletag.enableServices();
-            });
-        </script>*@
-}
-
-@section Scripts { 
-        <script defer src="/enuygun/chunks/router.min.js"></script>
-        <script defer src="/enuygun/otel/js/routing.js?callback=fos.Router.setData&amp;host=www.enuygun.com"></script>
-        <script defer src="/enuygun/hotel/runtime.js"></script>
-        <script defer src="/enuygun/hotel/webViewCookie.js"></script>
-        <script>
-            window.detailSliderUrl = "/enuygun/hotel/detailSlider.js"
-        </script>
-        <script defer src="/enuygun/hotel/detailSliderInitializer.js"></script>
-        <script defer src="/enuygun/hotel/tr.membership.initialize.js"></script>
-        <script defer src="/enuygun/hotel/membership.js"></script>
-        
-        <script type="text/javascript">
-            var RoomsAsCsh=JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model.Hotel.Rooms))');
-            var rooms=[];
-            // for (var i = 0; i < RoomsAsCsh.length;i++){
-            //     rooms.push({
-            //         "reference": null,
-            //         "type": {
-            //         "id": RoomsAsCsh[i].id,
-            //         "name": RoomsAsCsh[i].RoomTypeName,
-            //             "typeCode": "",
-            //             "characteristicCode": RoomsAsCsh[i].id
-            //         },
-            //         "images": [],
-            //         "offers": [],
-            //         "facilities": [
-            //             //     {
-            //             //     "details": "Televizyon",
-            //             //     "priority": null,
-            //             //     "imageTemplate": null,
-            //             //     "availability": true,
-            //             //     "type": "1",
-            //             //     "isPaymentRequired": false,
-            //             //     "value": null
-            //             // }
-            //         ],
-            //         "information": [],
-            //         "alerts": [],
-            //     "description": RoomsAsCsh[i].description
-            //     });
-            // }
-    </script>
-    <script type="text/javascript">
-        var cityId = @Model.Hotel.city_id;
-        var city_name = '@Model.Hotel.city_name';
-        var province_name = '@Model.Hotel.province_name';
-        //{
-        // "0": {
-        //     "details": "Asans\u00f6r",
-        //     "priority": null,
-        //     "imageTemplate": null,
-        //     "availability": true,
-        //     "type": "2",
-        //     "isPaymentRequired": false,
-        //     "value": ""
-        // },
-    </script>
-        <script type="application/ld+json">
-            {
-                "hasMap": "https://maps.google.com/maps?q=Saniye Ermutlu  No. 3 Kozyatagi Kadıköy, İstanbul,ByOtell Hotel Istanbul&t=&z=15&ie=UTF8",
-                "name": "@Model.Hotel.name",
-                "url": "https://www.enuygun.com/otel/byotell-hotel-istanbul-17257/",
-                "description": "@Model.Hotel.description",
-                "address": {
-                "addressRegion": "@Model.Hotel.address",
-                    "addressCountry": "",
-                    "streetAddress": "",
-                    "addressLocality": "",
-                    "@@type": "PostalAddress"
-                },
-                "priceRange": "مناسب ترین قیمت ها",
-                "PaymentAccepted": "کارتهای عضو شتاب",
-                "aggregateRating": {
-                    "reviewCount": 7,
-                    "ratingValue": @Model.Hotel.score,
-                    "worstRating": "1",
-                    "@@type": "AggregateRating",
-                    "bestRating": 5
-                },
-                "photo": {
-                    "@@type": "ImageObject",
-                    "contentURL": "@(Model.Hotel.images!=null && Model.Hotel.images.Count>1? Model.Hotel.images[1]:"")",
-                    "description": "@Model.Hotel.name"
-                },
-            "image": "@(Model.Hotel.images != null && Model.Hotel.images.Count > 0 ? Model.Hotel.images[0] : "")",
-                "@@context": "http://schema.org",
-                "@@type": "Hotel"
-            }
-        </script>
-        <script>
-            var firstimages=JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model.Hotel.images))');
-            var secImg=[];
-            for(var i=0;i<firstimages.length;i++){
-                secImg.push({ url: firstimages[i], name: "عکس " + (i + 1).toString() ,type:"img"+((i + 1)>20?"21":(i + 1).toString())})
-            }
-            var checkInTime='@Model.Hotel.check_in';
-            var checkOutTime='@Model.Hotel.check_out';
-        </script>
-        <script>
-
-        var facilitiesItemsStr = "";
-        var fac = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model.Hotel.facilities))');
-        for (var i = 0; i < fac.length; i++) {
-            facilitiesItemsStr = '"' + i + '":{"details": "' + fac[i] + '","priority": null,"imageTemplate": null, "availability": true,"type": "2","isPaymentRequired": false, "value": ""},'
-        }
-        facilitiesItemsStr = '{' + facilitiesItemsStr.substring(0, facilitiesItemsStr.length - 1) + '}';
-        var facilitiesItems = JSON.parse(facilitiesItemsStr);
-
-            window.GOOGLE_MAP_API_KEY = "AIzaSyDEzgYCXcLxjj2C84Xn4kSbu9f9tUHK0Vo";
-
-            window.APP_CONFIG = {
-                isSaleable: 1,
-            hotelSliderImages: secImg,
-            hotelSliderThumbnails: secImg,
-                hotelSliderTypes: [{
-                    "type": "img1",
-                    "name": "عکس اول"
-                }, {
-                "type": "img2",
-                    "name": "عکس دوم"
-                }, {
-                    "type": "img3",
-                    "name": "عکس سوم"
-                }, {
-                    "type": "img4",
-                    "name": "عکس چهارم"
-                }, {
-                    "type": "img5",
-                    "name": "عکس پنجم"
-                }, {
-                    "type": "img6",
-                    "name": "عکس ششم"
-                }, {
-                    "type": "img7",
-                    "name": "عکس هفتم"
-                }, {
-                    "type": "img8",
-                    "name": "عکس هشتم"
-                },{
-                    "type": "img9",
-                    "name": "عکس نهم"
-                }, {
-                    "type": "img10",
-                    "name": "عکس دهم"
-                }, {
-                    "type": "img11",
-                    "name": "عکس یازدهم"
-                }, {
-                    "type": "img12",
-                    "name": "عکس دوازدهم"
-                }, {
-                    "type": "img13",
-                    "name": "عکس سیزدهم"
-                }, {
-                    "type": "img14",
-                    "name": "عکس چهاردهم"
-                }, {
-                    "type": "img15",
-                    "name": "عکس پانزدهم"
-                }, {
-                    "type": "img16",
-                "name": "عکس شانزدهم"
-                }, {
-                    "type": "img17",
-                    "name": "عکس شانزدهم"
-                }, {
-                    "type": "img18",
-                    "name": "عکس هجدهم"
-                }, {
-                    "type": "img19",
-                    "name": "عکس نوزدهم"
-                }, {
-                    "type": "img20",
-                    "name": "عکس بیستم"
-                }, {
-                    "type": "img21",
-                    "name": "عکس های بیشتر"
-                }],
-                defaultParameters: {
-                    "region": {
-                    "id": @Model.Hotel.city_id,
-                    "slug": "@Model.Hotel.city_name",
-                    "name": "@Model.Hotel.city_name",
-                    "nameLong": "@Model.Hotel.city_name",
-                        "countryCode": "IR",
-                        "type": 3,
-                        "isDomestic": true
-                    },
-                    "hotel": {
-                    "id": @Model.Hotel.id,
-                    "slug": '@Model.Hotel.name',
-                    "name": '@Model.Hotel.name'
-                    }
-                },
-                coordinates: {
-                    "latitude": @Model.Hotel.latitude,
-                    "longitude": @Model.Hotel.longitude
-                },
-                hotelName: '@Model.Hotel.name',
-            hotelAddress: '@Model.Hotel.address',
-            regionInfo: '@Model.Hotel.address',
-                hotelDetails: {
-                    "id": @Model.Hotel.id,
-                    "name": '@Model.Hotel.name',
-                    "slug": '@Model.Hotel.name',
-                    "extra": {
-                    "thumbnailImage": "@(Model.Hotel.images != null && Model.Hotel.images.Count > 0 ? Model.Hotel.images[0] : "")"
-                    },
-                    "address": {
-                    "address": '@Model.Hotel.address',
-                        "zipCode": null,
-                        "country": "",
-                        "countryCode": "",
-                        "town": "",
-                        "subTown": "",
-                        "city": ""
-                    },
-                    "coordinate": {
-                    "latitude": @Model.Hotel.latitude,
-                        "longitude": @Model.Hotel.longitude
-                    },
-                    "description": "<p>&nbsp;<\/p>",
-                    "facilities": facilitiesItems ,
-                    "facilitiesPriority": [],
-                    "suitabilities": [/* "\u00c7ocuklu Aile", "\u0130slami", "\u015eehir", "\u0130\u015f ama\u00e7l\u0131 konaklama yeri", "Spa konaklama yeri", "L\u00fcks konaklama yeri" */],
-                    "suitabilityItems": [/*{
-                        "name": "\u00c7ocuklu Aile",
-                        "slug": "cocuklu-aile"
-                    }, {
-                        "name": "\u0130slami",
-                        "slug": "islami"
-                    }, {
-                        "name": "\u015eehir",
-                        "slug": "sehir"
-                    }, {
-                        "name": "\u0130\u015f ama\u00e7l\u0131 konaklama yeri",
-                        "slug": "is-amacli-konaklama-yeri"
-                    }, {
-                        "name": "Spa konaklama yeri",
-                        "slug": "spa-konaklama-yeri"
-                    }, {
-                        "name": "L\u00fcks konaklama yeri",
-                        "slug": "luks-konaklama-yeri"
-                    }*/],
-                    "chainId": null,
-                    "images": secImg,
-                    "starRating": @Model.Hotel.score,
-                "reviewScore": @Model.Hotel.score,
-                    "reviews": [],
-                    "reviewScoreCommentText": "فوق العاده",
-                    "tripAdvisorScore": 4,
-                    "tripAdvisorReviewCount": 225,
-                    "previewDescription": null,
-                "reviewScoreLocalized": @Model.Hotel.score,
-                    "checkInTime": checkInTime,
-                    "checkOutTime": checkOutTime,
-                    "domestic": true,
-                    "reviewsTotalCount": 7,
-                    "cityCenterPointDistance": 0,
-                    "cityCenterPointRegionName": "",
-                    "hotelConcepts": {},
-                    "locationDistance": null,
-                    "importantInfo": "",
-                    "hotelDescriptions": [{
-                        "category": "با امکانات",
-                        "description": "@Model.Hotel.description"
-                    }],
-                    "commentCount": 0,
-                    "hotelPolicy": {
-                        "checkin": {
-                            "begin_time": checkInTime,
-                            "end_time": checkOutTime
-                        },
-                    "checkout": checkOutTime,
-                        "instructions": "<ul><li>\u0130lave yatak \u00fccreti al\u0131nabilir ve bu \u00fccret, konaklama yeri politikas\u0131na g\u00f6re de\u011fi\u015fiklik g\u00f6sterebilir<\/li><li>Olas\u0131 ekstra harcamalar i\u00e7in otele giri\u015fte, resmi kurumlarca d\u00fczenlenmi\u015f foto\u011frafl\u0131 kimlik ve kredi kart\u0131 ya da nakit depozito gerekebilir<\/li><li>\u00d6zel talepler, otele giri\u015f s\u0131ras\u0131nda m\u00fcsaitlik durumuna ba\u011fl\u0131d\u0131r ve ek \u00f6deme gerektirebilir. \u00d6zel talepler garanti edilemez<\/li><li>Ekstra harcamalar\u0131 \u00f6demek i\u00e7in otele giri\u015fte kullan\u0131lan kredi kart\u0131n\u0131n \u00fczerindeki isim, oda rezervasyonundaki ilk isim olmal\u0131d\u0131r<\/li><li>Bu konaklama yerinde kredi kartlar\u0131, banka kartlar\u0131 ve nakit kabul edilmektedir<\/li><li>Bu konaklama yeri, var\u0131\u015ftan \u00f6nce misafirin kredi kart\u0131na provizyon uygulama hakk\u0131n\u0131 sakl\u0131 tutar.<\/li><\/ul>",
-                        "special_instructions": "Bu konaklama yeri misafirlere havaalan\u0131 transfer servisi sunmaktad\u0131r (bu hizmet \u00fccretli olabilir). Misafirler rezervasyon onay\u0131n\u0131n \u00fczerindeki ileti\u015fim bilgilerini kullanarak var\u0131\u015ftan 24 saat \u00f6nce konaklama yeriyle ileti\u015fime ge\u00e7meli ve var\u0131\u015f ayr\u0131nt\u0131lar\u0131n\u0131 konaklama yerine bildirmelidir. Resepsiyon \u00e7al\u0131\u015fanlar\u0131 var\u0131\u015fta misafirleri kar\u015f\u0131layacakt\u0131r.",
-                        "checkin_min_age": 18,
-                        "fees": {
-                            "mandatory": null,
-                            "optional": "<ul><li>A\u00e7\u0131k b\u00fcfe kahvalt\u0131 yeti\u015fkinler i\u00e7in yakla\u015f\u0131k olarak 10 EUR, \u00e7ocuklar i\u00e7in 10 EUR \u00fccret kar\u015f\u0131l\u0131\u011f\u0131nda servis edilmektedir<\/li><li>Havaalan\u0131 gidi\u015f geli\u015f servisi \u00fccreti: oda ba\u015f\u0131na (tek y\u00f6n)  60.00 EUR. <\/li><li>Her \u00e7ocuk i\u00e7in havaalan\u0131 ula\u015f\u0131m servisi \u00fccreti: (tek y\u00f6n) 5 EUR, (7 ile 12 ya\u015f aras\u0131). <\/li><li>Erken giri\u015f \u00fccreti: 30 EUR (m\u00fcsaitlik durumuna ba\u011fl\u0131d\u0131r). <\/li><li>Ge\u00e7 \u00e7\u0131k\u0131\u015f \u00fccreti: 45 EUR (m\u00fcsaitlik durumuna ba\u011fl\u0131d\u0131r). <\/li><li>\u0130lave yatak \u00fccreti: gecelik 30 EUR. <\/li><\/ul><p>Yukar\u0131daki liste t\u00fcm bilgileri i\u00e7ermeyebilir. \u00dccretlere ve depozitolara vergi d\u00e2hil olmayabilir, ayr\u0131ca \u00fccretler ve depozitolar de\u011fi\u015febilir. <\/p>"
-                        },
-                        "know_before_you_go": "<ul><li>Ebeveynleri veya vasisiyle ayn\u0131 odada kalan ve mevcut yatak tak\u0131mlar\u0131n\u0131 kullanan 17 ya\u015f veya alt\u0131ndaki bir \u00e7ocuk i\u00e7in konaklama \u00fccreti al\u0131nmaz. <\/li><li>Odalarda kalan t\u00fcm misafirlerin otele kay\u0131t yapt\u0131rm\u0131\u015f olmalar\u0131 gerekmektedir. <\/li><li>Bu konaklama yerinde, rehber hayvanlar da d\u00e2hil olmak \u00fczere hi\u00e7bir evcil hayvana izin verilmemektedir. <\/li><li>Temass\u0131z giri\u015f imk\u00e2n\u0131 ve temass\u0131z \u00e7\u0131k\u0131\u015f imk\u00e2n\u0131 sunulur.<\/li><\/ul>"
-                    }
-                },
-                hotelId: "17257",
-                availableSortingMethods: [{
-                    "value": 0,
-                    "text": "قیمت صعودی",
-                    "default": true
-                }, {
-                    "value": 1,
-                    "text": "قیمت نزولی",
-                    "default": false
-                }, {
-                    "value": 2,
-                    "text": "محبوبیت",
-                    "default": false
-                }, {
-                    "value": 3,
-                    "text": "امتیاز نزولی",
-                    "default": false
-                }
-                // , {
-                //     "value": 4,
-                //     "text": "Merkeze Yak\u0131nl\u0131k",
-                //     "default": false
-                // }
-                ],
-                providerReview: 0,
-                hotelComments: [],
-                hotelCommentCount: 0,
-                hotelRatings: [],
-            initialRooms: rooms,
-                town: {
-                    "id": cityId,
-                    "name": city_name,
-                "slug": city_name
-                },
-                recommendedHotels: [],
-                searchUrl: "\/Travel\/SearchRoom",
-                stickyBanner: null
-                // {
-                //     "id": 2,
-                //     "name": "@Model.Hotel.name",
-                //     "colorCode": "#0387ff",
-                //     "campaignCode": null,
-                //     "isActive": true,
-                //     "type": 2,
-                //     "desktopText": null,//"10.000 TL'ye varan indirimden yararlan. Kod: ENUYGUN",
-                //     "mobileText": null,//"\u0130ndirim kodu: ENUYGUN",
-                //     "desktopTextAfterClick": null, //"Kod kopyaland\u0131. \u00d6deme ad\u0131m\u0131nda kullanabilirsiniz.",
-                //     "mobileTextAfterClick": null, //"Kod kopyaland\u0131!",
-                //     "isDesktopVisible": true,
-                //     "isMobileVisible": true
-                // },
-            }
-        </script>
-        <script>
-            window.HOTEL_SEARCH_FORM_CONFIG = {
-                endpoints: {
-                    baseUrl: '/otel',
-                    autoComplete: '/otel/autocomplete'
-                }
-            }
-        </script>
-
-    <script >
-        var newSearchAdult = @ViewBag.input.Adult;
-        var newSearchDate = '@ViewBag.input.checkInDate | @ViewBag.input.checkOutDate';
-    </script>
-    @if(ViewBag.input.Childs!=null && ViewBag.input.Childs.Length > 0)
-    {
-        
-    <script >
-        var newSearchChilds = '@(string.Join(",", ViewBag.input.Childs))'.split(',');
-        </script>
-    }
-    else
-    {
-    <script >
-        var newSearchChilds = [];
-    </script>
-    }
-    <script defer src="/enuygun/hotel/detail.js"></script>
-        <noscript id="deferred-styles"></noscript>
-        <script>
-            var loadDeferredStyles = function() {
-                var addStylesNode = document.getElementById("deferred-styles");
-                var replacement = document.createElement("div");
-                replacement.innerHTML = addStylesNode.textContent;
-                document.body.appendChild(replacement)
-                addStylesNode.parentElement.removeChild(addStylesNode);
-            };
-            var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-                window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-            if (raf) raf(function() {
-                window.setTimeout(loadDeferredStyles, 0);
-            });
-            else window.addEventListener('load', loadDeferredStyles);
-        </script>
-        <script>
-            var basicModule = (function() {
-                var basic = {};
-                var oldErrorHandler = window.onerror;
-                window.onerror = function(errorMsg, file, line, col, error) {
-                    if (oldErrorHandler) {
-                        oldErrorHandler(errorMsg, file, line, col, error);
-                    }
-                    if (typeof stackTraceJsModule !== 'undefined') {
-                        stackTraceJsModule.callStackTraceJs(errorMsg, file, line, col, error);
-                        return;
-                    }
-                    basic.callSimpleLogger(errorMsg, file, line, col, error);
-                };
-                basic.callSimpleLogger = function callSimpleLogger(errorMsg, file, line, col, error) {
-                    var e = encodeURIComponent;
-                    (new Image()).src = '/otel/nelmio-js-logger/log?msg=' + e(errorMsg) + '&level=error' + '&context[file]=' + e(file) + '&context[line]=' + e(line) + '&context[browser]=' + e(navigator.userAgent) + '&context[page]=' + e(document.location.href) + basic.fetchCustomContext();
-                };
-                basic.fetchCustomContext = function fetchCustomContext() {
-                    var key, e = encodeURIComponent,
-                        customContext = window.nelmio_js_logger_custom_context,
-                        customContextStr = '';
-                    if ('object' === typeof customContext) {
-                        for (key in customContext) {
-                            customContextStr += '&context[' + e(key) + ']=' + e(customContext[key]);
-                        }
-                    }
-                    return customContextStr;
-                };
-                return basic;
-            }());
-        </script>
-        <div id="root--membership-dialog" data-env="general"></div>
-        <div class="scrolldown_ad">
-            <div id="dfp-0000000051b4535e000000003c97c56d"><a href="javascript:void(0)" class="scrolldown_ad_close">x</a></div>
         </div>
-        <script type="text/javascript">
-            window.NREUM || (NREUM = {});
-            NREUM.info = {
-                "beacon": "bam.nr-data.net",
-                "licenseKey": "d7b09acae0",
-                "applicationID": "693094913",
-                "transactionName": "YVdSZhNSXRVXVk0KVlgdc0cSR1wLGWpLDExCV29UDkFEB0RR",
-                "queueTime": 0,
-                "applicationTime": 243,
-                "atts": "TRBREFtIThs=",
-                "errorBeacon": "bam.nr-data.net",
-                "agent": ""
-            }
-        </script>
-        <script>
-            (function() {
-                function c() {
-                    var b = a.contentDocument || a.contentWindow.document;
-                    if (b) {
-                        var d = b.createElement('script');
-                        d.innerHTML = "window.__CF$cv$params={r:'8c60bbce7d559f27',t:'MTcyNjgyMzk2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
-                        b.getElementsByTagName('head')[0].appendChild(d)
-                    }
-                }
-                if (document.body) {
-                    var a = document.createElement('iframe');
-                    a.height = 1;
-                    a.width = 1;
-                    a.style.position = 'absolute';
-                    a.style.top = 0;
-                    a.style.left = 0;
-                    a.style.border = 'none';
-                    a.style.visibility = 'hidden';
-                    document.body.appendChild(a);
-                    if ('loading' !== document.readyState) c();
-                    else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c);
-                    else {
-                        var e = document.onreadystatechange || function() {};
-                        document.onreadystatechange = function(b) {
-                            e(b);
-                            'loading' !== document.readyState && (document.onreadystatechange = e, c())
-                        }
-                    }
-                }
-            })();
-        </script>
-        <script >
-            $('.show-more__btn').on('click', function () {
-                var befDiv = $(this).prev("div");
-                if (befDiv.hasClass('collapsed'))
-                    $(this).html('ادامه اش را بخوان');
-                else
-                    $(this).html('نمایش کوتاه');
-                befDiv.toggleClass('collapsed')
-            });
-        </script>
-        <script defer src="/enuygun/chunks/vcd15cbe7772f49c399c6a5babf22c1241717689176015.js" data-cf-beacon='{"rayId":"8c60bbce7d559f27","serverTiming":{"name":{"cfExtPri":true,"cfL4":true}},"version":"2024.8.0","token":"6651ec1d9c3a41999fc99682236c8d1b"}' ></script>
+    </div>
 
-        @* <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> *@
+</div>
 
+
+
+
+
+
+
+
+<div class="bnav-space"></div>
+<div class="bnav">
+    <div class="menu">
+        <a href="hotel.html">
+            <i class="bi bi-search"></i>جستجو
+        </a>
+    </div>
+    <div class="menu">
+        <a href="menu-2.html">
+            <i class="bi bi-2-circle"></i>منو 2
+        </a>
+    </div>
+    <div class="menu">
+        <a href="menu-3.html">
+            <i class="bi bi-3-circle"></i>منو 3
+        </a>
+    </div>
+    <div class="menu">
+        <a href="menu-4.html">
+            <i class="bi bi-4-circle"></i>منو 4
+        </a>
+    </div>
+    <div class="menu">
+        <a href="menu-5.html">
+            <i class="bi bi-person-circle"></i>منو 5
+        </a>
+    </div>
+</div>
+
+
+<div class="modal fade hotel-img" id="hotel_img" tabindex="-1" aria-labelledby="hotel_img" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content navy-bg text-white">
+            <div class="modal-header">
+                <h5> </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="scroll-snap pt-4">
+
+                    <div class="snap-hotel">
+                        <div class="snap-title set-bg" data-bg="img/ber-1.jpg"></div>
+                    </div>
+
+                    <div class="snap-hotel">
+                        <div class="snap-title set-bg" data-bg="img/mad-1.jpg"></div>
+                    </div>
+
+                    <div class="snap-hotel">
+                        <div class="snap-title set-bg" data-bg="img/lon-1.jpg"></div>
+                    </div>
+
+                    <div class="snap-hotel">
+                        <div class="snap-title set-bg" data-bg="img/bus-1.jpg"></div>
+                    </div>
+
+                </div>
+
+                <button data-bs-dismiss="modal" aria-label="Close" class="submit-button fix-bottom">بستن پنجره </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<form id="hotelForm" action="/Travel/SelectGuestForRoom">
+    <input type="hidden" name="city" id="city" asp-for="input.city" />
+    <input type="hidden" name="checkInDate" id="checkInDate" asp-for="input.checkInDate" />
+    <input type="hidden" name="checkOutDate" id="checkOutDate" asp-for="input.checkOutDate" />
+    <input type="hidden" name="Adult" id="Adult" asp-for="input.Adult" />
+    <input type="hidden" name="Childs" id="Childs" asp-for="input.Childs" value="@(string.Join(",",Model.input.Childs??new int[0]))" />
+    <input type="hidden" name="hotelId" id="hotelId" asp-for="input.hotelId" />
+    <input type="hidden" name="room_type_id" id="room_type_id" asp-for="input.room_type_id" />
+    <input type="hidden" name="roomDetail" id="roomDetail" asp-for="input.roomDetail" />
+</form>
+@section Scripts {
     <script>
 
-            var beforeTop = 0;
-            $(document).on('scroll', function () {
-                if(beforeTop<$(document).scrollTop()){
-
-                    if ($(document).scrollTop() > $('.hotel-tabs').eq(0).parent()[0].offsetTop + 230) {
-                        $('.hotel-tabs').eq(0).addClass('sticky-tab')
-                    } else {
-                        $('.hotel-tabs').eq(0).removeClass('sticky-tab')
-                    }
-                    setTabScrollTo($(document).scrollTop());
-                } else {
-                    $('.hotel-tabs').eq(0).removeClass('sticky-tab');
-                    $('.scroll-to').removeClass('active');
-                    $('.scroll-to').eq(0).addClass('active');
-                }
-                beforeTop = $(document).scrollTop();
-            });
-
-            function setTabScrollTo(scrollTop) {
-                for (var i = 0; i < $('.scroll-to').length; i++) {
-                    var logStr = "";
-                    var elemQuery = "";
-                    try{
-
-                        elemQuery = $('.scroll-to').eq(i).attr('href');
-                        var hasActive = $('.scroll-to').eq(i).hasClass('active');
-                        var nextElemOffsetTop = 0;
-                        if (i + 1 < $('.scroll-to').length) {
-                            logStr = "first";
-                            var nextElemQuery = $('.scroll-to').eq(i + 1).attr('href');
-                            nextElemOffsetTop = $(nextElemQuery)[0].offsetTop + 230;
-                        }
-                        else
-                        nextElemOffsetTop = 999999999999;
-                        logStr = "second";
-                        if (scrollTop > $(elemQuery)[0].offsetTop + 230 && scrollTop <= nextElemOffsetTop && hasActive == false) {
-                            $('.scroll-to').removeClass('active');
-                            $('.scroll-to').eq(i).addClass('active');
-                            $('.scroll-to').eq(i).addClass('active');
-                        }
-
-                    } catch (err) {
-                    console.log("error in setTabScrollTo i:" + i + " ,$('.scroll-to').length:" + $('.scroll-to').length + " ,elemQuery:" + elemQuery + " ,logStr:" + logStr + " , err:" + err)
-                    }
-
-                }
-            }
-            $('.scroll-to').on('click',function(){
-                $('.scroll-to').removeClass('active');
-                $(this).addClass('active');
-                $(this).addClass('active');
-                var elemQuery=$(this).attr('href');
-                $(document).scrollTop($(elemQuery)[0].offsetTop + 180);
-            });
-            $(document).trigger('scroll');
-        </script>
-    <script type="text/javascript">
-    
-    $(document).ready(function(){
-        setTimeout(function(){btnSearchProcess()},100);
-        
-    });//end of document ready
-
-        function btnSearchProcess(){
-            $('.HSF__submit-button').on('click', function () {
-                var hotelid = @Model.Hotel.id;
-                var cityid = @Model.Hotel.city_id;
-                $.post('/Travel/SearchRoom', { hotelid: hotelid, adultCnt: newSearchAdult, childAges: newSearchChilds, dateRange: newSearchDate, city_id: cityid }, function (dataRes) {
-                    if(dataRes.res){
-
-                    }else if(dataRes.hotel){
-                        $('#appRoot-ras .rooms-placeholder .offer__mobile-item').remove();
-                        var strData="";
-                        for (var index = 0; index < dataRes.hotel.rooms.length; index++) {
-                            var item = dataRes.hotel.rooms[index];
-                            var input=dataRes.searchInput;
-                            strData+=`<div class="offer__mobile-item p-2 undefined" data-provider="11" data-testid="offer-item">
-                                <div class="room-concept mb-1 d-flex justify-content-between align-items-center" data-testid="room-concept">
-                                    <span class="room-concept__item" style="color: rgb(27, 47, 111);">
-                                        <img class="room-concept__icon" src="/enuygun/hotel/images/ro.svg">
-                                        `+item.roomTypeName+`
-                                    </span>
-                                    </div>
-                                <ul class="offer__item-cancellation mb-2 pl-3 ml-1">
-                                    <li data-testid="room-cancellation"><strong>قابل انصراف تا سه روز قبل</strong></li>
-                                </ul>
-                                <div class="offer__mobile-bottom pt-2">
-                                    <div class="offer__mobile-bottom-info"></div>
-                                    <div class="offer__mobile-bottom-item">
-                                        <div>
-                                                    <span class="offer__item-night-count mb-0" data-testid="room-night-count"><strong>`+ dataRes.hotel.dayCount + ` شب</strong> در مجموع</span>
-                                            <div class="offer__mobile-price-container d-flex">
-                                                                <p class="offer__item-price mb-0 null" data-testid="room-offer-price">`+ calcPrice(item.prices, item.withBabyPrice, +input.adultCnt, input.childAges) + `</p>
-                                            </div>
-                                        </div>
-                                                <div class="offer__mobile-button-area offer__item-content--booking"><button class="btn btn-success font-weight-bold d-flex align-items-start" data-testid="room-select-button" data-checkInDate="`+ input.checkInDate + `" data-checkOutDate="` + input.checkOutDate + `" data-adultCnt="` + input.adultCnt + `" data-childAges="` + JSON.stringify(input.childAges) + `">رزرو کن <i class="ei-chevron-right font-size-lg"></i></button></div>
-                                    </div>
-                                </div>
-                            </div>`;
-                        }
-                        $('#appRoot-ras .rooms-placeholder').append(strData);
-                        $('.offer__mobile-button-area button:not(.proc)').on('click', function () {
-                            processGoToPersonInfo();
-                        });
-                        $('.offer__mobile-button-area button:not(.proc)').addClass('proc');
-                    }
-                });//end of $.post
-
-            });//end of button click
-        }
+        $('.select-room').on('click',function(){
+            var room_type_id=$(this).attr('data-typeid');
+            var roomDetail=$(this).attr('data-planid');
+            $('#room_type_id').val(room_type_id);
+            $('#roomDetail').val(roomDetail);
+            $('#hotelForm').trigger('submit');
+        });
     </script>
-
-
-    <form enctype="multipart/form-data" action="/Travel/SendToBMS" id="frm_SendToBMS" method="post">
-        <input type="hidden" name="property_id" id="property_id" />
-        <input type="hidden" name="room_type_id" id="room_type_id" />
-        <input type="hidden" name="check_in" value="@ViewBag.input.checkInDate" />
-        <input type="hidden" name="check_out" value="@ViewBag.input.checkOutDate" />
-
-        <input type="hidden" name="rate_plan_id" id="rate_plan_id" value="" />
-        <input type="hidden" name="count" id="count" value="1" />
-        <input type="hidden" name="guest_city_id" id="guest_city_id" value="@ViewBag.input.city" />
-        <input type="hidden" name="adult_count" id="adult_count" value="@ViewBag.input.Adult" />
-        @for (var i = 0; ViewBag.input.Childs != null && i < ViewBag.input.Childs.Length; i++)
-        {
-            <input type="hidden" class="child" name="children[@i]" value="@ViewBag.input.Childs[i]" />
-        }
-        <input type="hidden" name="webserviceRunDatailLogId" id="webserviceRunDatailLogId" value="@Model.Hotel24WorkflowDataRes.webserviceRunDatailLogId" />
-        <input type="hidden" name="WorkFlowRunLogDetailId" id="WorkFlowRunLogDetailId" value="@Model.Hotel24WorkflowDataRes.WorkFlowRunLogDetailId" />
-        <input type="hidden" name="workflowrunid" id="workflowrunid" value="@Model.Hotel24WorkflowDataRes.workflowrunid" />
-        <input type="hidden" name="WorkFlowDetailsId" id="WorkFlowDetailsId" value="@Model.Hotel24WorkflowDataRes.WorkFlowDetailsId" />
-
-        
-    </form>
 }
-

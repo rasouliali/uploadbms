@@ -1,0 +1,236 @@
+﻿@using ShppaingPart.Controllers
+@model AirplanTicketDto
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_LayoutPaycell.cshtml";
+}
+@section headerupper {
+	<style>
+		html, body{
+			direction:rtl;
+		}
+	</style>
+}
+<h1>بلیط هواپیما</h1>
+<form method="post">
+	<div class="row">
+
+		<div class="col-lg-3 col-md-4 col-sm-6">
+			<label for="SourceId">مبدا</label>
+			<select class="form-control" asp-for="SourceId" asp-items="Model.AirportCitySource">
+				<option value="">Please Select</option>
+			</select>
+		</div>
+
+		<div class="col-lg-3 col-md-4 col-sm-6">
+			<label for="DistinationId">مقصد</label>
+			<select class="form-control" asp-for="DistinationId" asp-items="Model.AirportCityDistination">
+				<option value="">Please Select</option>
+			</select>
+		</div>
+
+		<div class="col-lg-3 col-md-4 col-sm-6">
+			<label for="AirportCityDistination">تاریخ رفت</label>
+			<input type="date" name="SourceDate" id="SourceDate" value="@Model.SourceDate" class="form-control" />
+		</div>
+
+		<div class="col-lg-3 col-md-4 col-sm-6">
+			<label for="AdultCount">تعداد بالغ</label>
+			<input type="number" asp-for="AdultCount" class="form-control" />
+		</div>
+		<div class="col-lg-3 col-md-4 col-sm-6">
+			<label for="AdultCount">تعداد کودک</label>
+			<input type="number" asp-for="ChildCount" class="form-control" />
+		</div>
+		<div class="col-lg-3 col-md-4 col-sm-6">
+			<label for="AdultCount">تعداد نوزاد</label>
+			<input type="number" asp-for="infant_count" class="form-control" />
+		</div>
+
+		<div class="col-lg-3 col-md-4 col-sm-6">
+			<label >&nbsp;</label>
+			<button class="btn btn-primary" >جست و جو</button>
+		</div>
+
+	</div>
+</form>
+
+<div class="row table-responsive">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Opt</th>
+				<th>date</th>
+				<th>cabin type</th>
+				<th>departure time</th>
+				<th>arrival time</th>
+				<th>flight key</th>
+				<th>price</th>
+				<th>is high price</th>
+				<th>is foreign</th>
+				<th>type</th>
+				<th>airline name</th>
+				<th>arrival city name</th>
+				<th>capacity</th>
+				<th>departure city name</th>
+				<th>duration</th>
+				<th>flight no</th>
+				<th>adult</th>
+				<th>child</th>
+				<th>infant</th>
+				<th>stops count</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model.AvalibleList!=null){
+				foreach (var item in Model.AvalibleList)
+				{
+
+					<tr>
+						<td><button type="button" class="btn btn-primary buy-ticket" data-id="@item.flight_key">خرید</button></td>
+						<td>@item.date</td>
+						<td>@item.cabin_type_lang</td>
+						<td>@item.departure_time</td>
+						<td>@item.arrival_time</td>
+						<td>@item.flight_key</td>
+						<td>@item.price.ToString("N0")</td>
+						<td>@item.is_high_price</td>
+						<td>@item.is_foreign</td>
+						<td>@item.type_lang</td>
+						<td>@item.airline_name_lang</td>
+						<td>@item.arrival_city_name_lang</td>
+						<td>@item.capacity</td>
+						<td>@item.departure_city_name_lang</td>
+						<td>@item.duration</td>
+						<td>@item.flight_no</td>
+						<td>@item.adult</td>
+						<td>@item.child</td>
+						<td>@item.infant</td>
+						<td>@item.stops_count</td>
+					</tr>
+				}
+			}
+		</tbody>
+	</table>
+</div>
+
+
+<div id="Passenger" class="modal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+	<div class="modal-dialog w-100 mw-100 modal-custom modal-bottom">
+		<div class="modal-content w-100 h-100 border-0 rounded-30">
+			<div class="modal-header text-left bg-gg rounded-30">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin: -15px;">×</button>
+				<h4>اطلاعات مسافر(ان)</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row info">
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<label for="Email">ایمیل</label>
+						<input type="email" name="Email" id="Email" class="form-control" />
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<label for="Mobile">شماره همراه</label>
+						<input type="text" id="Mobile" name="Mobile" class="form-control" />
+					</div>
+				</div>
+				<div class="row passengers">
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<label for="Name">نام انگلیسی</label>
+						<input type="text" name="name" id="Name" class="form-control" />
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<label for="Family">نام خانوادگی انگلیسی</label>
+						<input type="text" id="Family" name="family" class="form-control" />
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<label for="BirthDate">تاریخ تولد</label>
+						<input type="date" id="BirthDate" name="birthDate" class="form-control" />
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<label for="NationalCode">کد ملی</label>
+						<input type="text" id="NationalCode" name="nationalCode" class="form-control" />
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<label for="Gender">جنسیت</label>
+						<select id="Gender" name="gender" class="form-control">
+							<option value="male">مرد</option>
+							<option value="female">زن</option>
+						</select>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<label for="Nationality">ملیت</label>
+						<select id="Nationality" name="nationality" class="form-control">
+							<option value="IRN">ایرانی</option>
+							<option value="Foreign">خارجی</option>
+						</select>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<label for="ExpireDate">تاریخ انقضای پاسپورت</label>
+						<input type="date" id="ExpireDate" name="expireDate" class="form-control" />
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<label for="PassaportNo">شماره پاسپورت</label>
+						<input type="text" id="PassaportNo" name="passaportNo" class="form-control" />
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-4 col-sm-6">
+					<label for="">&nbsp;</label>
+					<button type="submit" class="form-control btn btn-success" id="btnConfirmPassenger">تایید</button>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+</div>
+@section Scripts{
+	<form id="frm_Check" method="post" action="/AirplanTicket/CheckTicket">
+		<input type="hidden" asp-for="SourceDate" />
+		<input type="hidden" asp-for="SourceId" />
+		<input type="hidden" asp-for="DistinationId" />
+		<input type="hidden" asp-for="ChildAge" />
+		<input type="hidden" asp-for="ChildAge" />
+		<input type="hidden" name="SourceId" id="frm_SourceId" />
+		<input type="hidden" name="DistinationId" id="frm_DistinationId" />
+		<input type="hidden" name="AdultCount" id="frm_AdultCount" />
+		<input type="hidden" name="SourceDate" id="frm_SourceDate" />
+		<input type="hidden" name="Flight_key" id="frm_Flight_key" />
+		<input type="hidden" name="Email" id="Email" />
+		<input type="hidden" name="Mobile" id="Mobile" />
+	</form>
+	<script>
+		$(document).ready(function(){
+			$('#frm_SourceId').val($('#SourceId').val());
+			$('#frm_DistinationId').val($('#DistinationId').val());
+			$('#frm_AdultCount').val($('#AdultCount').val());
+			$('#frm_SourceDate').val($('#SourceDate').val());
+			var adultcount = $('#AdultCount').val();
+			if(parseInt(adultcount)>1){
+				var passenger = $('#Passenger .passengers').clone().get(0).outerHTML;
+				var newPassengers="";
+				for(var i=1;i<parseInt(adultcount);i++){
+					newPassengers+=passenger.split('Name').join('Name'+(i+1).toString()).split('Family').join('Family'+(i+1).toString()).split('BirthDate').join('BirthDate'+(i+1).toString())
+					.split('BirthDate').join('BirthDate'+(i+1).toString()).split('NationalCode').join('NationalCode'+(i+1).toString()).split('Nationality').join('Nationality'+(i+1).toString())
+					.split('Gender').join('Gender'+(i+1).toString()).split('ExpireDate').join('ExpireDate'+(i+1).toString()).split('PassaportNo').join('PassaportNo'+(i+1).toString())
+				}
+				$('#Passenger .modal-body').append(newPassengers);
+			}
+
+		});
+		$('.buy-ticket').on('click',function(){
+			var Flight_key = $(this).attr('data-id');
+			$('#frm_Flight_key').val(Flight_key);
+			$('#Passenger').modal('show');
+		});
+		$('#btnConfirmPassenger').on('click',function(){
+			$.each($('.passengers input'),function(index,elem){
+				$('#frm_Check').append('<input type="hidden" name="Passenger.'+$(elem).attr('name')+'" value="'+$(elem).val()+'" />');
+			});
+			$.each($('.passengers select'),function(index,elem){
+				$('#frm_Check').append('<input type="hidden" name="Passenger.'+$(elem).attr('name')+'" value="'+$(elem).val()+'" />');
+			});
+			$('#frm_Check #Email').val($('#Passenger #Email').val());
+			$('#frm_Check #Mobile').val($('#Passenger #Mobile').val());
+			$('#frm_Check').trigger('submit');
+		});
+	</script>
+}
