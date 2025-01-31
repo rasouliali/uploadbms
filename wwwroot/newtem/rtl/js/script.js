@@ -40,7 +40,7 @@ $(document).ready(function() {
 
     /* Live search json file */
     let data = [];
-    $.getJSON('js/hotel.json', function(json) {
+    $.getJSON('/newtem/rtl/js/hotel.json', function(json) {
         data = json;
     });
     $('#search_hotel').on('input', function() {
