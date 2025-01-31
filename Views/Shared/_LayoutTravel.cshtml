@@ -1,0 +1,156 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@using ShppaingPart.Models
+@using Microsoft.Data.SqlClient
+@inject IHttpContextAccessor HttpContextAccessor
+@using System.Security.Claims
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var uid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var V = "";
+    var db22 = new DataAccess();
+    string tblUserInfo = string.Empty;
+    var _tblUserInfo = ShppaingPart.Controllers.SharedLogic.GetUserInfo("select top 1 [NationalCode],[Name],[LastName] from tblUserInfo WITH(NOLOCK) where UserId='" + ShppaingPart.Controllers.SharedLogic.GetCurrentUserId() + "'");
+    if (_tblUserInfo != null && _tblUserInfo.Rows.Count>0)
+    {
+        var resData = _tblUserInfo.Select().Select(r => new { NationalCode = r["NationalCode"], Name = r["Name"], LastName = r["LastName"] }).ToList()[0];
+        if(resData.NationalCode!=null)
+            tblUserInfo = resData.NationalCode.ToString().Trim();
+    }
+    var profilePic = "/new/img/user.png";
+    var dt22 = db22.GetData("[sp_getUserInfo] @userid,@onlyUserid", new Microsoft.Data.SqlClient.SqlParameter[] { new Microsoft.Data.SqlClient.SqlParameter("userid", uid), new Microsoft.Data.SqlClient.SqlParameter("onlyUserid", uid), });
+    var model22 = new ShppaingPart.Models.ManageViewModels.IndexViewModel() { Username = User.Identity.Name };
+    if (dt22 != null && dt22.Rows.Count > 0)
+    {
+        try { model22.PhoneNumber = "0" + dt22.Rows[0]["Mobile"].ToString(); } catch { }
+        try { model22.Name = dt22.Rows[0]["Name"].ToString(); } catch { }
+        try { model22.LastName = dt22.Rows[0]["LastName"].ToString(); } catch { }
+        try { model22.IsMan = (bool)dt22.Rows[0]["IsMan"]; } catch { }
+        try { model22.NationalCode = dt22.Rows[0]["NationalCode"].ToString(); } catch { }
+        try
+        {
+            if (dt22 != null && dt22.Rows.Count > 0 && dt22.Rows[0].IsNull("ProfilePic") == false)
+            {
+                profilePic = "/Info/DownloadFiles?fileName=Profile/" + dt22.Rows[0]["ProfilePic"].ToString();
+            }
+        }
+        catch { }
+        try
+        {
+            model22.BirthDateM = (DateTime)dt22.Rows[0]["BirthDate"];
+            model22.BirthDate = ShppaingPart.Controllers.SharedLogic.ToShamsi(model22.BirthDateM);
+        }
+        catch (Exception err) { }
+    }
+
+    var controller = ViewContext.RouteData.Values["Controller"].ToString().ToLower();
+    var action = ViewContext.RouteData.Values["action"].ToString().ToLower();
+    var onlyLogginPage = true;
+    var onlyLogin = HttpContextAccessor.HttpContext.Session.GetString("OnlyLoggin");
+    if (string.IsNullOrEmpty(onlyLogin) == false)
+        onlyLogginPage = onlyLogin == "OnlyLoggin";
+    else
+        onlyLogginPage = false;
+    if (onlyLogginPage && User.Identity.IsAuthenticated)
+        onlyLogginPage = false;
+    var db = new ShppaingPart.Models.DataAccess();
+
+    var token = "";
+    var userid = "";
+    if (User.Identity.IsAuthenticated)
+    {
+        userid = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        try { token = HttpContextAccessor.HttpContext.Session.GetString(userid + "-tokenFCM"); } catch { }
+    }
+    if (User.Identity.IsAuthenticated)
+    {
+        var thisuser = UserManager.FindByNameAsync(User.Identity.Name);
+        ViewBag.thisuser = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        ViewBag.Link = GetUri(false, false).ToString().Replace(":80", "") + "Account/Register?Introducer=" + thisuser.Result.SimpleId; ;
+        var dt3 = db.ProccessSelectQuery("sp_getAffiliateLink", new SqlParameter[] {
+                new SqlParameter("userid",ShppaingPart.Controllers.SharedLogic.GetCurrentUserId()),
+                new SqlParameter("AffiliateLink", GetUri(false,false).ToString().Replace(":80","") + "Account/Register?Introducer=" + thisuser.Result.SimpleId),
+                new SqlParameter("simpleId", thisuser.Result.SimpleId)
+    }, System.Data.CommandType.StoredProcedure);
+        if (dt3.Rows[0].IsNull(0) == false)
+        {
+            ViewBag.AffiliateLinkSms = dt3.Rows[0]["AffiliateTextSms"].ToString();
+            ViewBag.AffiliateLink = dt3.Rows[0]["AffiliateText"].ToString();
+            ViewBag.CanAffiliateTextSendBySMS = (bool)dt3.Rows[0]["CanAffiliateTextSendBySMS"];
+        }
+    }
+    else
+    {
+        ViewBag.Link = "";
+        ViewBag.AffiliateLink = "";
+        ViewBag.CanAffiliateTextSendBySMS = false;
+    }
+    if (ViewBag.CanAffiliateTextSendBySMS == null)
+    { ViewBag.CanAffiliateTextSendBySMS = false; }
+    Uri GetUri(bool addPath = true, bool addQuery = true)
+    {
+        var uriBuilder = new UriBuilder
+                {
+                    Scheme = HttpContextAccessor.HttpContext.Request.Scheme,
+                    Host = HttpContextAccessor.HttpContext.Request.Host.Host,
+                    Port = HttpContextAccessor.HttpContext.Request.Host.Port.GetValueOrDefault(80),
+                    Path = addPath ? HttpContextAccessor.HttpContext.Request.Path.ToString() : default(string),
+                    Query = addQuery ? HttpContextAccessor.HttpContext.Request.QueryString.ToString() : default(string)
+                };
+        return uriBuilder.Uri;
+    }
+}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/newtem/rtl/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/newtem/rtl/css/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/newtem/rtl/css/style.css" rel="stylesheet" />
+    <link href="/newtem/rtl/css/rtl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="/newtem/rtl/css/persianDatepicker-default.css">
+
+    @{
+        var SiteTitle = "";
+        var description = "";
+        var Keywords = "";
+        var StieData = ShppaingPart.Controllers.SharedLogic.GetSiteData();
+        if (StieData == null)
+        {
+            SiteTitle = ViewData["Title"] + " - همپیشه";
+            description = "ازمن 24، خرید انواع سرویس های آنلاین، شارژ، بسته، بیمه، پین و... sale online shop Charge net package mci mtn rtn irancell hamrah aval rightel voucher ticket";
+            Keywords = "sale,mci,mtn,rtl,net,package,charge,insurance,ticket,hottel,metro,airplan,bus,voucher,pin,شارژ,بسته,همراه اول,ایرانسل,رایتل,پین,بیمه,بلیط,هواپیما,قطار,اتوبوس,هتل";
+        }
+        else
+        {
+            SiteTitle = StieData.SiteTitle ?? ViewData["Title"] + " - ازمن 24";
+            description = StieData.description ?? "ازمن 24، خرید انواع سرویس های آنلاین، شارژ، بسته، بیمه، پین و... sale online shop Charge net package mci mtn rtn irancell hamrah aval rightel voucher ticket";
+            Keywords = StieData.Keywords ?? "sale,mci,mtn,rtl,net,package,charge,insurance,ticket,hottel,metro,airplan,bus,voucher,pin,شارژ,بسته,همراه اول,ایرانسل,رایتل,پین,بیمه,بلیط,هواپیما,قطار,اتوبوس,هتل";
+        }
+        <title>@(SiteTitle.Replace("[PageTitle]", ViewData["Title"]?.ToString()))</title>
+        <meta name="description" content="@description" />
+        <meta name="Keywords" content="@Keywords" />
+    }
+    @RenderSection("headerupper", required: false)
+
+    @RenderSection("header", required: false)
+    
+</head>
+<body class="body-bg" dir="rtl">
+
+        @RenderBody()
+
+    <script src="/newtem/rtl/js/jquery.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="/newtem/rtl/js/bootstrap.js"></script>
+    <script src="/newtem/rtl/js/persianDatepicker.js"></script>
+    <script src="/newtem/rtl/js/script.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
