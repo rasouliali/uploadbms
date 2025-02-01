@@ -40,7 +40,7 @@ $(document).ready(function() {
 
     /* Live search json file */
     let data = [];
-    $.getJSON('/newtem/rtl/js/hotel.json', function(json) {
+    $.getJSON('js/hotel.json', function(json) {
         data = json;
     });
     $('#search_hotel').on('input', function() {
@@ -100,8 +100,6 @@ $(document).ready(function() {
     });
 
 
-    
-
 
     /**************** */
 
@@ -129,26 +127,34 @@ $(document).ready(function() {
 
 
     /************* Date Picker **********/
-    var start = new persianDate();
-    var start2 = new persianDate();
-    $('#startDate').persianDatepicker({
-        format: 'YYYY/MM/DD',
-        autoClose: true,
-        startDate: start.now().addDay(1).toString("YYYY/MM/DD"),
-        endDate: start.now().addDay(365).toString("YYYY/MM/DD"),
-        onSelect: function() {
-            start2 = new persianDate();
+    var picker = new Lightpick({
+        field: document.getElementById('datepicker'),
+        singleDate: false,
+        numberOfMonths: 1,
+        inline: true,
+        onSelect: function(start, end){
+            var str = '';
+            str += start ? start.format('Do MMMM YYYY') + ' to ' : '';
+            str += end ? end.format('Do MMMM YYYY') : '...';
+            document.getElementById('date_result').innerHTML = str;
+
+            var startd = start ? start.format('Do MMMM YYYY') : '';
+            var parts = startd.split(' ');
+            $('#syear').text(parts[2]);
+            $('#smonth').text(parts[1]);
+            $('#sday').text(parts[0]);
+            $('#syear, #smonth, #sday').show();
+
+
+            var endd = end ? end.format('Do MMMM YYYY') : '';
+            var partse = endd.split(' ');
+            $('#eyear').text(partse[2]);
+            $('#emonth').text(partse[1]);
+            $('#eday').text(partse[0]);
+            $('#eyear, #emonth, #eday').show();
+
         }
     });
-
-
-    $('#endDate').persianDatepicker({
-        format: 'YYYY/MM/DD',
-        autoClose: true,
-        startDate: start.now().addDay(1).toString("YYYY/MM/DD"),
-        endDate: start.now().addDay(365).toString("YYYY/MM/DD"),
-    });
-
 
 });
 
