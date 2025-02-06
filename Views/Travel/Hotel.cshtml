@@ -317,16 +317,16 @@
     <input type="hidden" name="Childs" id="Childs" asp-for="input.Childs" value="@(string.Join(",",Model.input.Childs??new int[0]))" />
     <input type="hidden" name="hotelId" id="hotelId" asp-for="input.hotelId" />
     <input type="hidden" name="room_type_id" id="room_type_id" asp-for="input.room_type_id" />
-    <input type="hidden" name="roomDetail" id="roomDetail" asp-for="input.roomDetail" />
+    <input type="hidden" name="rate_plan_id" id="rate_plan_id" asp-for="input.rate_plan_id" />
 </form>
 @section Scripts {
     <script>
 
         $('.select-room').on('click',function(){
             var room_type_id=$(this).attr('data-typeid');
-            var roomDetail=$(this).attr('data-planid');
+            var rate_plan_id=$(this).attr('data-planid');
             $('#room_type_id').val(room_type_id);
-            $('#roomDetail').val(roomDetail);
+            $('#rate_plan_id').val(rate_plan_id);
             $('#hotelForm').trigger('submit');
         });
     </script>

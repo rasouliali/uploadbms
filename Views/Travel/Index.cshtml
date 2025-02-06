@@ -36,8 +36,8 @@
 
                     <div class="select-group pt-3 pb-1">
                         <div class="select-hotel" data-bs-toggle="modal" data-bs-target="#Select_hotel">
-                            <span class="">انتخاب هتل</span>
-                            <div class="hotel-name" id="hotel-name">نام هتل</div>
+                            <span class="">انتخاب شهر</span>
+                            <div class="hotel-name" id="hotel-name">نام شهر</div>
                         </div>
                     </div>
 
@@ -343,6 +343,8 @@
 
             $('#Childs').val(strData);
             $('#hotelForm').submit();
+            $('#search-submit').attr('disabled','');
+            $('#search-submit').val('صبر کنید...');
         });
     </script>
 }

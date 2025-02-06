@@ -29,8 +29,8 @@
 		<div class="row">
 			<div class="select-group pt-3 pb-1">
 				<div class="select-hotel" data-bs-toggle="modal" data-bs-target="#Select_hotel">
-					<span class="">انتخاب هتل</span>
-					<div class="hotel-name" id="hotel-name">نام هتل</div>
+					<span class="">انتخاب شهر</span>
+					<div class="hotel-name" id="hotel-name">نام شهر</div>
 				</div>
 			</div>
 
@@ -183,10 +183,10 @@
 										<h4 class="pt-3">اطلاعات هتل</h4>
 
 										<div><i class="bi bi-arrows-move"></i> @(string.Join("، ", item.facilities.Take(3)))</div>
-										<div><i class="bi bi-arrows-move"></i> @(string.Join("، ", item.rules.Select(r => r.Key).Take(3)))</div>
+										<div><i class="bi bi-geo-alt"></i> @item.address</div>
 										@if (item.Prices != null)
 										{
-											<h4 class="price text-end navy"> @(((double)item.Prices).ToString("N0")) ريال</h4>
+											<h4 class="price text-end navy">شروع از @(((double)item.Prices).ToString("N0")) ريال</h4>
 										}
 									</div>
 								</div>
